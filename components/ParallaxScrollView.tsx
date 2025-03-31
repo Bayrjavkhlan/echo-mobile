@@ -7,8 +7,8 @@ import Animated, {
   useScrollViewOffset,
 } from "react-native-reanimated";
 
-import { ThemedView } from "@/src/components/ThemedView";
-import { useBottomTabOverflow } from "@/src/components/ui/TabBarBackground";
+import { ThemedView } from "@/components/ThemedView";
+import { useBottomTabOverflow } from "@/components/ui/TabBarBackground";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 const HEADER_HEIGHT = 250;
@@ -17,7 +17,7 @@ type Props = PropsWithChildren<{
   headerImage: ReactElement;
   headerBackgroundColor: { dark: string; light: string };
 }>;
-
+// useless
 export default function ParallaxScrollView({
   children,
   headerImage,
