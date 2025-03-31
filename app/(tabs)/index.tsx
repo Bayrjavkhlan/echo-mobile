@@ -3,6 +3,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import Label from "@/components/ui/Label";
+import ColorRandomizer from "@/lib/colorRandomizer";
 import { ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,10 +20,11 @@ const labels = [
   { id: 10, name: "Weather", icon: "cloud" },
 ];
 
+const randomColor = ColorRandomizer();
+
 const labelData = {
-  text: "Label123",
-  color: "red",
-  icon: "home",
+  text: "Боловсрол",
+  color: "blue-400",
 };
 
 export default function HomeScreen() {

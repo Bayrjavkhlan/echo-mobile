@@ -25,5 +25,14 @@ export function ThemedText({
     link: "text-base leading-7 text-blue-600",
   };
 
-  return <Text style={[tw`${typeStyles[type]}`, { color }, style]} {...rest} />;
+  return (
+    <Text
+      style={[
+        tw`${typeStyles[type]}`,
+        { color, fontFamily: "NotoSerif" },
+        style,
+      ]}
+      {...rest}
+    />
+  );
 }
