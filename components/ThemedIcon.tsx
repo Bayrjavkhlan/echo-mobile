@@ -1,5 +1,6 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useInheritedTheme } from "../context/ThemeInheritContext";
 
 type IconProps = {
   name: keyof typeof MaterialIcons.glyphMap;
@@ -9,6 +10,7 @@ type IconProps = {
   size?: number;
   className?: string;
   style?: object;
+  inheritTheme?: boolean;
 };
 
 export default function ThemedIcon({
@@ -19,10 +21,18 @@ export default function ThemedIcon({
   size = 16,
   className,
   style,
+  inheritTheme = true,
   ...rest
 }: IconProps) {
+  const inheritedColors = useInheritedTheme();
+
+  const finalLightColor =
+    lightColor || (inheritTheme ? inheritedColors.textLightColor : undefined);
+  const finalDarkColor =
+    darkColor || (inheritTheme ? inheritedColors.textDarkColor : undefined);
+
   const iconColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
+    { light: finalLightColor, dark: finalDarkColor },
     "text"
   );
 

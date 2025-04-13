@@ -45,6 +45,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="Dashboard"
+        options={{
+          title: "Dashboard",
+          tabBarIcon: ({ color }: { color: string }) => (
+            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="Profile"
         options={{
           title: "Пропайл",

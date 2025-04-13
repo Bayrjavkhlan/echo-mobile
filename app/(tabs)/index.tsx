@@ -8,6 +8,7 @@ import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
 import { useFlashcards } from "@/app/hook/useFlashcards";
+import { ProgressBar } from "@/components/ProgressBar";
 
 const labels = [
   { id: 1, name: "Home", icon: "home" },
@@ -60,7 +61,8 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="bg-white dark:bg-gray-900">
-      <ThemedText>гэр</ThemedText>
+      <ProgressBar totalWords={123} memorizedWords={12} />
+      {/* <ThemedText>гэр</ThemedText>
       <Label data={labelData}></Label>
       <HorizontalLabelScroll />
       <ThemedText>test</ThemedText>
@@ -86,7 +88,6 @@ export default function HomeScreen() {
       />
       <Button type="icon" color="secondary" />
       <Button title="Processing..." loading disabled />
-      {/* <StackCards /> */}
 
       <ScrollView>
         {flashcards.map((flashcard) => (
@@ -137,7 +138,7 @@ export default function HomeScreen() {
             label_ids: [],
           });
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }

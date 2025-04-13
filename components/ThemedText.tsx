@@ -1,6 +1,7 @@
 import { type TextProps, StyleSheet, Text } from "react-native";
 import tw from "twrnc";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useInheritedTheme } from "../context/ThemeInheritContext";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -13,6 +14,7 @@ export type ThemedTextProps = TextProps & {
     | "link"
     | "title2";
   className?: string;
+  inheritTheme?: boolean;
 };
 
 export function ThemedText({
@@ -21,9 +23,20 @@ export function ThemedText({
   darkColor,
   type = "default",
   className,
+  inheritTheme = true,
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const inheritedColors = useInheritedTheme();
+
+  const finalLightColor =
+    lightColor || (inheritTheme ? inheritedColors.textLightColor : undefined);
+  const finalDarkColor =
+    darkColor || (inheritTheme ? inheritedColors.textDarkColor : undefined);
+
+  const color = useThemeColor(
+    { light: finalLightColor, dark: finalDarkColor },
+    "text"
+  );
 
   const typeStyles = {
     default: tw`text-base leading-6`,
