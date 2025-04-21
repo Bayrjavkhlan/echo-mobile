@@ -1,12 +1,8 @@
-import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
-import StackCards from "@/components/StackCards";
 import { ThemedText } from "@/components/ThemedText";
-import { Button } from "@/components/ui/Button";
-import Label from "@/components/ui/Label";
+import { ThemedView } from "@/components/ThemedView";
 import { useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import tw from "twrnc";
 import { useFlashcards } from "@/app/hook/useFlashcards";
 import { ProgressBar } from "@/components/ProgressBar";
 
@@ -34,9 +30,9 @@ export default function HomeScreen() {
     loading,
     error,
     fetchFlashcards,
-    createFlashcard,
-    updateFlashcard,
-    deleteFlashcard,
+    isConnected,
+    syncWithServer,
+    isSyncing,
   } = useFlashcards();
 
   useEffect(() => {
@@ -45,100 +41,49 @@ export default function HomeScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="bg-white dark:bg-gray-900">
+      <SafeAreaView className="bg-white dark:bg-gray-900 flex-1">
         <ThemedText>Loading flashcards...</ThemedText>
       </SafeAreaView>
     );
   }
 
-  if (error) {
-    return (
-      <SafeAreaView className="bg-white dark:bg-gray-900">
-        <ThemedText>Error: {error}</ThemedText>
-      </SafeAreaView>
-    );
-  }
-
   return (
-    <SafeAreaView className="bg-white dark:bg-gray-900">
+    <SafeAreaView className="bg-white dark:bg-gray-900 flex-1">
+      {/* Connectivity status indicator */}
+      <ThemedView className="flex-row justify-between px-4 py-2 items-center">
+        <ThemedView className="flex-row items-center gap-2">
+          <View
+            className="w-3 h-3 rounded-full"
+            style={{ backgroundColor: isConnected ? "#4CAF50" : "#F44336" }}
+          />
+          <ThemedText className="text-sm">
+            {isConnected ? "Online" : "Offline"}
+          </ThemedText>
+        </ThemedView>
+
+        {/* Sync button */}
+        <TouchableOpacity
+          onPress={syncWithServer}
+          disabled={!isConnected || isSyncing}
+          className={`px-4 py-2 rounded-md ${!isConnected ? "opacity-50" : ""}`}
+          style={{ backgroundColor: "#3085FE" }}
+        >
+          <Text className="text-white text-sm">
+            {isSyncing ? "Syncing..." : "Sync Now"}
+          </Text>
+        </TouchableOpacity>
+      </ThemedView>
+
+      {/* Error display */}
+      {error && (
+        <ThemedView className="bg-red-100 dark:bg-red-900 p-2 m-2 rounded">
+          <ThemedText className="text-red-800 dark:text-red-200">
+            Error: {error}
+          </ThemedText>
+        </ThemedView>
+      )}
+
       <ProgressBar totalWords={123} memorizedWords={12} />
-      {/* <ThemedText>гэр</ThemedText>
-      <Label data={labelData}></Label>
-      <HorizontalLabelScroll />
-      <ThemedText>test</ThemedText>
-      <View style={tw`p-4`}>
-        <ThemedText>This should be NotoSerif</ThemedText>
-        <Label data={{ text: "Test Label", color: "blue" }} />
-      </View>
-      <Button title="test123456789" />
-      <ThemedText>test</ThemedText>
-      <Button
-        title="Submit"
-        type="contained"
-        size="large"
-        onPress={() => console.log("Pressed")}
-        rightIcon="add"
-      />
-      <Button title="Delete" type="outlined" color="danger" />
-      <Button
-        title="Learn More"
-        type="text"
-        buttonClass="p-0"
-        textClass="underline"
-      />
-      <Button type="icon" color="secondary" />
-      <Button title="Processing..." loading disabled />
-
-      <ScrollView>
-        {flashcards.map((flashcard) => (
-          <View key={flashcard.id} style={tw`p-4 border-b border-gray-200`}>
-            <ThemedText className="text-lg">
-              {flashcard.question_type}
-            </ThemedText>
-            <ThemedText>{flashcard.answer}</ThemedText>
-            <Label data={{ text: flashcard.label, color: "blue" }} />
-
-            <View style={tw`flex-row mt-2`}>
-              <Button
-                title="Edit"
-                type="outlined"
-                onPress={() => {
-                  updateFlashcard(flashcard.id, {
-                    question_type: flashcard.question_type,
-                    question: "Updated question",
-                    answer: flashcard.answer,
-                    label: flashcard.label,
-                    description: flashcard.description,
-                    label_ids: [],
-                  });
-                }}
-              />
-              <Button
-                title="Delete"
-                type="outlined"
-                color="danger"
-                onPress={() => deleteFlashcard(flashcard.id)}
-              />
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      <Button
-        title="Add Flashcard"
-        type="contained"
-        onPress={() => {
-          createFlashcard({
-            group_id: 1,
-            question_type: "New Question",
-            question: "What is...?",
-            answer: "The answer is...",
-            label: "New Label",
-            description: "Description here",
-            label_ids: [],
-          });
-        }}
-      /> */}
     </SafeAreaView>
   );
 }

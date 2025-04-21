@@ -1,10 +1,12 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   flashcardApi,
   Flashcard,
   CreateFlashcardDPO,
   UpdateFlashcardDPO,
+  syncUnsavedChanges,
 } from "../services/flashcardService";
+import { useNetwork } from "@/context/NetworkContext";
 
 export const useFlashcards = (groupId?: number) => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -12,6 +14,8 @@ export const useFlashcards = (groupId?: number) => {
   const [error, setError] = useState<string | null>(null);
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
+  const { isConnected } = useNetwork();
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const fetchFlashcards = useCallback(async () => {
     try {
@@ -26,7 +30,7 @@ export const useFlashcards = (groupId?: number) => {
     } finally {
       setLoading(false);
     }
-  }, [groupId]);
+  }, [groupId, skip, limit]);
 
   const createFlashcard = async (newFlashcard: CreateFlashcardDPO) => {
     try {
@@ -76,6 +80,46 @@ export const useFlashcards = (groupId?: number) => {
     }
   };
 
+  // Manual sync function that can be triggered by a button
+  const syncWithServer = async () => {
+    if (!isConnected) {
+      setError("Cannot sync: No internet connection");
+      return;
+    }
+
+    try {
+      setIsSyncing(true);
+      setError(null);
+      await syncUnsavedChanges();
+      // After syncing, refresh the data
+      await fetchFlashcards();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to sync with server"
+      );
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Effect to detect when connection comes back online to trigger sync
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    // When connection comes back, try to sync after a short delay
+    if (isConnected) {
+      timeout = setTimeout(() => {
+        syncWithServer().catch(console.error);
+      }, 2000); // Wait for 2 seconds after reconnection
+    }
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [isConnected]);
+
   return {
     flashcards,
     loading,
@@ -84,5 +128,8 @@ export const useFlashcards = (groupId?: number) => {
     createFlashcard,
     updateFlashcard,
     deleteFlashcard,
+    isConnected,
+    syncWithServer,
+    isSyncing,
   };
 };
