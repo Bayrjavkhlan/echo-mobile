@@ -1,7 +1,8 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import tw from "twrnc";
+import ThemedIcon from "../ThemedIcon";
 
 export type LabelType = {
   text: string;
@@ -12,13 +13,15 @@ export type LabelType = {
 export default function Label({
   data,
   className,
+  onPress,
 }: {
   data: LabelType;
   className?: string;
+  onPress?: () => void;
 }) {
   const { text, color, icon } = data;
 
-  return (
+  const LabelContent = (
     <View
       style={[
         tw`py-1 px-3 rounded-xl w-auto self-start flex flex-row items-center justify-center`,
@@ -30,12 +33,17 @@ export default function Label({
         {text}
       </ThemedText>
       {icon && (
-        <MaterialIcons
-          name={icon}
-          size={16}
-          style={tw`ml-1 text-gray-800 dark:text-white`}
+        <ThemedIcon
+          name={icon as keyof typeof MaterialIcons.glyphMap}
+          style={tw`m-0 `}
         />
       )}
     </View>
+  );
+
+  return onPress ? (
+    <TouchableOpacity onPress={onPress}>{LabelContent}</TouchableOpacity>
+  ) : (
+    LabelContent
   );
 }

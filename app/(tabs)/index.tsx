@@ -9,18 +9,44 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
 import { useFlashcards } from "@/app/hook/useFlashcards";
 import { ProgressBar } from "@/components/ProgressBar";
+import LabelAdd from "@/components/LabelAdd";
+import { ThemedView } from "@/components/ThemedView";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-const labels = [
-  { id: 1, name: "Home", icon: "home" },
-  { id: 2, name: "Profile", icon: "user" },
-  { id: 3, name: "Settings", icon: "settings" },
-  { id: 4, name: "Messages", icon: "message-circle" },
-  { id: 5, name: "Notifications", icon: "bell" },
-  { id: 6, name: "Favorites", icon: "heart" },
-  { id: 7, name: "Search", icon: "search" },
-  { id: 8, name: "Camera", icon: "camera" },
-  { id: 9, name: "Music", icon: "music" },
-  { id: 10, name: "Weather", icon: "cloud" },
+// const labels = [
+//   { id: 1, name: "Home", icon: "home" },
+//   { id: 2, name: "Profile", icon: "user" },
+//   { id: 3, name: "Settings", icon: "settings" },
+//   { id: 4, name: "Messages", icon: "message-circle" },
+//   { id: 5, name: "Notifications", icon: "bell" },
+//   { id: 6, name: "Favorites", icon: "heart" },
+//   { id: 7, name: "Search", icon: "search" },
+//   { id: 8, name: "Camera", icon: "camera" },
+//   { id: 9, name: "Music", icon: "music" },
+//   { id: 10, name: "Weather", icon: "cloud" },
+// ];
+
+const labels: {
+  text: string;
+  color: string;
+  icon?: keyof typeof MaterialIcons.glyphMap;
+}[] = [
+  { text: "Нэмэх", color: "slate", icon: "add" },
+  { text: "Нэр үг", color: "red" },
+  { text: "Үйл үг", color: "orange" },
+  { text: "Тоо", color: "amber" },
+  { text: "Label 4", color: "yellow" },
+  { text: "Label 5", color: "lime" },
+  { text: "Label 6", color: "green" },
+  { text: "Label 7", color: "emerald" },
+  { text: "Label 8", color: "teal" },
+  { text: "Label 9", color: "cyan" },
+  { text: "Label 10", color: "sky" },
+  { text: "Label 11", color: "blue" },
+  { text: "Label 12", color: "indigo" },
+  { text: "Label 13", color: "violet" },
+  { text: "Label 14", color: "purple" },
+  { text: "Label 15", color: "rose" },
 ];
 
 const labelData = {
@@ -29,39 +55,53 @@ const labelData = {
 };
 
 export default function HomeScreen() {
-  const {
-    flashcards,
-    loading,
-    error,
-    fetchFlashcards,
-    createFlashcard,
-    updateFlashcard,
-    deleteFlashcard,
-  } = useFlashcards();
+  // const {
+  //   flashcards,
+  //   loading,
+  //   error,
+  //   fetchFlashcards,
+  //   createFlashcard,
+  //   updateFlashcard,
+  //   deleteFlashcard,
+  // } = useFlashcards();
 
-  useEffect(() => {
-    fetchFlashcards();
-  }, [fetchFlashcards]);
+  // useEffect(() => {
+  //   fetchFlashcards();
+  // }, [fetchFlashcards]);
 
-  if (loading) {
-    return (
-      <SafeAreaView className="bg-white dark:bg-gray-900">
-        <ThemedText>Loading flashcards...</ThemedText>
-      </SafeAreaView>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView className="bg-white dark:bg-gray-900">
+  //       <ThemedText>Loading flashcards...</ThemedText>
+  //     </SafeAreaView>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <SafeAreaView className="bg-white dark:bg-gray-900">
-        <ThemedText>Error: {error}</ThemedText>
-      </SafeAreaView>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <SafeAreaView className="bg-white dark:bg-gray-900">
+  //       <ThemedText>Error: {error}</ThemedText>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
-    <SafeAreaView className="bg-white dark:bg-gray-900">
-      <ProgressBar totalWords={123} memorizedWords={12} />
+    <SafeAreaView className="">
+      <ScrollView className="">
+        <ThemedView className="flex flex-col h-full">
+          <ProgressBar totalWords={123} memorizedWords={12} />
+          <ProgressBar totalWords={123} memorizedWords={12} />
+          <ProgressBar totalWords={123} memorizedWords={12} />
+          <Label data={labelData} onPress={() => console.log("pressed")} />
+          <HorizontalLabelScroll labels={labels} />
+          <LabelAdd />
+        </ThemedView>
+      </ScrollView>
+
+      {/* <LabelAdd data={labelData} />
+        <Label data={labelData} /> */}
+      {/* </ThemedView> */}
+
       {/* <ThemedText>гэр</ThemedText>
       <Label data={labelData}></Label>
       <HorizontalLabelScroll />

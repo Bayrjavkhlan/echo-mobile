@@ -49,6 +49,23 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack initialRouteName="(tabs)">
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="group/[id]"
+          options={{
+            title: "Group Details",
+            headerShown: true,
+            presentation: "card",
+          }}
+        />
+        <Stack.Screen
+          name="screens/group/[id].page"
+          options={{
+            title: "Group Details (Page)",
+            headerShown: true,
+            presentation: "card",
+          }}
+        />
+        <Stack.Screen name="screens/login.page" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

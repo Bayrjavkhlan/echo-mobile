@@ -14,18 +14,18 @@ import {
 const MAPPING = {
   // See MaterialIcons here: https://icons.expo.fyi
   // See SF Symbols in the SF Symbols app on Mac.
-  "house.fill": "home",
+  home: "home",
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   "person.fill": "person",
-} as Partial<
-  Record<
-    import("expo-symbols").SymbolViewProps["name"],
-    React.ComponentProps<typeof MaterialIcons>["name"]
-  >
->;
+  "library_books.fill": "library-books",
+  folder: "folder",
+  book: "book",
+  analytics: "analytics",
+} as const;
 
+// Define the type for our icon names - this allows for custom names
 export type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -49,7 +49,7 @@ export function IconSymbol({
     <MaterialIcons
       color={color}
       size={size}
-      name={MAPPING[name]}
+      name={MAPPING[name] as React.ComponentProps<typeof MaterialIcons>["name"]}
       style={style as StyleProp<TextStyle>}
     />
   );
