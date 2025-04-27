@@ -24,29 +24,17 @@ type ButtonSize = "large" | "middle" | "small";
 type ButtonShape = "default" | "circle" | "round";
 
 export interface ButtonProps extends TouchableOpacityProps, AccessibilityProps {
-  /** Button text content */
   title?: string;
-  /** Visual type of the button */
   type?: ButtonType;
-  /** Left icon */
   leftIcon?: ReactNode;
-  /** Left icon */
   rightIcon?: ReactNode;
-  /** Left icon from Iconsax */
   disabled?: boolean;
-  /** Whether to show a loading spinner */
   loading?: boolean;
-  /** Custom text styles */
   textClass?: string;
-  /** Custom button container styles */
   buttonClass?: string;
-  /** Size type of the button */
   size?: ButtonSize;
-  /** Custom button shape */
   shape?: ButtonShape;
-  /** Custom button color */
   color?: string;
-  /** Custom font family */
   fontFamily?: "NotoSerif" | "System" | string;
 }
 

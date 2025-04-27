@@ -57,14 +57,6 @@ export default function RootLayout() {
             presentation: "card",
           }}
         />
-        <Stack.Screen
-          name="screens/group/[id].page"
-          options={{
-            title: "Group Details (Page)",
-            headerShown: true,
-            presentation: "card",
-          }}
-        />
         <Stack.Screen name="screens/login.page" />
         <Stack.Screen name="+not-found" />
       </Stack>

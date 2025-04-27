@@ -50,9 +50,9 @@ export function ThemedText({
   const mergedStyles = [
     { fontFamily: "NotoSerif" },
     typeStyles[type],
-    className ? tw.style(className) : null,
     { color },
     style,
+    className ? tw.style(className) : null,
   ];
 
   return <Text style={mergedStyles} {...rest} />;

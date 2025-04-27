@@ -1,57 +1,29 @@
 import React from "react";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
-import { View } from "react-native";
-import { Colors } from "@/constants/Colors";
-import { colors } from "@/constants/Themes";
+import { Progress } from "./ui/Progress";
+import { OuterThemedView } from "./OuterThemedView";
 
 interface ProgressBarProps {
   totalWords: number;
   memorizedWords: number;
-  lightColor?: any;
-  darkColor?: any;
-  textLightColor?: string;
-  textDarkColor?: string;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   totalWords,
   memorizedWords,
-  lightColor = Colors.light.contentBackground,
-  darkColor = Colors.dark.contentBackground,
 }) => {
-  // const percentage = (memorizedWords / totalWords) * 100;
-  const percentage = 80;
+  const percentage =
+    totalWords > 0 ? Math.round((memorizedWords / totalWords) * 100) : 0;
 
   return (
     <ThemedView className="flex-1 p-4 pb-2">
-      <ThemedView
-        lightColor={lightColor}
-        darkColor={darkColor}
-        className="flex w-full h-18 p-4 rounded-xl"
-      >
-        <ThemedView className="flex justify-between">
-          <ThemedText>{`Цээжилсэн үгсийн тоо: ${memorizedWords} / ${totalWords} (${percentage.toFixed(
-            2
-          )}%)`}</ThemedText>
+      <OuterThemedView className="flex w-full p-4 rounded-xl">
+        <ThemedView className="flex justify-between mb-2">
+          <ThemedText>{`Цээжилсэн үгсийн тоо: ${memorizedWords} / ${totalWords} (${percentage}%)`}</ThemedText>
         </ThemedView>
-        <ThemedView className="flex flex-row justify-between items-center gap-2">
-          <ThemedView
-            className="flex-grow rounded"
-            lightColor={Colors.light.gray}
-            // lightColor={colors.primary300}
-            darkColor={Colors.dark.gray}
-          >
-            <ThemedView
-              className="h-2 rounded"
-              style={{ width: `${percentage}%` }}
-              lightColor={Colors.light.red}
-              darkColor={Colors.dark.red}
-            />
-          </ThemedView>
-          <ThemedText className="flex-shrink-0">{percentage}%</ThemedText>
-        </ThemedView>
-      </ThemedView>
+        <Progress percentage={percentage} />
+      </OuterThemedView>
     </ThemedView>
   );
 };

@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { Colors } from "@/constants/Colors";
 
 export default function GroupDetailsScreen() {
-  // Get the ID from the URL params
   const params = useLocalSearchParams();
   const router = useRouter();
   const id = params.id;

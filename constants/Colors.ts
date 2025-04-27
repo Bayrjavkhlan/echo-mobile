@@ -20,6 +20,8 @@ export const Colors = {
     tabIconSelected: tintColorLight,
     red: "#FE5F55",
     gray: "#AAA",
+    chartColor: "#0A7EA4",
+    chartColor2: "#F1EFEC",
   },
   dark: {
     text: "#ECEDEE",
@@ -31,5 +33,7 @@ export const Colors = {
     tabIconSelected: tintColorDark,
     red: "#B8453F",
     gray: "#D6D1CD",
+    chartColor: "#0A7EA4",
+    chartColor2: "#F1EFEC",
   },
 };

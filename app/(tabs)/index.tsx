@@ -3,8 +3,8 @@ import StackCards from "@/components/StackCards";
 import { ThemedText } from "@/components/ThemedText";
 import { Button } from "@/components/ui/Button";
 import Label from "@/components/ui/Label";
-import { useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ScrollView, View, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
 import { useFlashcards } from "@/app/hook/useFlashcards";
@@ -12,7 +12,9 @@ import { ProgressBar } from "@/components/ProgressBar";
 import LabelAdd from "@/components/LabelAdd";
 import { ThemedView } from "@/components/ThemedView";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
+import { Progress } from "@/components/ui/Progress";
+import ActivityBarChart from "@/components/ActivityBarChart";
+import { MemorizinStreak } from "@/components/MemorizingStreak";
 // const labels = [
 //   { id: 1, name: "Home", icon: "home" },
 //   { id: 2, name: "Profile", icon: "user" },
@@ -25,6 +27,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 //   { id: 9, name: "Music", icon: "music" },
 //   { id: 10, name: "Weather", icon: "cloud" },
 // ];
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const labels: {
   text: string;
@@ -54,7 +58,73 @@ const labelData = {
   color: "blue",
 };
 
+// Updated data for user spending hours across the week
+const weeklyActivityData = {
+  labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+  datasets: [
+    {
+      data: [2.5, 3.7, 1.8, 4.2, 3.0, 5.5, 2.3],
+    },
+  ],
+};
+
+// Monthly activity data
+const monthlyActivityData = {
+  labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+  datasets: [
+    {
+      data: [18.5, 22.3, 19.8, 25.2, 14.7],
+    },
+  ],
+};
+
+// Learned words data
+const learnedWordsData = {
+  labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+  datasets: [
+    {
+      data: [12, 23, 8, 15, 19, 27, 10],
+    },
+  ],
+};
+
 export default function HomeScreen() {
+  const [activeDataset, setActiveDataset] = useState<
+    "weekly" | "monthly" | "words"
+  >("weekly");
+
+  // Function to get the current dataset based on the activeDataset state
+  const getCurrentData = () => {
+    switch (activeDataset) {
+      case "weekly":
+        return {
+          data: weeklyActivityData,
+          suffix: " цаг",
+          title: "Апп ашиглалтын цаг (7 хоног)",
+        };
+      case "monthly":
+        return {
+          data: monthlyActivityData,
+          suffix: " цаг",
+          title: "Апп ашиглалтын цаг (Сар)",
+        };
+      case "words":
+        return {
+          data: learnedWordsData,
+          suffix: " үг",
+          title: "Сурсан үгсийн тоо",
+        };
+      default:
+        return {
+          data: weeklyActivityData,
+          suffix: " цаг",
+          title: "Апп ашиглалтын цаг (7 хоног)",
+        };
+    }
+  };
+
+  const currentData = getCurrentData();
+
   // const {
   //   flashcards,
   //   loading,
@@ -89,12 +159,18 @@ export default function HomeScreen() {
     <SafeAreaView className="">
       <ScrollView className="">
         <ThemedView className="flex flex-col h-full">
-          <ProgressBar totalWords={123} memorizedWords={12} />
-          <ProgressBar totalWords={123} memorizedWords={12} />
-          <ProgressBar totalWords={123} memorizedWords={12} />
+          <ProgressBar totalWords={123} memorizedWords={86} />
           <Label data={labelData} onPress={() => console.log("pressed")} />
           <HorizontalLabelScroll labels={labels} />
           <LabelAdd />
+          <Progress percentage={12} />
+          <ActivityBarChart
+            weeklyData={weeklyActivityData}
+            monthlyData={monthlyActivityData}
+            wordsData={learnedWordsData}
+            initialActiveDataset="weekly"
+          />
+          <MemorizinStreak streak={5} />
         </ThemedView>
       </ScrollView>
 
