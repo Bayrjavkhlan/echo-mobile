@@ -23,6 +23,7 @@ const MAPPING = {
   folder: "folder",
   book: "book",
   analytics: "analytics",
+  add_circle: "add-circle",
 } as const;
 
 // Define the type for our icon names - this allows for custom names

@@ -155,15 +155,17 @@ export default function HomeScreen() {
   //   );
   // }
 
+  /* <Label data={labelData} onPress={() => console.log("pressed")} />
+          <HorizontalLabelScroll labels={labels} />
+          <LabelAdd />
+          <Progress percentage={12} /> */
+
   return (
     <SafeAreaView className="">
       <ScrollView className="">
         <ThemedView className="flex flex-col h-full">
           <ProgressBar totalWords={123} memorizedWords={86} />
-          <Label data={labelData} onPress={() => console.log("pressed")} />
-          <HorizontalLabelScroll labels={labels} />
-          <LabelAdd />
-          <Progress percentage={12} />
+
           <ActivityBarChart
             weeklyData={weeklyActivityData}
             monthlyData={monthlyActivityData}

@@ -57,7 +57,7 @@ const ButtonComponent = ({
   ...props
 }: ButtonProps) => {
   const buttonStyles: StyleProp<ViewStyle> = [
-    tw`flex-row items-center justify-center py-1 px-3 rounded-xl bg-${color}-500 w-auto self-start`,
+    tw`flex-row items-center justify-center py-1 px-3 rounded-xl bg-${color}-500 `, //w-auto self-start
     type === "outlined" && tw`bg-transparent border border-${color}-500`,
     type === "text" && tw`bg-transparent`,
     size === "large" && tw`py-2 px-4`,

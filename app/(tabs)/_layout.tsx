@@ -36,20 +36,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="Add"
+        options={{
+          title: "Нэмэх",
+          tabBarIcon: ({ color }: { color: string }) => (
+            <IconSymbol size={28} name="add_circle" color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="Library"
         options={{
           title: "Сан",
           tabBarIcon: ({ color }: { color: string }) => (
             <IconSymbol size={28} name="folder" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Dashboard"
-        options={{
-          title: "Dashboard",
-          tabBarIcon: ({ color }: { color: string }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
           ),
         }}
       />

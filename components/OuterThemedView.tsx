@@ -19,7 +19,7 @@ export const OuterThemedView: React.FC<OuterViewProps> = ({
     <ThemedView
       lightColor={lightColor}
       darkColor={darkColor}
-      className={`${className} flex w-full p-4 rounded-xl`}
+      className={`flex w-full p-4 rounded-xl shadow-md ${className}`}
     >
       {children}
     </ThemedView>

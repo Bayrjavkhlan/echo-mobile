@@ -105,35 +105,12 @@ export default function LibraryScreen() {
     },
   ]);
 
-  const labels: {
-    text: string;
-    color: string;
-    icon?: keyof typeof MaterialIcons.glyphMap;
-  }[] = [
-    { text: "Нэмэх", color: "slate", icon: "add" },
-    { text: "Нэр үг", color: "red" },
-    { text: "Үйл үг", color: "orange" },
-    { text: "Тоо", color: "amber" },
-    { text: "Label 4", color: "yellow" },
-    { text: "Label 5", color: "lime" },
-    { text: "Label 6", color: "green" },
-    { text: "Label 7", color: "emerald" },
-    { text: "Label 8", color: "teal" },
-    { text: "Label 9", color: "cyan" },
-    { text: "Label 10", color: "sky" },
-    { text: "Label 11", color: "blue" },
-    { text: "Label 12", color: "indigo" },
-    { text: "Label 13", color: "violet" },
-    { text: "Label 14", color: "purple" },
-    { text: "Label 15", color: "rose" },
-  ];
-
   const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView className="">
       <ThemedView className="p-4 pb-0">
-        <HorizontalLabelScroll labels={labels} />
+        <HorizontalLabelScroll />
       </ThemedView>
       <ThemedView>
         <FlatList

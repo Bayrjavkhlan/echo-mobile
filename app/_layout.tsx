@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import "@/utils/global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import Toast from "react-native-toast-message";
+import CustomToast from "@/components/ui/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,6 +63,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
+      <Toast />
     </ThemeProvider>
   );
 }
