@@ -1,5 +1,3 @@
-import { colors, sizes } from "@/constants/Themes";
-import { useThemeColor } from "@/hooks/useThemeColor";
 import React, { ReactNode, memo } from "react";
 import {
   TouchableOpacity,

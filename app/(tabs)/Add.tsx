@@ -4,32 +4,31 @@ import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { OuterThemedView } from "@/components/OuterThemedView";
 import { ThemedView } from "@/components/ThemedView";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useColor } from "@/hooks/useThemeColor";
 import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
 import FlashcardAdd from "@/components/FlashcardAdd";
 import { Button } from "@/components/ui/Button";
 import Toast from "react-native-toast-message";
 
 export default function AddScreen() {
-  const backgroundColor = useThemeColor({}, "background");
+  const backgroundColor = useColor("background");
 
-  const [flashcards, setFlashcards] = useState<number[]>([Date.now()]); // list of flashcard ids
+  const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState(false);
 
-  // add a new flashcard
+  const [flashcards, setFlashcards] = useState<
+    { id: number; question: string; answer: string; error: boolean }[]
+  >([{ id: Date.now(), question: "", answer: "", error: false }]);
+
   const handleAddFlashcard = () => {
-    setFlashcards((prev) => [...prev, Date.now()]);
+    setFlashcards((prev) => [
+      ...prev,
+      { id: Date.now(), question: "", answer: "", error: false },
+    ]);
   };
 
-  // delete a flashcard
   const handleDeleteFlashcard = (id: number) => {
     if (flashcards.length === 1) {
-      // Cannot delete the last one
-      // Alert.alert(
-      //   "Анхааруулга",
-      //   "Флашкарт багц дор хаяж нэг флашкарттай байх ёстой.",
-      //   [{ text: "Ойлголоо", style: "cancel" }]
-      // );
-
       Toast.show({
         type: "error",
         text1: "Анхаар!",
@@ -39,11 +38,39 @@ export default function AddScreen() {
       });
       return;
     }
-    setFlashcards((prev) => prev.filter((item) => item !== id));
+    setFlashcards((prev) => prev.filter((item) => item.id !== id));
   };
 
   const handleSaveFlashcard = () => {
-    console.log("Save button pressed");
+    let hasError = false;
+
+    if (!title.trim()) {
+      setTitleError(true);
+      hasError = true;
+    } else {
+      setTitleError(false);
+    }
+
+    const newFlashcards = flashcards.map((fc) => {
+      if (!fc.question.trim() || !fc.answer.trim()) {
+        hasError = true;
+        return { ...fc, error: true };
+      }
+      return { ...fc, error: false };
+    });
+
+    setFlashcards(newFlashcards);
+
+    if (hasError) {
+      Toast.show({
+        type: "error",
+        text1: "Алдаа",
+        text2: "Бүх талбарыг бөглөнө үү.",
+      });
+      return;
+    }
+
+    console.log("All fields are filled. Proceed to save...");
   };
 
   return (
@@ -51,15 +78,33 @@ export default function AddScreen() {
       <ScrollView>
         <ThemedView className="p-4">
           <Input
+            // className="mb-2"
             title="Флашкарт багцийн гарчиг"
-            className="mb-2"
+            value={title}
+            onChangeText={setTitle}
             backgroundColor={backgroundColor}
+            hasError={titleError}
           />
         </ThemedView>
 
-        {/* render all flashcards */}
-        {flashcards.map((id) => (
-          <FlashcardAdd key={id} onDelete={() => handleDeleteFlashcard(id)} />
+        {flashcards.map((card, index) => (
+          <FlashcardAdd
+            key={card.id}
+            question={card.question}
+            answer={card.answer}
+            onChangeQuestion={(text) => {
+              const newCards = [...flashcards];
+              newCards[index].question = text;
+              setFlashcards(newCards);
+            }}
+            onChangeAnswer={(text) => {
+              const newCards = [...flashcards];
+              newCards[index].answer = text;
+              setFlashcards(newCards);
+            }}
+            hasError={card.error}
+            onDelete={() => handleDeleteFlashcard(card.id)}
+          />
         ))}
 
         <ThemedView className="p-4 pt-0 flex-1 gap-2">

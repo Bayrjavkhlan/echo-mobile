@@ -9,21 +9,43 @@ import tw from "twrnc";
 
 interface FlashcardAddProps {
   onDelete?: () => void;
+  question: string;
+  answer: string;
+  onChangeQuestion: (text: string) => void;
+  onChangeAnswer: (text: string) => void;
+  hasError?: boolean;
 }
 
-export default function FlashcardAdd({ onDelete }: FlashcardAddProps) {
+export default function FlashcardAdd({
+  onDelete,
+  question,
+  answer,
+  onChangeQuestion,
+  onChangeAnswer,
+  hasError,
+}: FlashcardAddProps) {
   return (
     <ThemedView className="flex-1 p-4">
       <View style={tw`relative`}>
         <OuterThemedView className="p-6">
-          <Input title="Асуулт" />
-          <Input title="Хариулт" />
+          <Input
+            title="Асуулт"
+            value={question}
+            onChangeText={onChangeQuestion}
+            hasError={hasError}
+          />
+          <Input
+            title="Хариулт"
+            value={answer}
+            onChangeText={onChangeAnswer}
+            hasError={hasError}
+          />
           <HorizontalLabelScroll className="py-0" />
         </OuterThemedView>
 
         {onDelete && (
           <TouchableOpacity
-            style={tw`absolute top-0 right-[-1]  rounded-full px-2 py-1`}
+            style={tw`absolute top-0 right-[-1] rounded-full px-2 py-1`}
             onPress={onDelete}
           >
             <ThemedIcon

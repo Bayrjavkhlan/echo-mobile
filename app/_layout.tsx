@@ -13,7 +13,8 @@ import "@/utils/global.css";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 import CustomToast from "@/components/ui/Toast";
-
+import * as SQLite from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -24,6 +25,10 @@ export default function RootLayout() {
   });
 
   const navigation = useNavigation();
+
+  const expo = SQLite.openDatabaseSync("db.db");
+
+  const db = drizzle(expo);
 
   useEffect(() => {
     if (loaded) {
@@ -57,6 +62,14 @@ export default function RootLayout() {
             title: "Group Details",
             headerShown: true,
             presentation: "card",
+          }}
+        />
+        <Stack.Screen
+          name="labelModal"
+          options={{
+            title: "Шошго нэмэх",
+            headerShown: true,
+            presentation: "modal",
           }}
         />
         <Stack.Screen name="screens/login.page" />

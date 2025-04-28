@@ -5,6 +5,7 @@ import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import LabelAdd from "./LabelAdd";
+import { useRouter } from "expo-router";
 
 interface HorizontalLabelScrollProps {
   // labels?: {
@@ -41,6 +42,7 @@ const labels: {
 export default function HorizontalLabelScroll({
   className,
 }: HorizontalLabelScrollProps) {
+  const router = useRouter();
   return (
     <ThemedView>
       {/* <ThemedText className="text-2xl">Шошго</ThemedText> */}
@@ -54,7 +56,7 @@ export default function HorizontalLabelScroll({
             data={{ text: "Шошго", color: "slate", icon: "add" }}
             selectable={false}
             className="mr-2"
-            onPress={() => console.log("show the label add modal")}
+            onPress={() => router.push("/labelModal")}
           />
           {labels.map((label, index) => (
             <Label

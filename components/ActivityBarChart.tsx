@@ -4,7 +4,7 @@ import { BarChart } from "react-native-chart-kit";
 import { ThemedText } from "./ThemedText";
 import { Button } from "./ui/Button";
 import { Colors } from "@/constants/Colors";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useColor } from "@/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -76,20 +76,8 @@ export default function ActivityBarChart({
 
   const currentData = getCurrentData();
 
-  const backgroundColor = useThemeColor(
-    {
-      light: Colors.light.contentBackground,
-      dark: Colors.dark.contentBackground,
-    },
-    "background"
-  );
-  const textColor = useThemeColor(
-    {
-      light: Colors.light.text,
-      dark: Colors.dark.text,
-    },
-    "text"
-  );
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
 
   return (
     <View className="py-6">

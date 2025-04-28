@@ -15,6 +15,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Progress } from "@/components/ui/Progress";
 import ActivityBarChart from "@/components/ActivityBarChart";
 import { MemorizinStreak } from "@/components/MemorizingStreak";
+import { TestData } from "@/components/TestData";
+import { createTestRecord, getTestTableData } from "../db/crud/testCrud";
 // const labels = [
 //   { id: 1, name: "Home", icon: "home" },
 //   { id: 2, name: "Profile", icon: "user" },
@@ -160,6 +162,22 @@ export default function HomeScreen() {
           <LabelAdd />
           <Progress percentage={12} /> */
 
+  type TestRecord = {
+    id: number;
+    testNumber: number;
+    testText: string;
+  };
+
+  const [testData, setTestData] = useState<TestRecord[] | undefined>(undefined);
+  const testDataInsert = async () => {
+    console.log("test");
+    await createTestRecord(1, "Test data2");
+    await getTestTableData().then((data) => {
+      console.log("Data retrieved:", data);
+      setTestData(data);
+    });
+  };
+
   return (
     <SafeAreaView className="">
       <ScrollView className="">
@@ -173,6 +191,17 @@ export default function HomeScreen() {
             initialActiveDataset="weekly"
           />
           <MemorizinStreak streak={5} />
+          <ThemedView className=" p-4">
+            <Button onPress={testDataInsert} title="Дата нэмэх" />
+            <ThemedView>
+              {testData?.map((item) => (
+                <ThemedView key={item.id} className="p-4">
+                  <ThemedText>{item.testNumber}</ThemedText>
+                  <ThemedText>{item.testText}</ThemedText>
+                </ThemedView>
+              ))}
+            </ThemedView>
+          </ThemedView>
         </ThemedView>
       </ScrollView>
 

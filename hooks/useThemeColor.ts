@@ -19,3 +19,9 @@ export function useThemeColor(
     return Colors[theme][colorName];
   }
 }
+
+export function useColor(
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+) {
+  return useThemeColor({}, colorName);
+}
