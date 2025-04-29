@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/expo-sqlite";
 import * as schema from "@/app/db/schema";
 
 const useDatabase = () => {
-  const expo = SQLite.openDatabaseSync("db.db");
+  const expo = SQLite.openDatabaseSync("echo.db");
 
   const db = drizzle(expo, { schema });
 

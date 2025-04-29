@@ -23,6 +23,7 @@ export const Colors = {
     chartColor: "#0A7EA4",
     chartColor2: "#F1EFEC",
     title: "#3b82f6",
+    modalBackground: "#fff",
   },
   dark: {
     text: "#ECEDEE",
@@ -37,5 +38,6 @@ export const Colors = {
     chartColor: "#0A7EA4",
     chartColor2: "#F1EFEC",
     title: "#B8D4E3",
+    modalBackground: "#151718",
   },
 };

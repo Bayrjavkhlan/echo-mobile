@@ -7,6 +7,7 @@ const db = useDatabase();
 export const getAllGroupTableData = async () => {
   try {
     const result = await db.query.groupsTable.findMany();
+    console.log("getAllGroupTableData:", result);
     return result;
   } catch (error) {
     console.error("Error retrieving data:", error);
@@ -72,5 +73,29 @@ export const deleteAllGroupRecords = async () => {
     return result;
   } catch (error) {
     console.error("Error deleting all records:", error);
+  }
+};
+// use this to get the all of needed data jawhaa
+export const getGroupWithFlashcardsAndLabels = async (groupId: number) => {
+  try {
+    const group = await db.query.groupsTable.findFirst({
+      where: eq(groupsTable.id, groupId),
+      with: {
+        flashcards: {
+          with: {
+            labels: {
+              columns: {},
+              with: {
+                label: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return group;
+  } catch (error) {
+    console.error("Error retrieving group with flashcards:", error);
   }
 };

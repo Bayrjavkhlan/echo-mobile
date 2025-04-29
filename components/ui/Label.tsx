@@ -6,6 +6,7 @@ import tw from "twrnc";
 import ThemedIcon from "../ThemedIcon";
 
 export type LabelType = {
+  id?: number;
   text: string;
   color: string;
   icon?: keyof typeof MaterialIcons.glyphMap;

@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint",
-    "generate": "drizzle-kit generate"
+    "generate": "drizzle-kit generate",
+    "clear": "sudo npx tsx scripts/clear-db.mts"
   },
   "jest": {
     "preset": "jest-expo"
@@ -52,7 +53,8 @@
     "react-native-webview": "13.12.5",
     "tailwindcss": "^3.4.17",
     "twrnc": "^4.6.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1745850461766,
-      "tag": "0000_naive_hex",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1745866207025,
-      "tag": "0001_organic_dragon_lord",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1745867527639,
-      "tag": "0002_tiny_scalphunter",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1745867607626,
-      "tag": "0003_last_loa",
+      "when": 1745930468367,
+      "tag": "0000_noisy_lila_cheney",
       "breakpoints": true
     }
   ]

@@ -7,6 +7,7 @@ const db = useDatabase();
 export const getAllFlashcardTableData = async () => {
   try {
     const result = await db.query.flashcardsTable.findMany();
+    console.log("getAllFlashcardTableData:\t", result);
     return result;
   } catch (error) {
     console.error("Error retrieving data:", error);
@@ -24,6 +25,18 @@ export const getFlashcardTableData = async (flashcardId: number) => {
     console.error("Error retrieving data:", error);
   }
 };
+
+export const getFlashcardsByGroupId = async (groupId: number) => {
+  try {
+    const result = await db.query.flashcardsTable.findMany({
+      where: eq(flashcardsTable.groupId, groupId),
+    });
+    return result;
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+  }
+};
+
 export const createFlashcardRecord = async (
   question: string,
   answer: string,

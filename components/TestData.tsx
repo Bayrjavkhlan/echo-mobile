@@ -6,7 +6,7 @@ import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "@/drizzle/migrations";
 
 export const TestData = () => {
-  const expoDb = openDatabaseSync("db.db");
+  const expoDb = openDatabaseSync("echo.db");
 
   const db = drizzle(expoDb);
   const { success, error } = useMigrations(db, migrations);

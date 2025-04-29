@@ -13,6 +13,8 @@ export type ThemedViewProps = ViewProps & {
   textLightColor?: string;
   textDarkColor?: string;
   inheritTheme?: boolean;
+  customBackgroundColor?: string;
+  noBackgroundColor?: boolean;
 };
 // Todo: color combonuud uusged terige ashiglana
 export function ThemedView({
@@ -24,6 +26,8 @@ export function ThemedView({
   className,
   inheritTheme = true,
   children,
+  customBackgroundColor,
+  noBackgroundColor,
   ...otherProps
 }: ThemedViewProps) {
   const inheritedColors = useInheritedTheme();
@@ -63,7 +67,15 @@ export function ThemedView({
 
   return (
     <View
-      style={[tw`${className || ""}`, { backgroundColor }, style]}
+      style={[
+        tw`${className || ""}`,
+        {
+          backgroundColor: noBackgroundColor
+            ? undefined
+            : customBackgroundColor || backgroundColor,
+        },
+        style,
+      ]}
       {...otherProps}
     >
       {wrappedChildren}

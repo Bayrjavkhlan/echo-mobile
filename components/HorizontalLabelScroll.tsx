@@ -6,43 +6,62 @@ import { ThemedText } from "./ThemedText";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import LabelAdd from "./LabelAdd";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import CustomModal from "./ui/Modal";
+import { Input } from "./ui/Input";
+import { useColor } from "@/hooks/useThemeColor";
+import {
+  createLabelTableData,
+  getAllLabelTableData,
+} from "@/app/db/crud/labels";
+import { useLabelStore } from "@/store/labelStore";
 
 interface HorizontalLabelScrollProps {
-  // labels?: {
-  //   text: string;
-  //   color: string;
-  //   icon?: keyof typeof MaterialIcons.glyphMap;
-  // }[];
   className?: string;
 }
 
-const labels: {
-  text: string;
-  color: string;
-  icon?: keyof typeof MaterialIcons.glyphMap;
-}[] = [
-  // { text: "Шошго", color: "slate", icon: "add" },
-  { text: "Нэр үг", color: "red" },
-  { text: "Үйл үг", color: "orange" },
-  { text: "Тоо", color: "amber" },
-  { text: "Label 4", color: "yellow" },
-  { text: "Label 5", color: "lime" },
-  { text: "Label 6", color: "green" },
-  { text: "Label 7", color: "emerald" },
-  { text: "Label 8", color: "teal" },
-  { text: "Label 9", color: "cyan" },
-  { text: "Label 10", color: "sky" },
-  { text: "Label 11", color: "blue" },
-  { text: "Label 12", color: "indigo" },
-  { text: "Label 13", color: "violet" },
-  { text: "Label 14", color: "purple" },
-  { text: "Label 15", color: "rose" },
+const labelColors = [
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "rose",
 ];
 
 export default function HorizontalLabelScroll({
   className,
 }: HorizontalLabelScrollProps) {
-  const router = useRouter();
+  // const [labels, setLabels] = useState<LabelType[]>([]);
+
+  const labels = useLabelStore((state) => state.labels);
+  const fetchLabels = useLabelStore((state) => state.fetchLabels);
+  const addLabel = useLabelStore((state) => state.addLabel);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleOpenModal = () => setModalVisible(true);
+  const handleCloseModal = () => setModalVisible(false);
+  const backgroundColor = useColor("modalBackground");
+  const [labelInput, setLabelInput] = useState("");
+
+  useEffect(() => {
+    fetchLabels();
+  }, []);
+
+  const handleSaveLabel = async () => {
+    await addLabel(labelInput);
+    setLabelInput("");
+    handleCloseModal();
+  };
   return (
     <ThemedView>
       {/* <ThemedText className="text-2xl">Шошго</ThemedText> */}
@@ -56,7 +75,7 @@ export default function HorizontalLabelScroll({
             data={{ text: "Шошго", color: "slate", icon: "add" }}
             selectable={false}
             className="mr-2"
-            onPress={() => router.push("/labelModal")}
+            onPress={handleOpenModal}
           />
           {labels.map((label, index) => (
             <Label
@@ -68,6 +87,22 @@ export default function HorizontalLabelScroll({
           ))}
         </View>
       </ScrollView>
+      <CustomModal
+        title="Шошго нэмэх"
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        okeyButtonText="Хадгалах"
+        onOk={handleSaveLabel}
+        cancelButtonText="Цуцлах"
+      >
+        <Input
+          title="Шошго нэмэх"
+          value={labelInput}
+          onChangeText={setLabelInput}
+          className={`bg-[${backgroundColor}]`}
+          backgroundColor={backgroundColor}
+        />
+      </CustomModal>
     </ThemedView>
   );
 }

@@ -10,19 +10,30 @@ CREATE TABLE `flashcards` (
 	`group_id` integer NOT NULL,
 	`question` text NOT NULL,
 	`answer` text NOT NULL,
+	`created_at` integer NOT NULL,
+	`updated_by` text NOT NULL,
 	FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `groups` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`name` text NOT NULL,
+	`description` text,
 	`created_at` integer NOT NULL,
 	`updated_by` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `labels` (
+CREATE TABLE `test_table` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text NOT NULL
+	`test_number` integer NOT NULL,
+	`test_text` text NOT NULL
 );
 --> statement-breakpoint
-DROP INDEX `test_table_test_text_unique`;
+CREATE TABLE `labels` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`count` integer NOT NULL,
+	`color` text NOT NULL,
+	`created_at` integer DEFAULT 1 NOT NULL,
+	`updated_by` text NOT NULL
+);

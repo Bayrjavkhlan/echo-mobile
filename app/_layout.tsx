@@ -15,6 +15,9 @@ import Toast from "react-native-toast-message";
 import CustomToast from "@/components/ui/Toast";
 import * as SQLite from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "@/drizzle/migrations";
+import { View, Text } from "react-native";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -26,9 +29,11 @@ export default function RootLayout() {
 
   const navigation = useNavigation();
 
-  const expo = SQLite.openDatabaseSync("db.db");
+  const expo = SQLite.openDatabaseSync("echo.db");
 
   const db = drizzle(expo);
+
+  const { success, error } = useMigrations(db, migrations);
 
   useEffect(() => {
     if (loaded) {
@@ -50,6 +55,23 @@ export default function RootLayout() {
 
   if (!loaded) {
     return null;
+  }
+
+  if (error) {
+    console.log("Migration error:", error);
+    return (
+      <View>
+        <Text>Migration error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!success) {
+    return (
+      <View>
+        <Text>Migration is in progress...</Text>
+      </View>
+    );
   }
 
   return (

@@ -10,7 +10,6 @@ interface GroupFlashcardProps {
   groupFlashcard: {
     id: string;
     title: string;
-    count: number;
     labels: {
       text: string;
       color: string;
@@ -18,10 +17,15 @@ interface GroupFlashcardProps {
     }[];
     description: string;
   };
+  count: number;
 }
 
-const GroupFlashcard = ({ groupFlashcard }: GroupFlashcardProps) => {
+const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
   const router = useRouter();
+  console.log("GroupFlashcard", groupFlashcard);
+  console.log("GroupFlashcard count", count);
+  console.log("GroupFlashcard labels", groupFlashcard.labels);
+  console.log("GroupFlashcard labels", groupFlashcard.labels[0]?.text);
 
   const handlePress = () => {
     console.log("Navigating to group ID:", groupFlashcard.id);
@@ -43,9 +47,7 @@ const GroupFlashcard = ({ groupFlashcard }: GroupFlashcardProps) => {
           <ThemedText className="text-lg font-bold">
             {groupFlashcard.title}
           </ThemedText>
-          <ThemedText className="text-base text-gray-500">
-            {groupFlashcard.count}
-          </ThemedText>
+          <ThemedText className="text-base text-gray-500">{count}</ThemedText>
         </ThemedView>
 
         <ThemedView className="flex flex-row items-center gap-2 flex-wrap">

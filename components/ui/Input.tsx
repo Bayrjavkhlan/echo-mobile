@@ -9,9 +9,10 @@ interface InputProps {
   title: string;
   backgroundColor?: string;
   className?: string;
-  value: string;
-  onChangeText: (text: string) => void;
+  value?: string;
+  onChangeText?: (text: string) => void;
   hasError?: boolean;
+  noBackgroundColor?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -21,35 +22,14 @@ export const Input: React.FC<InputProps> = ({
   value,
   onChangeText,
   hasError,
+  noBackgroundColor,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const labelAnim = useState(new Animated.Value(value ? 1 : 0))[0];
-  // const contentBackground = useThemeColor(
-  //   {
-  //     light: Colors.light.contentBackground,
-  //     dark: Colors.dark.contentBackground,
-  //   },
-  //   "background"
-  // );
-  // const textColor = useThemeColor(
-  //   {
-  //     light: Colors.light.text,
-  //     dark: Colors.dark.text,
-  //   },
-  //   "text"
-  // );
-  // const titleColor = useThemeColor(
-  //   {
-  //     light: Colors.light.title,
-  //     dark: Colors.dark.title,
-  //   },
-  //   "title"
-  // );
-
   const contentBackground = useColor("contentBackground");
   const textColor = useColor("text");
   const titleColor = useColor("title");
-
+  const redColor = useColor("red");
   const handleFocus = () => {
     setIsFocused(true);
     Animated.timing(labelAnim, {
@@ -85,14 +65,19 @@ export const Input: React.FC<InputProps> = ({
     }),
     color: isFocused ? titleColor : "#aaa",
     paddingHorizontal: 4,
-    backgroundColor: backgroundColor || contentBackground,
+    backgroundColor: noBackgroundColor
+      ? "undefined"
+      : backgroundColor || contentBackground,
     textColor: "#fff",
     zIndex: 2,
   };
 
   return (
-    <ThemedView className="flex-1">
-      <ThemedView className="relative">
+    <ThemedView
+      className="flex-1 justify-center"
+      customBackgroundColor={backgroundColor}
+    >
+      <ThemedView className="relative" customBackgroundColor={backgroundColor}>
         <Animated.Text style={labelStyle}>{title}</Animated.Text>
         <TextInput
           value={value}
@@ -101,7 +86,9 @@ export const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           style={tw.style(
             `w-full pt-5 pb-2 px-2 rounded-lg border text-[${textColor}]  ${
-              hasError ? "border-red-500" : "border-black dark:border-gray-600"
+              hasError
+                ? `border-[${redColor}]`
+                : "border-black dark:border-gray-600"
             } text-base mb-4`,
             className
           )}

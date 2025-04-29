@@ -60,7 +60,7 @@ const ButtonComponent = ({
     type === "text" && tw`bg-transparent`,
     size === "large" && tw`py-2 px-4`,
     size === "middle" && tw`py-2 px-3`,
-    size === "small" && tw`py-1 px-2`,
+    size === "small" && tw`py-1 px-2 rounded-lg`,
     shape === "round" && tw`rounded-lg`,
     shape === "circle" && tw`rounded-full`,
     disabled && type !== "text" && tw`bg-gray-200`,

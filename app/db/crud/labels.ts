@@ -1,6 +1,6 @@
 import useDatabase from "@/hooks/useDatabase";
 import { labelsTable } from "@/app/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 const db = useDatabase();
 
@@ -22,21 +22,47 @@ export const getLabelTableData = async (labelId: number) => {
     console.error("Error retrieving data:", error);
   }
 };
-export const createLabelRecord = async (name: string, color: string) => {
+export const createLabelTableData = async (name: string) => {
+  const labelColors = [
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "rose",
+  ];
   try {
+    const countResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(labelsTable);
+
+    const totalCount = countResult[0]?.count ?? 0;
+    const colorIndex = totalCount % labelColors.length;
+    const color = labelColors[colorIndex];
+
     const result = await db.insert(labelsTable).values({
       name,
       color,
       count: 1,
       createdAt: Date.now(),
-      updatedBy: "user", // todo get the user name or id
+      updatedBy: "user", // todo: replace with real user id or name
     });
+
     return result;
   } catch (error) {
     console.error("Error creating record:", error);
   }
 };
-export const updateLabelRecord = async (
+export const updateLabelTableData = async (
   id: number,
   name: string,
   color: string
@@ -55,9 +81,18 @@ export const updateLabelRecord = async (
     console.error("Error updating record:", error);
   }
 };
-export const deleteLabelRecord = async (id: number) => {
+export const deleteLabelTableData = async (id: number) => {
   try {
     const result = await db.delete(labelsTable).where(eq(labelsTable.id, id));
+    return result;
+  } catch (error) {
+    console.error("Error deleting record:", error);
+  }
+};
+
+export const deleteAllLabelTableData = async () => {
+  try {
+    const result = await db.delete(labelsTable);
     return result;
   } catch (error) {
     console.error("Error deleting record:", error);
