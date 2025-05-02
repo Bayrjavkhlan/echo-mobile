@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
-import { getLabelsForFlashcard } from "@/app/db/crud/flashcardLabels";
+import { getLabelsForFlashcard } from "@/db/crud/flashcardLabels";
 import {
   getAllFlashcardTableData,
   getFlashcardTableData,
-} from "@/app/db/crud/flashcards";
+} from "@/db/crud/flashcards";
 
 export type Flashcard = {
   id: string;

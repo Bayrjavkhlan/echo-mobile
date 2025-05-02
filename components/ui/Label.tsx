@@ -8,7 +8,6 @@ import ThemedIcon from "../ThemedIcon";
 export type LabelType = {
   id?: number;
   text: string;
-  color: string;
   icon?: keyof typeof MaterialIcons.glyphMap;
 };
 
@@ -23,7 +22,7 @@ export default function Label({
   onPress?: () => void;
   selectable?: boolean;
 }) {
-  const { text, color, icon } = data;
+  const { text, icon } = data;
   const [selected, setSelected] = useState(false);
 
   const toggleSelected = () => {
@@ -36,9 +35,11 @@ export default function Label({
   const LabelContent = (
     <View
       style={[
-        tw`bg-${color}-400 border border-${color}-700 py-1 px-3 rounded-xl w-auto self-start flex flex-row items-center gap-1 justify-center`,
+        // tw`bg-${color}-400 border border-${color}-700 py-1 px-3 rounded-xl w-auto self-start flex flex-row items-center gap-1 justify-center`,
+        tw`border py-1 px-3 rounded-lg w-auto self-start flex flex-row items-center gap-1 justify-center border border-black`,
+
         selected ? tw`border-2 border-dashed my-0` : tw`my-[2px]`,
-        className ? tw.style(className) : null,
+        className ? tw`${className}` : null,
       ]}
     >
       <ThemedText type="defaultSemiBold" className="text-sm py-[2px] ">

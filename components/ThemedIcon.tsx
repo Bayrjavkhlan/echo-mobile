@@ -39,10 +39,13 @@ export default function ThemedIcon({
   return (
     <MaterialIcons
       name={name}
-      color={iconColor}
+      color={color || iconColor}
       size={size}
       className={className}
-      style={[style, { color: iconColor }]}
+      style={[
+        style,
+        { color: color || iconColor, backgroundColor: "transparent" },
+      ]}
       {...rest}
     />
   );

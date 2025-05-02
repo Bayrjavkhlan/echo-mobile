@@ -10,39 +10,22 @@ import { useEffect, useState } from "react";
 import CustomModal from "./ui/Modal";
 import { Input } from "./ui/Input";
 import { useColor } from "@/hooks/useThemeColor";
-import {
-  createLabelTableData,
-  getAllLabelTableData,
-} from "@/app/db/crud/labels";
+import { createLabelTableData, getAllLabelTableData } from "@/db/crud/labels";
 import { useLabelStore } from "@/store/labelStore";
+import { OuterThemedView } from "./OuterThemedView";
 
 interface HorizontalLabelScrollProps {
   className?: string;
+  selectedLabels: LabelType[];
+  onChangeSelectedLabels: (labels: LabelType[]) => void;
 }
-
-const labelColors = [
-  "red",
-  "orange",
-  "amber",
-  "yellow",
-  "lime",
-  "green",
-  "emerald",
-  "teal",
-  "cyan",
-  "sky",
-  "blue",
-  "indigo",
-  "violet",
-  "purple",
-  "rose",
-];
 
 export default function HorizontalLabelScroll({
   className,
+  selectedLabels,
+  onChangeSelectedLabels,
 }: HorizontalLabelScrollProps) {
   // const [labels, setLabels] = useState<LabelType[]>([]);
-
   const labels = useLabelStore((state) => state.labels);
   const fetchLabels = useLabelStore((state) => state.fetchLabels);
   const addLabel = useLabelStore((state) => state.addLabel);
@@ -52,7 +35,7 @@ export default function HorizontalLabelScroll({
   const handleCloseModal = () => setModalVisible(false);
   const backgroundColor = useColor("modalBackground");
   const [labelInput, setLabelInput] = useState("");
-
+  console.log("selectedLabels", selectedLabels);
   useEffect(() => {
     fetchLabels();
   }, []);
@@ -62,6 +45,7 @@ export default function HorizontalLabelScroll({
     setLabelInput("");
     handleCloseModal();
   };
+  const contentBackground = useColor("contentBackground");
   return (
     <ThemedView>
       {/* <ThemedText className="text-2xl">Шошго</ThemedText> */}
@@ -72,17 +56,28 @@ export default function HorizontalLabelScroll({
       >
         <View style={tw`flex-row my-1`}>
           <Label
-            data={{ text: "Шошго", color: "slate", icon: "add" }}
+            data={{ text: "Шошго", icon: "add" }}
             selectable={false}
-            className="mr-2"
+            className={`mr-2 bg-[${contentBackground}]`}
             onPress={handleOpenModal}
           />
           {labels.map((label, index) => (
             <Label
               key={index}
               data={label as LabelType}
-              className="mr-2"
-              onPress={() => console.log("Label:", label)}
+              className={`mr-2 bg-[${contentBackground}]`}
+              onPress={() => {
+                const alreadySelected = selectedLabels.some(
+                  (l) => l.id === label.id
+                );
+                if (alreadySelected) {
+                  onChangeSelectedLabels(
+                    selectedLabels.filter((l) => l.id !== label.id)
+                  );
+                } else {
+                  onChangeSelectedLabels([...selectedLabels, label]);
+                }
+              }}
             />
           ))}
         </View>

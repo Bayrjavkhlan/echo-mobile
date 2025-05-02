@@ -4,7 +4,6 @@ export const labelsTable = sqliteTable("labels", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   count: integer("count").notNull(),
-  color: text("color").notNull(),
   createdAt: integer("created_at").notNull().default(1),
   updatedBy: text("updated_by").notNull(),
 });

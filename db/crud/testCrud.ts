@@ -1,7 +1,7 @@
 // app/db/crud/testCrud.ts
 
 import useDatabase from "@/hooks/useDatabase";
-import { testTable } from "@/app/db/schema"; // Import testTable explicitly from schema
+import { testTable } from "@/db/schema"; // Import testTable explicitly from schema
 
 export const getTestTableData = async () => {
   const db = useDatabase(); // Get access to the db instance

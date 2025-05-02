@@ -12,7 +12,6 @@ interface GroupFlashcardProps {
     title: string;
     labels: {
       text: string;
-      color: string;
       icon?: keyof typeof MaterialIcons.glyphMap;
     }[];
     description: string;
@@ -25,7 +24,6 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
   console.log("GroupFlashcard", groupFlashcard);
   console.log("GroupFlashcard count", count);
   console.log("GroupFlashcard labels", groupFlashcard.labels);
-  console.log("GroupFlashcard labels", groupFlashcard.labels[0]?.text);
 
   const handlePress = () => {
     console.log("Navigating to group ID:", groupFlashcard.id);
@@ -44,9 +42,14 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
         darkColor={Colors.dark.contentBackground}
       >
         <ThemedView className="flex flex-row items-center justify-between">
-          <ThemedText className="text-lg font-bold">
-            {groupFlashcard.title}
-          </ThemedText>
+          <ThemedView className="flex-row">
+            <ThemedText className="text-lg font-bold pr-1">
+              {groupFlashcard.id}:
+            </ThemedText>
+            <ThemedText className="text-lg font-bold">
+              {groupFlashcard.title}
+            </ThemedText>
+          </ThemedView>
           <ThemedText className="text-base text-gray-500">{count}</ThemedText>
         </ThemedView>
 

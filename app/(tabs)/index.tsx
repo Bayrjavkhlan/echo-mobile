@@ -16,7 +16,7 @@ import { Progress } from "@/components/ui/Progress";
 import ActivityBarChart from "@/components/ActivityBarChart";
 import { MemorizinStreak } from "@/components/MemorizingStreak";
 import { TestData } from "@/components/TestData";
-import { createTestRecord, getTestTableData } from "../db/crud/testCrud";
+import { createTestRecord, getTestTableData } from "../../db/crud/testCrud";
 // const labels = [
 //   { id: 1, name: "Home", icon: "home" },
 //   { id: 2, name: "Profile", icon: "user" },

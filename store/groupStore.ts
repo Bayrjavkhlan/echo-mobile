@@ -1,18 +1,17 @@
 import { create } from "zustand";
-import { getAllGroupTableData } from "@/app/db/crud/group";
+import { getAllGroupTableData } from "@/db/crud/group";
 import {
   getAllFlashcardLabelsTableData,
   getLabelsForFlashcard,
-} from "@/app/db/crud/flashcardLabels";
+} from "@/db/crud/flashcardLabels";
 import { Flashcard } from "./flashcardStore";
-import { getAllFlashcardTableData } from "@/app/db/crud/flashcards";
-import { groupsTable } from "@/app/db/schema";
-import { getAllLabelTableData } from "@/app/db/crud/labels";
+import { getAllFlashcardTableData } from "@/db/crud/flashcards";
+import { groupsTable } from "@/db/schema";
+import { getAllLabelTableData } from "@/db/crud/labels";
 
 export type LabelType = {
   id: string;
   text: string;
-  color: string;
 };
 
 export type FlashcardGroup = {
@@ -98,7 +97,6 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
               labelsResult?.map((item: any) => ({
                 id: String(item.labels.id),
                 name: item.labels.name,
-                color: item.labels.color,
               })) || [];
             console.log("store labels:", labels);
 
@@ -126,7 +124,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
 
           const labelFrequencyMap = new Map<
             string,
-            { id: string; text: string; color: string; count: number }
+            { id: string; text: string; count: number }
           >();
 
           groupFlashcards.forEach((flashcard: Flashcard) => {
@@ -138,7 +136,6 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
                 labelFrequencyMap.set(label.id, {
                   id: label.id,
                   text: label.name,
-                  color: label.color,
                   count: 1,
                 });
               }

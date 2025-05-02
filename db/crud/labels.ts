@@ -1,5 +1,5 @@
 import useDatabase from "@/hooks/useDatabase";
-import { labelsTable } from "@/app/db/schema";
+import { labelsTable } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 const db = useDatabase();
@@ -23,35 +23,13 @@ export const getLabelTableData = async (labelId: number) => {
   }
 };
 export const createLabelTableData = async (name: string) => {
-  const labelColors = [
-    "red",
-    "orange",
-    "amber",
-    "yellow",
-    "lime",
-    "green",
-    "emerald",
-    "teal",
-    "cyan",
-    "sky",
-    "blue",
-    "indigo",
-    "violet",
-    "purple",
-    "rose",
-  ];
   try {
     const countResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(labelsTable);
 
-    const totalCount = countResult[0]?.count ?? 0;
-    const colorIndex = totalCount % labelColors.length;
-    const color = labelColors[colorIndex];
-
     const result = await db.insert(labelsTable).values({
       name,
-      color,
       count: 1,
       createdAt: Date.now(),
       updatedBy: "user", // todo: replace with real user id or name
@@ -72,7 +50,6 @@ export const updateLabelTableData = async (
       .update(labelsTable)
       .set({
         name,
-        color,
         updatedBy: "user", // TODO: Replace with actual user info later
       })
       .where(eq(labelsTable.id, id));

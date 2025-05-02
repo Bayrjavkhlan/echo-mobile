@@ -1,11 +1,20 @@
 import React, { useRef } from "react";
-import { Modal, View, StyleSheet, ModalProps } from "react-native";
+import {
+  Modal,
+  View,
+  StyleSheet,
+  ModalProps,
+  TouchableOpacity,
+} from "react-native";
 import { ThemedView } from "../ThemedView";
 import { useColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "../ThemedText";
 import { Input } from "./Input";
 import { Button } from "./Button";
 import { OuterThemedView } from "../OuterThemedView";
+import ThemedIcon from "../ThemedIcon";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import tw from "twrnc";
 
 interface CustomModalProps extends ModalProps {
   title: string;
@@ -68,6 +77,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
           customBackgroundColor={backgroundColor}
           inheritTheme={false}
         >
+          <TouchableOpacity
+            style={tw`absolute top-0 right-[-1] rounded-full px-2 py-1`}
+            onPress={handleClose}
+          >
+            <ThemedIcon name="close" size={24} color={colorRed} />
+          </TouchableOpacity>
           <ThemedText className="text-center text-2xl mb-2">{title}</ThemedText>
           <ThemedView className="flex-1 flex w-full rounded-xl justify-center">
             {children}
@@ -76,7 +91,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
             className="flex flex-row justify-between items-center"
             customBackgroundColor={backgroundColor}
           >
-            <View className="flex-1">
+            <ThemedView
+              className="flex flex-row gap-2"
+              customBackgroundColor={backgroundColor}
+            >
               {deleteButtonText && (
                 <Button
                   title={deleteButtonText}
@@ -85,23 +103,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
                   size="small"
                 />
               )}
-            </View>
-
-            <ThemedView
-              className="flex flex-row gap-2"
-              customBackgroundColor={backgroundColor}
-            >
               <Button
-                title="Буцах"
-                onPress={handleClose}
-                type="outlined"
-                size="small"
-              />
-
-              <Button
-                title="Хадгалах"
+                title={okeyButtonText}
                 onPress={handleOk}
-                buttonClass={`bg-[${titleColor}]`}
+                buttonClass={`bg-[${titleColor}] flex-1`}
                 size="small"
               />
             </ThemedView>

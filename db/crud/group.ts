@@ -1,5 +1,5 @@
 import useDatabase from "@/hooks/useDatabase";
-import { groupsTable } from "@/app/db/schema";
+import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 const db = useDatabase();

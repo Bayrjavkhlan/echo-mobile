@@ -6,7 +6,6 @@ import ThemedIcon from "./ThemedIcon";
 
 export type LabelType = {
   text: string;
-  color: string;
   icon?: keyof typeof MaterialIcons.glyphMap;
 };
 
@@ -19,14 +18,13 @@ export default function LabelAdd({
   className?: string;
   onPress?: () => void;
 }) {
-  const { text = "нэмэх", color = "slate", icon = "add" } = data || {};
+  const { text = "нэмэх", icon = "add" } = data || {};
 
   return (
     <TouchableOpacity onPress={onPress}>
       <View
         style={[
           tw`py-1 px-3 rounded-xl w-auto self-start flex flex-row items-center justify-center`,
-          tw`bg-${color}-400 border border-${color}-700`,
           className ? tw.style(className) : null,
         ]}
       >

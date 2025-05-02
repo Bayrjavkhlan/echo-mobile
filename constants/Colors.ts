@@ -24,6 +24,8 @@ export const Colors = {
     chartColor2: "#F1EFEC",
     title: "#3b82f6",
     modalBackground: "#fff",
+    borderColor: "#E5ECE9",
+    iconBackgroundColor: "	#dbeafe",
   },
   dark: {
     text: "#ECEDEE",
@@ -39,5 +41,7 @@ export const Colors = {
     chartColor2: "#F1EFEC",
     title: "#B8D4E3",
     modalBackground: "#151718",
+    borderColor: "#2B2C2D",
+    iconBackgroundColor: "#1e3a8a",
   },
 };

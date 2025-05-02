@@ -6,6 +6,7 @@ import { ThemedView } from "./ThemedView";
 import { Input } from "./ui/Input";
 import { View, TouchableOpacity } from "react-native";
 import tw from "twrnc";
+import { LabelType } from "./ui/Label";
 
 interface FlashcardAddProps {
   onDelete?: () => void;
@@ -14,6 +15,8 @@ interface FlashcardAddProps {
   onChangeQuestion: (text: string) => void;
   onChangeAnswer: (text: string) => void;
   hasError?: boolean;
+  labels: LabelType[];
+  onChangeLabels: (labels: LabelType[]) => void;
 }
 
 export default function FlashcardAdd({
@@ -23,7 +26,11 @@ export default function FlashcardAdd({
   onChangeQuestion,
   onChangeAnswer,
   hasError,
+  labels,
+  onChangeLabels,
 }: FlashcardAddProps) {
+  // end selectedLabel ged labeluda hadgalad deeshee shidej bolhin bishu?
+
   return (
     <ThemedView className="flex-1 p-4">
       <View style={tw`relative`}>
@@ -40,7 +47,11 @@ export default function FlashcardAdd({
             onChangeText={onChangeAnswer}
             hasError={hasError}
           />
-          <HorizontalLabelScroll className="py-0" />
+          <HorizontalLabelScroll
+            className="py-0"
+            selectedLabels={labels}
+            onChangeSelectedLabels={onChangeLabels}
+          />
         </OuterThemedView>
 
         {onDelete && (

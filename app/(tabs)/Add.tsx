@@ -7,13 +7,13 @@ import { useColor } from "@/hooks/useThemeColor";
 import FlashcardAdd from "@/components/FlashcardAdd";
 import { Button } from "@/components/ui/Button";
 import Toast from "react-native-toast-message";
-import { createManyFlashcards } from "../db/crud/flashcards";
-import { createGroupRecord } from "../db/crud/group";
+import { createManyFlashcards } from "../../db/crud/flashcards";
+import { createGroupRecord } from "../../db/crud/group";
 import { LabelType, useLabelStore } from "@/store/labelStore";
 import {
   addLabelToFlashcard,
   getAllFlashcardLabelsTableData,
-} from "../db/crud/flashcardLabels";
+} from "../../db/crud/flashcardLabels";
 import { SQLiteRunResult } from "expo-sqlite";
 
 export default function AddScreen() {
@@ -24,22 +24,29 @@ export default function AddScreen() {
   const [titleError, setTitleError] = useState(false);
 
   const [flashcards, setFlashcards] = useState<
-    { id: number; question: string; answer: string; error: boolean }[]
-  >([{ id: Date.now(), question: "", answer: "", error: false }]);
+    {
+      id: number;
+      question: string;
+      answer: string;
+      error: boolean;
+      labels: LabelType[]; // new!
+    }[]
+  >([
+    {
+      id: Date.now(),
+      question: "",
+      answer: "",
+      error: false,
+      labels: [],
+    },
+  ]);
 
   const handleAddFlashcard = () => {
     setFlashcards((prev) => [
       ...prev,
-      { id: Date.now(), question: "", answer: "", error: false },
+      { id: Date.now(), question: "", answer: "", error: false, labels: [] },
     ]);
   };
-  const testResult = getAllFlashcardLabelsTableData();
-  console.log("-------------------------------------------");
-  console.log("ene dda label hadgalku bgan bishu:\t", testResult);
-  console.log("-------------------------------------------");
-  console.log("-------------------------------------------");
-  console.log("-------------------------------------------");
-  console.log("-------------------------------------------");
 
   const handleDeleteFlashcard = (id: number) => {
     if (flashcards.length === 1) {
@@ -86,12 +93,9 @@ export default function AddScreen() {
 
     try {
       // 1. Create group
-      const groupRes: SQLiteRunResult | undefined = await createGroupRecord(
-        title,
-        description
-      );
+      const groupRes = await createGroupRecord(title, description);
       const groupId = groupRes?.lastInsertRowId;
-
+      console.log("groupId:", groupId);
       if (!groupId) throw new Error("Group ID not returned");
 
       // 2. Create flashcards
@@ -100,32 +104,29 @@ export default function AddScreen() {
         answer: fc.answer.trim(),
         groupId,
       }));
+      console.log("flashcardData", flashcardData);
 
       const flashcardRes: SQLiteRunResult | undefined =
         await createManyFlashcards(flashcardData);
-      const baseFlashcardId = flashcardRes?.lastInsertRowId;
+      if (!flashcardRes) {
+        throw new Error("Failed to create flashcards");
+      }
+      const baseFlashcardId = flashcardRes.lastInsertRowId;
 
       // 3. Connect labels to flashcards
-      const labels: LabelType[] = useLabelStore.getState().labels;
-
-      if (labels.length > 0 && baseFlashcardId != null) {
-        for (let i = 0; i < flashcardData.length; i++) {
-          const flashcardId = baseFlashcardId + i;
-          for (const label of labels) {
-            const labelId = (label as any).id;
-            if (labelId) {
-              await addLabelToFlashcard(flashcardId, labelId);
-            }
+      for (let i = 0; i < flashcardData.length; i++) {
+        const flashcardId = baseFlashcardId + i;
+        const cardLabels = flashcards[i].labels; // per flashcard
+        for (const label of cardLabels) {
+          if (label.id) {
+            await addLabelToFlashcard(flashcardId, label.id);
           }
         }
       }
 
-      const testResult = getAllFlashcardLabelsTableData();
+      const testResult = await getAllFlashcardLabelsTableData();
       console.log("-------------------------------------------");
       console.log("ene dda label hadgalku bgan bishu:\t", testResult);
-      console.log("-------------------------------------------");
-      console.log("-------------------------------------------");
-      console.log("-------------------------------------------");
       console.log("-------------------------------------------");
 
       Toast.show({
@@ -138,7 +139,13 @@ export default function AddScreen() {
       setTitle("");
       setDescription("");
       setFlashcards([
-        { id: Date.now(), question: "", answer: "", error: false },
+        {
+          id: Date.now(),
+          question: "",
+          answer: "",
+          error: false,
+          labels: [],
+        },
       ]);
     } catch (error) {
       console.error("Error saving flashcard set:", error);
@@ -186,6 +193,14 @@ export default function AddScreen() {
             }}
             hasError={card.error}
             onDelete={() => handleDeleteFlashcard(card.id)}
+            labels={card.labels}
+            onChangeLabels={(labels) => {
+              const newCards = [...flashcards];
+              newCards[index].labels = labels.filter(
+                (label): label is LabelType => label.id !== undefined
+              );
+              setFlashcards(newCards);
+            }}
           />
         ))}
 

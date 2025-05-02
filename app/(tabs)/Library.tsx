@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, ScrollView, View } from "react-native";
+import { FlatList, Pressable, ScrollView, View } from "react-native";
 import GroupFlashcard from "@/components/ui/GroupFlashcard";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -8,6 +8,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useGroupStore } from "@/store/groupStore";
+import { useRouter } from "expo-router";
+import { useLabelStore } from "@/store/labelStore";
 
 type FlashcardGroup = {
   id: string;
@@ -15,7 +17,6 @@ type FlashcardGroup = {
   count: number;
   labels: {
     text: string;
-    color: string;
   }[];
   description: string;
 };
@@ -111,30 +112,47 @@ export default function LibraryScreen() {
     fetchGroups();
   }, []);
 
+  console.log("LibraryScreen groups", groups);
   const insets = useSafeAreaInsets();
-
+  const router = useRouter();
+  const labels = useLabelStore.getState().labels;
+  console.log("LibraryScreen labels", labels);
+  // console.log("LibraryScreen group ===", groups.length === 0);
   return (
     <SafeAreaView className="">
-      <ThemedView className="p-4 pb-0">
-        <HorizontalLabelScroll />
-      </ThemedView>
+      {labels.length > 0 && (
+        <ThemedView className="p-4 pb-0">
+          <HorizontalLabelScroll />
+        </ThemedView>
+      )}
       <ThemedView>
-        <FlatList
-          data={groups}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <GroupFlashcard
-              groupFlashcard={item}
-              count={item.flashcards.length}
-            />
-          )}
-          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          contentContainerStyle={{
-            paddingBottom: insets.bottom + 220,
-          }}
-          className="px-4 pt-4 pb-2"
-          style={{ padding: 16 }}
-        />
+        {groups.length === 0 ? (
+          <ThemedView className="flex items-center justify-center h-full">
+            <ThemedText className="text-base text-gray-500">
+              Хадгалсан флашкарт багц хоосон байна
+            </ThemedText>
+            <Pressable onPress={() => router.push({ pathname: "/(tabs)/Add" })}>
+              <ThemedText>Флашкарт багц үүсгэх</ThemedText>
+            </Pressable>
+          </ThemedView>
+        ) : (
+          <FlatList
+            data={groups}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <GroupFlashcard
+                groupFlashcard={item}
+                count={item.flashcards.length}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+            contentContainerStyle={{
+              paddingBottom: insets.bottom + 220,
+            }}
+            className="px-4 pt-4 pb-2"
+            style={{ padding: 16 }}
+          />
+        )}
       </ThemedView>
     </SafeAreaView>
   );

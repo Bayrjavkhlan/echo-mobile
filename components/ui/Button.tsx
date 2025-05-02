@@ -18,7 +18,7 @@ import ThemedIcon from "../ThemedIcon";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type ButtonType = "contained" | "outlined" | "text" | "icon";
-type ButtonSize = "large" | "middle" | "small";
+type ButtonSize = "extra" | "large" | "middle" | "small";
 type ButtonShape = "default" | "circle" | "round";
 
 export interface ButtonProps extends TouchableOpacityProps, AccessibilityProps {
@@ -26,6 +26,7 @@ export interface ButtonProps extends TouchableOpacityProps, AccessibilityProps {
   type?: ButtonType;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  iconSize?: number;
   disabled?: boolean;
   loading?: boolean;
   textClass?: string;
@@ -34,6 +35,7 @@ export interface ButtonProps extends TouchableOpacityProps, AccessibilityProps {
   shape?: ButtonShape;
   color?: string;
   fontFamily?: "NotoSerif" | "System" | string;
+  alignRightIcon?: boolean;
 }
 
 const ButtonComponent = ({
@@ -43,6 +45,7 @@ const ButtonComponent = ({
   textClass = "text-base",
   leftIcon,
   rightIcon,
+  iconSize,
   disabled = false,
   loading = false,
   type = "contained",
@@ -50,14 +53,20 @@ const ButtonComponent = ({
   shape = "default",
   accessibilityLabel,
   accessibilityHint,
-  color = "blue",
+  color = "#3b82f6",
   fontFamily = "NotoSerif",
+  alignRightIcon = false,
   ...props
 }: ButtonProps) => {
   const buttonStyles: StyleProp<ViewStyle> = [
-    tw`flex-row items-center justify-center py-1 px-3 rounded-xl bg-${color}-500 `, //w-auto self-start
-    type === "outlined" && tw`bg-transparent border border-${color}-500`,
+    tw`flex-row items-center justify-center py-1 px-3 rounded-xl bg-[${color}] `,
+    type === "outlined" && tw`bg-transparent border border-[${color}]`,
     type === "text" && tw`bg-transparent`,
+    type === "icon" && tw`p-0`,
+    type === "icon" &&
+      shape === "circle" &&
+      tw`w-9 h-9 justify-center items-center p-0`,
+    size === "extra" && tw`py-4 px-5`,
     size === "large" && tw`py-2 px-4`,
     size === "middle" && tw`py-2 px-3`,
     size === "small" && tw`py-1 px-2 rounded-lg`,
@@ -100,25 +109,36 @@ const ButtonComponent = ({
       }}
       {...props}
     >
-      {leftIcon && <View style={tw`m-0`}>{leftIcon}</View>}
-      {title && (
-        <ThemedText style={textStyles} numberOfLines={1}>
-          {title}
-        </ThemedText>
-      )}
-      {rightIcon && (
-        <ThemedIcon
-          name={rightIcon as keyof typeof MaterialIcons.glyphMap}
-          style={tw`m-0 `}
-        />
-      )}
-      {loading && (
-        <ActivityIndicator
-          size="small"
-          color={type === "contained" ? "white" : tw.color(`${color}-500`)}
-          style={tw`ml-3`}
-        />
-      )}
+      <View style={tw`flex-row w-full justify-center items-center`}>
+        <View style={tw`flex-row items-center`}>
+          {leftIcon && <View style={tw`mr-2`}>{leftIcon}</View>}
+          {title && (
+            <ThemedText style={textStyles} numberOfLines={1}>
+              {title}
+            </ThemedText>
+          )}
+        </View>
+        {alignRightIcon && (
+          <View style={tw`ml-auto flex-row items-center`}>
+            {rightIcon && (
+              <ThemedIcon
+                name={rightIcon as keyof typeof MaterialIcons.glyphMap}
+                size={iconSize}
+                style={tw`m-0 p-0`}
+              />
+            )}
+            {loading && (
+              <ActivityIndicator
+                size="small"
+                color={
+                  type === "contained" ? "white" : tw.color(`${color}-500`)
+                }
+                style={tw`ml-2`}
+              />
+            )}
+          </View>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };

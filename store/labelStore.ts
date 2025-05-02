@@ -1,12 +1,9 @@
 import { create } from "zustand";
-import {
-  getAllLabelTableData,
-  createLabelTableData,
-} from "@/app/db/crud/labels";
+import { getAllLabelTableData, createLabelTableData } from "@/db/crud/labels";
 
 export type LabelType = {
+  id: number;
   text: string;
-  color: string;
 };
 
 interface LabelStore {
@@ -24,7 +21,6 @@ export const useLabelStore = create<LabelStore>((set) => ({
         labels: result.map((label: any) => ({
           id: label.id,
           text: label.name,
-          color: label.color,
         })),
       });
     }
