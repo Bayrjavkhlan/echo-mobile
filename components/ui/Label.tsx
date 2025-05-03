@@ -30,14 +30,8 @@ const Label = ({
   className,
   selectable = true,
 }: LabelProps) => {
-  const textLight = Colors.light.text;
-  const textDark = Colors.dark.text;
-  const bgLight = Colors.light.background;
-  const bgDark = Colors.dark.background;
-  // const isDark = useColor("scheme") === "dark";
   const [isSelected, setIsSelected] = useState(selected);
 
-  // Update internal state when external selected prop changes
   useEffect(() => {
     setIsSelected(selected);
   }, [selected]);
@@ -51,11 +45,10 @@ const Label = ({
     }
   };
 
-  // Determine the label text to display, preferring text over name
   const labelText = data.text || data.name || "Unknown";
   const { icon } = data;
+  const contentBackground = useColor("contentBackground");
 
-  // Only log for actual labels (not for the add button)
   if (data.id) {
     console.log(`Rendering label: ${data.id} - Text: ${labelText}`);
   }
@@ -64,40 +57,28 @@ const Label = ({
     <TouchableOpacity
       onPress={handlePress}
       disabled={!selectable && !onPress}
-      className={`px-1 py-0.5 rounded-lg ${className}`}
+      className={`pr-1 py-0.5 rounded-lg ${className}`}
       style={{
-        borderWidth: 1,
-        borderColor: isSelected
-          ? isDark
-            ? "#000"
-            : "#ccc"
-          : isDark
-          ? "#000"
-          : "#ccc",
-        backgroundColor: isSelected
-          ? isDark
-            ? Colors.dark.tint
-            : Colors.light.tint
-          : isDark
-          ? bgDark
-          : bgLight,
+        backgroundColor: contentBackground,
+        borderRadius: 8,
       }}
     >
       <View
         style={[
-          tw`py-1 px-3 rounded-lg w-auto self-start flex flex-row items-center gap-1 justify-center`,
-          isSelected ? tw`border-2 border-dashed my-0` : tw`my-[2px]`,
+          tw`py-1 px-3 rounded-lg w-auto self-start flex flex-row items-center gap-1 justify-center border border-1`,
+          isSelected ? tw`border-2 my-0` : tw`my-[2px] border-1`,
+          className ? tw`${className}` : null,
         ]}
       >
-        <Text
-          className="text-sm"
-          style={{
-            color: isSelected ? "#fff" : isDark ? textDark : textLight,
-          }}
-        >
+        <ThemedText type="defaultSemiBold" className="text-sm py-[2px] ">
           {labelText}
-        </Text>
-        {icon && <ThemedIcon name={icon} size={16} style={tw`ml-1`} />}
+        </ThemedText>
+        {icon && (
+          <ThemedIcon
+            name={icon as keyof typeof MaterialIcons.glyphMap}
+            style={tw`m-0`}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );

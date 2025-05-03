@@ -32,7 +32,6 @@ export default function HorizontalLabelScroll({
   const contentBackground = useColor("contentBackground");
   const backgroundColor = useColor("modalBackground");
 
-  // Modal state
   const [modalVisible, setModalVisible] = useState(false);
   const [labelInput, setLabelInput] = useState("");
 
@@ -48,7 +47,6 @@ export default function HorizontalLabelScroll({
     }
   };
 
-  // On component mount, fetch labels if needed
   useEffect(() => {
     if (labels.length === 0) {
       console.log("Fetching labels on component mount");
@@ -56,11 +54,9 @@ export default function HorizontalLabelScroll({
     }
   }, []);
 
-  // For debugging
   console.log("Available labels:", labels);
   console.log("Selected labels:", selectedLabels || internalSelected);
 
-  // Helper function to normalize a label (ensure it has both text and name)
   const normalizeLabel = (label: LabelType): LabelType => {
     const id = String(label.id);
     const text = label.text || label.name || "Unknown";
@@ -78,13 +74,11 @@ export default function HorizontalLabelScroll({
     let updatedSelected: LabelType[];
     const normalizedLabel = normalizeLabel(label);
 
-    // Check if the label is already selected
     const isAlreadySelected = internalSelected.some(
       (selectedLabel) => String(selectedLabel.id) === String(normalizedLabel.id)
     );
 
     if (isAlreadySelected) {
-      // Remove it from selection
       updatedSelected = internalSelected.filter(
         (selectedLabel) =>
           String(selectedLabel.id) !== String(normalizedLabel.id)
@@ -100,19 +94,15 @@ export default function HorizontalLabelScroll({
       );
     }
 
-    // Update internal state
     setInternalSelected(updatedSelected);
 
-    // Call the callback if provided
     if (onChangeSelectedLabels) {
       onChangeSelectedLabels(updatedSelected);
     }
   };
 
-  // Create a merged labels array that ensures each label has both text and name properties
   const normalizedLabels = labels.map(normalizeLabel);
 
-  // Determine which labels to consider "selected"
   const selectedLabelsToUse = selectedLabels || internalSelected;
 
   return (
@@ -120,17 +110,14 @@ export default function HorizontalLabelScroll({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 4, gap: 8 }}
+        contentContainerStyle={{ gap: 8 }}
       >
-        {/* Add Label button */}
         <Label
           data={{ text: "Шошго", icon: "add" }}
           selectable={false}
-          className={`mr-2 bg-[${contentBackground}]`}
+          className={` bg-[${contentBackground}]`}
           onPress={handleOpenModal}
         />
-
-        {/* Display all available labels */}
         {normalizedLabels.map((label) => {
           const isSelected = selectedLabelsToUse.some(
             (selectedLabel) => String(selectedLabel.id) === String(label.id)
