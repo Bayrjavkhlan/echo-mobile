@@ -7,6 +7,7 @@ import ThemedIcon from "../ThemedIcon";
 import { LabelType as StoreLabelType } from "@/store/groupStore";
 import { useColor } from "@/hooks/useThemeColor";
 import { Colors } from "@/constants/Colors";
+import { ThemedView } from "../ThemedView";
 
 export type LabelType = {
   id?: string | number;
@@ -49,26 +50,23 @@ const Label = ({
   const { icon } = data;
   const contentBackground = useColor("contentBackground");
 
-  if (data.id) {
-    console.log(`Rendering label: ${data.id} - Text: ${labelText}`);
-  }
+  // if (data.id) {
+  //   console.log(`Rendering label: ${data.id} - Text: ${labelText}`);
+  // }
 
   return (
     <TouchableOpacity
       onPress={handlePress}
       disabled={!selectable && !onPress}
       className={`pr-1 py-0.5 rounded-lg ${className}`}
-      style={{
-        backgroundColor: contentBackground,
-        borderRadius: 8,
-      }}
     >
-      <View
+      <ThemedView
         style={[
           tw`py-1 px-3 rounded-lg w-auto self-start flex flex-row items-center gap-1 justify-center border border-1`,
           isSelected ? tw`border-2 my-0` : tw`my-[2px] border-1`,
           className ? tw`${className}` : null,
         ]}
+        customBackgroundColor={contentBackground}
       >
         <ThemedText type="defaultSemiBold" className="text-sm py-[2px] ">
           {labelText}
@@ -79,7 +77,7 @@ const Label = ({
             style={tw`m-0`}
           />
         )}
-      </View>
+      </ThemedView>
     </TouchableOpacity>
   );
 };

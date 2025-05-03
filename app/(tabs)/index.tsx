@@ -179,31 +179,33 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="">
-      <ScrollView className="">
-        <ThemedView className="flex flex-col h-full">
-          <ProgressBar totalWords={123} memorizedWords={86} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemedView className="flex-1">
+        <ScrollView className="">
+          <ThemedView className="flex flex-col h-full">
+            <ProgressBar totalWords={123} memorizedWords={86} />
 
-          <ActivityBarChart
-            weeklyData={weeklyActivityData}
-            monthlyData={monthlyActivityData}
-            wordsData={learnedWordsData}
-            initialActiveDataset="weekly"
-          />
-          <MemorizinStreak streak={5} />
-          <ThemedView className=" p-4">
-            <Button onPress={testDataInsert} title="Дата нэмэх" />
-            <ThemedView>
-              {testData?.map((item) => (
-                <ThemedView key={item.id} className="p-4">
-                  <ThemedText>{item.testNumber}</ThemedText>
-                  <ThemedText>{item.testText}</ThemedText>
-                </ThemedView>
-              ))}
+            <ActivityBarChart
+              weeklyData={weeklyActivityData}
+              monthlyData={monthlyActivityData}
+              wordsData={learnedWordsData}
+              initialActiveDataset="weekly"
+            />
+            <MemorizinStreak streak={5} />
+            <ThemedView className=" p-4">
+              <Button onPress={testDataInsert} title="Дата нэмэх" />
+              <ThemedView>
+                {testData?.map((item) => (
+                  <ThemedView key={item.id} className="p-4">
+                    <ThemedText>{item.testNumber}</ThemedText>
+                    <ThemedText>{item.testText}</ThemedText>
+                  </ThemedView>
+                ))}
+              </ThemedView>
             </ThemedView>
           </ThemedView>
-        </ThemedView>
-      </ScrollView>
+        </ScrollView>
+      </ThemedView>
 
       {/* <LabelAdd data={labelData} />
         <Label data={labelData} /> */}

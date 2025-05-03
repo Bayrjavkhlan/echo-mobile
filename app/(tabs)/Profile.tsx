@@ -41,8 +41,8 @@ export default function ProfileScreen() {
   };
   const redColor = useColor("red");
   return (
-    <SafeAreaView>
-      <ThemedView className="p-4">
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemedView className="flex-1 p-4">
         <ThemedView className="flex justify-center items-center gap-4">
           <ProfileIcon
             userName="Баяржавхлан"

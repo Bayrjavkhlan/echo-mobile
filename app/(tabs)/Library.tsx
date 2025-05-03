@@ -41,7 +41,7 @@ export default function LibraryScreen() {
   console.log("LibraryScreen groups", groups);
 
   return (
-    <SafeAreaView className="">
+    <SafeAreaView style={{ flex: 1 }}>
       {labels.length > 0 && (
         <ThemedView className="p-4 pb-0">
           <HorizontalLabelScroll />
@@ -49,16 +49,12 @@ export default function LibraryScreen() {
       )}
       <ThemedView>
         {groups.length === 0 ? (
-          <ThemedView className="flex items-center justify-center h-full">
+          <ThemedView className="flex items-center justify-center h-full gap-2">
             <ThemedText className="text-base text-gray-500">
               Хадгалсан флашкарт багц хоосон байна
             </ThemedText>
             <Pressable onPress={() => router.push({ pathname: "/(tabs)/Add" })}>
-              <ThemedView className="mt-4 p-3 bg-blue-500 rounded-lg">
-                <ThemedText className="text-white">
-                  Флашкарт багц үүсгэх
-                </ThemedText>
-              </ThemedView>
+              <ThemedText>Флашкарт багц үүсгэх</ThemedText>
             </Pressable>
           </ThemedView>
         ) : (

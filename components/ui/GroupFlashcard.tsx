@@ -15,7 +15,6 @@ interface GroupFlashcardProps {
 const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
   const router = useRouter();
 
-  // For debugging
   console.log(`GroupFlashcard (${groupFlashcard.id}):`, {
     title: groupFlashcard.title,
     count: count,
@@ -36,7 +35,6 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
     });
   };
 
-  // Function to deduplicate labels - in case we have duplicates
   const deduplicateLabels = (labels: LabelType[]): LabelType[] => {
     const uniqueLabels = new Map<string, LabelType>();
 
@@ -110,13 +108,14 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
             </ThemedText>
           </ThemedView>
           <ThemedText className="text-base text-gray-500 ml-2">
-            {count} cards
+            {count}
           </ThemedText>
         </ThemedView>
 
         <ThemedView className="flex flex-row items-center gap-2 flex-wrap">
-          {uniqueLabels && uniqueLabels.length > 0 ? (
+          {uniqueLabels && uniqueLabels.length > 0 && (
             <>
+              {/* Horizontal scroll to fit all of the labels in x axis */}
               {uniqueLabels.slice(0, 5).map((label, index) => (
                 <Label
                   key={`${label.id}-${index}`}
@@ -134,8 +133,6 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
                 </ThemedText>
               )}
             </>
-          ) : (
-            <ThemedText className="text-xs text-gray-500">No labels</ThemedText>
           )}
         </ThemedView>
 
