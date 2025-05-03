@@ -1,15 +1,30 @@
 import useDatabase from "@/hooks/useDatabase";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { flashcardLabelsTable, flashcardsTable, labelsTable } from "../schema";
 
 const db = useDatabase();
+
+export const getAllFlashcardLabelsTableData = async () => {
+  try {
+    const result = await db.query.flashcardLabelsTable.findMany();
+    console.log("getAllFlashcardLabels: ", result);
+    return result;
+  } catch (error) {
+    console.error("Error retrieving data:", error);
+  }
+};
+
 export const getLabelsForFlashcard = async (flashcardId: number) => {
   try {
-    const result = await db
-      .select()
-      .from(flashcardLabelsTable)
-      .innerJoin(labelsTable, eq(flashcardLabelsTable.labelId, labelsTable.id))
-      .where(eq(flashcardLabelsTable.flashcardId, flashcardId));
+    // Use an inner join to get the labels based on the flashcardId
+    const query = sql`
+      SELECT l.*
+      FROM labels l
+      INNER JOIN flashcard_labels fl ON l.id = fl.labelId
+      WHERE fl.flashcardId = ${flashcardId}
+    `;
+
+    const result = await db.execute(query);
     return result;
   } catch (error) {
     console.error("Error retrieving labels for flashcard:", error);
@@ -31,32 +46,44 @@ export const getFlashcardsForLabel = async (labelId: number) => {
     console.error("Error retrieving flashcards for label:", error);
   }
 };
+
 export const addLabelToFlashcard = async (
   flashcardId: number,
   labelId: number
 ) => {
   try {
-    const existing = await db
-      .select()
-      .from(flashcardLabelsTable)
-      .where(
-        and(
-          eq(flashcardLabelsTable.flashcardId, 1),
-          eq(flashcardLabelsTable.labelId, 1)
-        )
-      );
+    // First, check if the relationship already exists to avoid duplicates
+    console.log(`Adding label ${labelId} to flashcard ${flashcardId}`);
 
-    if (!existing || existing.length === 0) {
-      await db.insert(flashcardLabelsTable).values({
+    const existingRelationship = await db.query.flashcardLabelsTable.findMany({
+      where: and(
+        eq(flashcardLabelsTable.flashcardId, flashcardId),
+        eq(flashcardLabelsTable.labelId, labelId)
+      ),
+    });
+
+    console.log("Existing relationship check result:", existingRelationship);
+
+    // If relationship doesn't exist, create it
+    if (existingRelationship.length === 0) {
+      const result = await db.insert(flashcardLabelsTable).values({
         flashcardId,
         labelId,
       });
-    }
 
-    return await getLabelsForFlashcard(flashcardId);
+      console.log(`Label ${labelId} added to flashcard ${flashcardId}`, result);
+      return result;
+    } else {
+      console.log(
+        `Relationship between flashcard ${flashcardId} and label ${labelId} already exists.`
+      );
+      return { changes: 0, lastInsertRowId: 0 };
+    }
   } catch (error) {
-    console.error("Error adding label to flashcard:", error);
-    throw error;
+    console.error(
+      `Error adding label ${labelId} to flashcard ${flashcardId}:`,
+      error
+    );
   }
 };
 
@@ -65,7 +92,7 @@ export const removeLabelFromFlashcard = async (
   labelId: number
 ) => {
   try {
-    await db
+    const result = await db
       .delete(flashcardLabelsTable)
       .where(
         and(
@@ -73,12 +100,26 @@ export const removeLabelFromFlashcard = async (
           eq(flashcardLabelsTable.labelId, labelId)
         )
       );
-
-    // Return updated labels for this flashcard
-    return await getLabelsForFlashcard(flashcardId);
+    return result;
   } catch (error) {
-    console.error("Error removing label from flashcard:", error);
-    throw error;
+    console.error(
+      `Error removing label ${labelId} from flashcard ${flashcardId}:`,
+      error
+    );
+  }
+};
+
+export const removeAllLabelsFromFlashcard = async (flashcardId: number) => {
+  try {
+    const result = await db
+      .delete(flashcardLabelsTable)
+      .where(eq(flashcardLabelsTable.flashcardId, flashcardId));
+    return result;
+  } catch (error) {
+    console.error(
+      `Error removing all labels from flashcard ${flashcardId}:`,
+      error
+    );
   }
 };
 
@@ -104,16 +145,6 @@ export const updateFlashcardLabels = async (
   } catch (error) {
     console.error("Error updating flashcard labels:", error);
     throw error;
-  }
-};
-
-export const getAllFlashcardLabelsTableData = async () => {
-  try {
-    const result = await db.query.flashcardLabelsTable.findMany();
-    console.log("getAllFlashcardLabels:\t", result);
-    return result;
-  } catch (error) {
-    console.error("Error retrieving data:", error);
   }
 };
 

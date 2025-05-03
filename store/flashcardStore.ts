@@ -14,7 +14,8 @@ export type Flashcard = {
   labels: {
     id: string;
     name: string;
-    color: string;
+    text?: string;
+    color?: string;
   }[];
   createdAt?: Date;
   updatedAt?: Date;

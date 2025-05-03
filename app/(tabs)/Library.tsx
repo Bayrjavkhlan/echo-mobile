@@ -1,125 +1,45 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, Pressable, ScrollView, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import GroupFlashcard from "@/components/ui/GroupFlashcard";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useGroupStore } from "@/store/groupStore";
 import { useRouter } from "expo-router";
 import { useLabelStore } from "@/store/labelStore";
-
-type FlashcardGroup = {
-  id: string;
-  title: string;
-  count: number;
-  labels: {
-    text: string;
-  }[];
-  description: string;
-};
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 
 export default function LibraryScreen() {
-  // const [mockdata] = useState<FlashcardGroup[]>([
-  //   {
-  //     id: "1",
-  //     title: "Biology Basics",
-  //     count: 20,
-  //     labels: [
-  //       { text: "Science", color: "green" },
-  //       { text: "Quiz", color: "blue" },
-  //     ],
-  //     description: "Review fundamental biology concepts and vocabulary.",
-  //   },
-  //   {
-  //     id: "2",
-  //     title: "World History",
-  //     count: 15,
-  //     labels: [
-  //       { text: "History", color: "amber" },
-  //       { text: "Practice", color: "red" },
-  //     ],
-  //     description: "Key historical events from ancient to modern times.",
-  //   },
-  //   {
-  //     id: "3",
-  //     title: "Mathematics",
-  //     count: 30,
-  //     labels: [
-  //       { text: "Math", color: "purple" },
-  //       { text: "Advanced", color: "indigo" },
-  //     ],
-  //     description: "Algebra, calculus, and geometry principles explained.",
-  //   },
-  //   {
-  //     id: "4",
-  //     title: "English Literature",
-  //     count: 25,
-  //     labels: [
-  //       { text: "English", color: "blue" },
-  //       { text: "Books", color: "yellow" },
-  //     ],
-  //     description: "Classic literary works and analysis techniques.",
-  //   },
-  //   {
-  //     id: "5",
-  //     title: "Computer Science",
-  //     count: 40,
-  //     labels: [
-  //       { text: "Tech", color: "cyan" },
-  //       { text: "Coding", color: "emerald" },
-  //     ],
-  //     description: "Programming concepts and algorithm fundamentals.",
-  //   },
-  //   {
-  //     id: "6",
-  //     title: "Psychology",
-  //     count: 35,
-  //     labels: [
-  //       { text: "Science", color: "pink" },
-  //       { text: "Human", color: "rose" },
-  //     ],
-  //     description: "Understanding human behavior and mental processes.",
-  //   },
-  //   {
-  //     id: "7",
-  //     title: "Physics",
-  //     count: 28,
-  //     labels: [
-  //       { text: "Science", color: "green" },
-  //       { text: "Advanced", color: "indigo" },
-  //     ],
-  //     description:
-  //       "Core concepts in mechanics, thermodynamics and quantum physics.",
-  //   },
-  //   {
-  //     id: "8",
-  //     title: "Spanish",
-  //     count: 50,
-  //     labels: [
-  //       { text: "Language", color: "orange" },
-  //       { text: "Beginner", color: "blue" },
-  //     ],
-  //     description:
-  //       "Essential vocabulary and grammar for Spanish language learners.",
-  //   },
-  // ]);
-
   const { groups, fetchGroups } = useGroupStore();
-  useEffect(() => {
-    if (groups.length === 0) {
-      fetchGroups();
-    }
-  }, []);
-
-  console.log("LibraryScreen groups", groups);
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const labels = useLabelStore.getState().labels;
-  console.log("LibraryScreen labels", labels);
-  // console.log("LibraryScreen group ===", groups.length === 0);
+  const labels = useLabelStore((state) => state.labels);
+  const fetchLabels = useLabelStore((state) => state.fetchLabels);
+
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchGroups();
+    fetchLabels();
+  }, []);
+
+  // Also fetch data when the screen comes into focus (for example, when navigating back from Add screen)
+  useFocusEffect(
+    useCallback(() => {
+      // Only fetch if we don't already have data
+      if (groups.length === 0) {
+        fetchGroups();
+      }
+      if (labels.length === 0) {
+        fetchLabels();
+      }
+    }, [])
+  );
+
+  console.log("LibraryScreen groups", groups);
+
   return (
     <SafeAreaView className="">
       {labels.length > 0 && (
@@ -134,7 +54,11 @@ export default function LibraryScreen() {
               Хадгалсан флашкарт багц хоосон байна
             </ThemedText>
             <Pressable onPress={() => router.push({ pathname: "/(tabs)/Add" })}>
-              <ThemedText>Флашкарт багц үүсгэх</ThemedText>
+              <ThemedView className="mt-4 p-3 bg-blue-500 rounded-lg">
+                <ThemedText className="text-white">
+                  Флашкарт багц үүсгэх
+                </ThemedText>
+              </ThemedView>
             </Pressable>
           </ThemedView>
         ) : (
@@ -142,10 +66,7 @@ export default function LibraryScreen() {
             data={groups}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <GroupFlashcard
-                groupFlashcard={item}
-                count={item.flashcards.length}
-              />
+              <GroupFlashcard groupFlashcard={item} count={item.cardCount} />
             )}
             ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
             contentContainerStyle={{
