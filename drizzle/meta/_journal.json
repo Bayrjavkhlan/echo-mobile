@@ -15,6 +15,27 @@
       "when": 1746178012635,
       "tag": "0001_orange_clint_barton",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1746239693177,
+      "tag": "0002_loving_garia",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1746243744816,
+      "tag": "0003_daffy_patriot",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1746259442842,
+      "tag": "0004_many_quasar",
+      "breakpoints": true
     }
   ]
 }

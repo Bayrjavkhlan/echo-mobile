@@ -50,6 +50,17 @@ export default function ProfileScreen() {
           />
           <ThemedView className="flex gap-2">
             <Button
+              title="Нэвтрэх"
+              leftIcon={<MaterialIcons name="login" size={18} />}
+              rightIcon="chevron-right"
+              iconSize={24}
+              type="outlined"
+              alignRightIcon
+              size="extra"
+              textClass="text-[18px]"
+              onPress={() => console.log("login pressed")}
+            />
+            <Button
               title="Хувийн мэдээлэлээ өөрчлөх"
               leftIcon={<MaterialIcons name="edit" size={18} />}
               rightIcon="chevron-right"

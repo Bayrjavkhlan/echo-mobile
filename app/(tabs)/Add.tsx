@@ -29,7 +29,8 @@ export default function AddScreen() {
       question: string;
       answer: string;
       error: boolean;
-      labels: LabelType[]; // new!
+      wrongAnswers: string[];
+      labels: LabelType[];
     }[]
   >([
     {
@@ -37,6 +38,7 @@ export default function AddScreen() {
       question: "",
       answer: "",
       error: false,
+      wrongAnswers: [],
       labels: [],
     },
   ]);
@@ -44,7 +46,14 @@ export default function AddScreen() {
   const handleAddFlashcard = () => {
     setFlashcards((prev) => [
       ...prev,
-      { id: Date.now(), question: "", answer: "", error: false, labels: [] },
+      {
+        id: Date.now(),
+        question: "",
+        answer: "",
+        wrongAnswers: [],
+        error: false,
+        labels: [],
+      },
     ]);
   };
 
@@ -144,6 +153,7 @@ export default function AddScreen() {
           question: "",
           answer: "",
           error: false,
+          wrongAnswers: [],
           labels: [],
         },
       ]);
@@ -199,6 +209,12 @@ export default function AddScreen() {
               newCards[index].labels = labels.filter(
                 (label): label is LabelType => label.id !== undefined
               );
+              setFlashcards(newCards);
+            }}
+            wrongAnswers={card.wrongAnswers}
+            onChangeWrongAnswers={(newAnswers) => {
+              const newCards = [...flashcards];
+              newCards[index].wrongAnswers = newAnswers;
               setFlashcards(newCards);
             }}
           />

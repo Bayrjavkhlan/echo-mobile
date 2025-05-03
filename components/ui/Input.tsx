@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { TextInput, Animated, Easing } from "react-native";
+import { TextInput, Animated, Easing, Pressable, View } from "react-native";
 import { ThemedView } from "../ThemedView";
 import tw from "twrnc";
 import { useColor, useThemeColor } from "@/hooks/useThemeColor";
 import { Colors } from "@/constants/Colors";
+import ThemedIcon from "../ThemedIcon";
 
 interface InputProps {
   title: string;
@@ -13,6 +14,8 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   hasError?: boolean;
   noBackgroundColor?: boolean;
+  rightIcon?: string;
+  onRightIconPress?: () => void;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -23,7 +26,10 @@ export const Input: React.FC<InputProps> = ({
   onChangeText,
   hasError,
   noBackgroundColor,
+  rightIcon,
+  onRightIconPress,
 }) => {
+  const colorRed = useColor("red");
   const [isFocused, setIsFocused] = useState(false);
   const labelAnim = useState(new Animated.Value(value ? 1 : 0))[0];
   const contentBackground = useColor("contentBackground");
@@ -65,6 +71,8 @@ export const Input: React.FC<InputProps> = ({
     }),
     color: isFocused ? titleColor : "#aaa",
     paddingHorizontal: 4,
+    paddingVertical: 0,
+    marginVertical: 0,
     backgroundColor: noBackgroundColor
       ? "undefined"
       : backgroundColor || contentBackground,
@@ -85,7 +93,7 @@ export const Input: React.FC<InputProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           style={tw.style(
-            `w-full pt-5 pb-2 px-2 rounded-lg border text-[${textColor}]  ${
+            `w-full pt-5  px-2 rounded-lg border text-[${textColor}]  ${
               hasError
                 ? `border-[${redColor}]`
                 : "border-black dark:border-gray-600"
@@ -93,6 +101,15 @@ export const Input: React.FC<InputProps> = ({
             className
           )}
         />
+        {rightIcon && (
+          <Pressable
+            onPress={onRightIconPress}
+            style={tw`absolute right-3 top-4`}
+            hitSlop={10}
+          >
+            <ThemedIcon name="close" size={24} color={colorRed} />
+          </Pressable>
+        )}
       </ThemedView>
     </ThemedView>
   );

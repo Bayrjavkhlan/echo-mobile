@@ -16,8 +16,8 @@ import { OuterThemedView } from "./OuterThemedView";
 
 interface HorizontalLabelScrollProps {
   className?: string;
-  selectedLabels: LabelType[];
-  onChangeSelectedLabels: (labels: LabelType[]) => void;
+  selectedLabels?: LabelType[];
+  onChangeSelectedLabels?: (labels: LabelType[]) => void;
 }
 
 export default function HorizontalLabelScroll({
@@ -67,15 +67,17 @@ export default function HorizontalLabelScroll({
               data={label as LabelType}
               className={`mr-2 bg-[${contentBackground}]`}
               onPress={() => {
-                const alreadySelected = selectedLabels.some(
+                const alreadySelected = selectedLabels?.some(
                   (l) => l.id === label.id
                 );
-                if (alreadySelected) {
-                  onChangeSelectedLabels(
-                    selectedLabels.filter((l) => l.id !== label.id)
-                  );
-                } else {
-                  onChangeSelectedLabels([...selectedLabels, label]);
+                if (onChangeSelectedLabels) {
+                  if (alreadySelected) {
+                    onChangeSelectedLabels(
+                      (selectedLabels ?? []).filter((l) => l.id !== label.id)
+                    );
+                  } else {
+                    onChangeSelectedLabels([...(selectedLabels ?? []), label]);
+                  }
                 }
               }}
             />

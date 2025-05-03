@@ -156,7 +156,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
             flashcards: groupFlashcards,
           };
         });
-
+        console.log("mappedGroups:\t", mappedGroups);
         set({ groups: mappedGroups });
       }
     } catch (error) {

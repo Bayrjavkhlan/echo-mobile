@@ -109,7 +109,9 @@ export default function LibraryScreen() {
 
   const { groups, fetchGroups } = useGroupStore();
   useEffect(() => {
-    fetchGroups();
+    if (groups.length === 0) {
+      fetchGroups();
+    }
   }, []);
 
   console.log("LibraryScreen groups", groups);

@@ -3,6 +3,6 @@ import { defineConfig } from "drizzle-kit";
 export default defineConfig({
   dialect: "sqlite",
   driver: "expo",
-  schema: "./app/db/schema",
+  schema: "./db/schema",
   out: "./drizzle",
 });

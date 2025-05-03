@@ -59,9 +59,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
     onDelete?.();
     handleClose();
   };
-  console.log("colorRed", colorRed);
-  console.log("titleColor", titleColor);
-
   return (
     <Modal
       ref={modalRef}
