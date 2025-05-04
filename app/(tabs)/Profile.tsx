@@ -11,6 +11,7 @@ import { deleteAllGroupRecords } from "@/db/crud/group";
 import { deleteAllLabelTableData } from "@/db/crud/labels";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
+import ThemedIcon from "@/components/ThemedIcon";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function ProfileScreen() {
           <ThemedView className="flex gap-2">
             <Button
               title="Нэвтрэх"
-              leftIcon={<MaterialIcons name="login" size={18} />}
+              leftIcon={<ThemedIcon name="login" size={18} />}
               rightIcon="chevron-right"
               iconSize={24}
               type="outlined"
@@ -62,7 +63,7 @@ export default function ProfileScreen() {
             />
             <Button
               title="Хувийн мэдээлэлээ өөрчлөх"
-              leftIcon={<MaterialIcons name="edit" size={18} />}
+              leftIcon={<ThemedIcon name="edit" size={18} />}
               rightIcon="chevron-right"
               iconSize={24}
               type="outlined"
@@ -79,7 +80,7 @@ export default function ProfileScreen() {
             />
             <Button
               title="Тохиргоо"
-              leftIcon={<MaterialIcons name="settings" size={18} />}
+              leftIcon={<ThemedIcon name="settings" size={18} />}
               rightIcon="chevron-right"
               iconSize={24}
               type="outlined"
@@ -91,7 +92,7 @@ export default function ProfileScreen() {
             <Button
               title="Санал хүсэлт илгээх"
               leftIcon={
-                <MaterialIcons name="sentiment-very-satisfied" size={18} />
+                <ThemedIcon name="sentiment-very-satisfied" size={18} />
               }
               iconSize={24}
               type="outlined"
@@ -101,10 +102,8 @@ export default function ProfileScreen() {
               onPress={() => console.log("3 pressed")}
             />
             <Button
-              title="Бүх флашкартыг устгах"
-              leftIcon={
-                <MaterialIcons name="delete" size={18} color={redColor} />
-              }
+              title="Бүх мэдээлэлийг устгах"
+              leftIcon={<ThemedIcon name="delete" size={18} color={redColor} />}
               iconSize={24}
               type="outlined"
               alignRightIcon
@@ -115,9 +114,7 @@ export default function ProfileScreen() {
             />
             <Button
               title="Гарах"
-              leftIcon={
-                <MaterialIcons name="logout" size={18} color={redColor} />
-              }
+              leftIcon={<ThemedIcon name="logout" size={18} color={redColor} />}
               iconSize={24}
               type="outlined"
               alignRightIcon

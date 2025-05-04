@@ -5,16 +5,16 @@ import {
   StyleSheet,
   ModalProps,
   TouchableOpacity,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { useColor } from "@/hooks/useThemeColor";
 import { ThemedText } from "../ThemedText";
-import { Input } from "./Input";
 import { Button } from "./Button";
-import { OuterThemedView } from "../OuterThemedView";
 import ThemedIcon from "../ThemedIcon";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import tw from "twrnc";
 
 interface CustomModalProps extends ModalProps {
   title: string;
@@ -59,6 +59,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
     onDelete?.();
     handleClose();
   };
+
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
+
   return (
     <Modal
       ref={modalRef}
@@ -68,58 +72,109 @@ const CustomModal: React.FC<CustomModalProps> = ({
       onRequestClose={handleClose}
       {...modalProps}
     >
-      <View style={styles.overlay}>
-        <ThemedView
-          className={`w-[85%] p-5 rounded-xl shadow-xl h-[180px]`}
-          customBackgroundColor={backgroundColor}
-          inheritTheme={false}
-        >
-          <TouchableOpacity
-            style={tw`absolute top-0 right-[-1] rounded-full px-2 py-1`}
-            onPress={handleClose}
-          >
-            <ThemedIcon name="close" size={24} color={colorRed} />
-          </TouchableOpacity>
-          <ThemedText className="text-center text-2xl mb-2">{title}</ThemedText>
-          <ThemedView className="flex-1 flex w-full rounded-xl justify-center">
-            {children}
-          </ThemedView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardView}
+      >
+        <View style={styles.overlay}>
           <ThemedView
-            className="flex flex-row justify-between items-center"
+            style={[
+              styles.modalContainer,
+              { maxHeight: windowHeight * 0.85, width: windowWidth * 0.9 },
+            ]}
             customBackgroundColor={backgroundColor}
+            inheritTheme={false}
           >
+            <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+              <ThemedIcon name="close" size={24} color={colorRed} />
+            </TouchableOpacity>
+
+            <ThemedText style={styles.title}>{title}</ThemedText>
+
+            <ScrollView
+              style={styles.contentScrollView}
+              contentContainerStyle={styles.contentContainer}
+              showsVerticalScrollIndicator={true}
+              keyboardShouldPersistTaps="handled"
+            >
+              {children}
+            </ScrollView>
+
             <ThemedView
-              className="flex flex-row gap-2"
+              style={styles.buttonContainer}
               customBackgroundColor={backgroundColor}
             >
-              {deleteButtonText && (
+              <ThemedView
+                style={styles.buttonRow}
+                customBackgroundColor={backgroundColor}
+              >
+                {deleteButtonText && (
+                  <Button
+                    title={deleteButtonText}
+                    onPress={handleDelete}
+                    buttonClass={`bg-[${colorRed}]`}
+                  />
+                )}
                 <Button
-                  title={deleteButtonText}
-                  onPress={handleDelete}
-                  buttonClass={`bg-[${colorRed}]`}
-                  size="small"
+                  title={okeyButtonText}
+                  onPress={handleOk}
+                  buttonClass={`bg-[${titleColor}] flex-1`}
                 />
-              )}
-              <Button
-                title={okeyButtonText}
-                onPress={handleOk}
-                buttonClass={`bg-[${titleColor}] flex-1`}
-                size="small"
-              />
+              </ThemedView>
             </ThemedView>
           </ThemedView>
-        </ThemedView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.2)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalContainer: {
+    borderRadius: 16,
+    padding: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  closeButton: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    zIndex: 10,
+    padding: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
+    marginTop: 5,
+    paddingTop: 5,
+  },
+  contentScrollView: {
+    maxHeight: Platform.OS === "ios" ? "75%" : "80%",
+  },
+  contentContainer: {
+    paddingBottom: 10,
+  },
+  buttonContainer: {
+    paddingTop: 5,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 8,
   },
 });
 

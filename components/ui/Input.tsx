@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { TextInput, Animated, Easing, Pressable, View } from "react-native";
+import {
+  TextInput,
+  Animated,
+  Easing,
+  Pressable,
+  TextInputProps,
+  StyleProp,
+  TextStyle,
+} from "react-native";
+import type { MaterialIcons as MaterialIconsType } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import tw from "twrnc";
-import { useColor, useThemeColor } from "@/hooks/useThemeColor";
-import { Colors } from "@/constants/Colors";
+import { useColor } from "@/hooks/useThemeColor";
 import ThemedIcon from "../ThemedIcon";
 
-interface InputProps {
+interface InputProps extends Omit<TextInputProps, "style"> {
   title: string;
   backgroundColor?: string;
   className?: string;
@@ -16,6 +24,8 @@ interface InputProps {
   noBackgroundColor?: boolean;
   rightIcon?: string;
   onRightIconPress?: () => void;
+  multiline?: boolean;
+  textInputStyle?: StyleProp<TextStyle>;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -28,6 +38,9 @@ export const Input: React.FC<InputProps> = ({
   noBackgroundColor,
   rightIcon,
   onRightIconPress,
+  multiline = false,
+  textInputStyle,
+  ...textInputProps
 }) => {
   const colorRed = useColor("red");
   const [isFocused, setIsFocused] = useState(false);
@@ -36,6 +49,7 @@ export const Input: React.FC<InputProps> = ({
   const textColor = useColor("text");
   const titleColor = useColor("title");
   const redColor = useColor("red");
+
   const handleFocus = () => {
     setIsFocused(true);
     Animated.timing(labelAnim, {
@@ -63,7 +77,7 @@ export const Input: React.FC<InputProps> = ({
     left: 10,
     top: labelAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: [18, -8],
+      outputRange: [multiline ? 20 : 18, -8],
     }),
     fontSize: labelAnim.interpolate({
       inputRange: [0, 1],
@@ -92,6 +106,7 @@ export const Input: React.FC<InputProps> = ({
           onChangeText={onChangeText}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          multiline={multiline}
           style={tw.style(
             `w-full pt-5  px-2 rounded-lg border text-[${textColor}]  ${
               hasError
@@ -100,6 +115,7 @@ export const Input: React.FC<InputProps> = ({
             } text-base mb-4`,
             className
           )}
+          {...textInputProps}
         />
         {rightIcon && (
           <Pressable
@@ -107,7 +123,11 @@ export const Input: React.FC<InputProps> = ({
             style={tw`absolute right-3 top-4`}
             hitSlop={10}
           >
-            <ThemedIcon name="close" size={24} color={colorRed} />
+            <ThemedIcon
+              name={rightIcon as keyof typeof MaterialIconsType.glyphMap}
+              size={24}
+              color={colorRed}
+            />
           </Pressable>
         )}
       </ThemedView>

@@ -16,18 +16,25 @@ export const getAllFlashcardLabelsTableData = async () => {
 
 export const getLabelsForFlashcard = async (flashcardId: number) => {
   try {
-    // Use an inner join to get the labels based on the flashcardId
-    const query = sql`
-      SELECT l.*
-      FROM labels l
-      INNER JOIN flashcard_labels fl ON l.id = fl.labelId
-      WHERE fl.flashcardId = ${flashcardId}
-    `;
+    console.log("Getting labels for flashcard:", flashcardId);
 
-    const result = await db.execute(query);
+    const result = await db
+      .select({
+        id: labelsTable.id,
+        name: labelsTable.name,
+      })
+      .from(labelsTable)
+      .innerJoin(
+        flashcardLabelsTable,
+        eq(labelsTable.id, flashcardLabelsTable.labelId)
+      )
+      .where(eq(flashcardLabelsTable.flashcardId, flashcardId));
+
+    console.log("Labels for flashcard:", result);
     return result;
   } catch (error) {
     console.error("Error retrieving labels for flashcard:", error);
+    throw error;
   }
 };
 
@@ -128,6 +135,7 @@ export const updateFlashcardLabels = async (
   labelIds: number[]
 ) => {
   try {
+    console.log(`Updating labels for flashcard ${flashcardId}:`, labelIds);
     await db
       .delete(flashcardLabelsTable)
       .where(eq(flashcardLabelsTable.flashcardId, flashcardId));

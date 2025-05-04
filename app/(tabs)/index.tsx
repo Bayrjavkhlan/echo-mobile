@@ -127,57 +127,6 @@ export default function HomeScreen() {
 
   const currentData = getCurrentData();
 
-  // const {
-  //   flashcards,
-  //   loading,
-  //   error,
-  //   fetchFlashcards,
-  //   createFlashcard,
-  //   updateFlashcard,
-  //   deleteFlashcard,
-  // } = useFlashcards();
-
-  // useEffect(() => {
-  //   fetchFlashcards();
-  // }, [fetchFlashcards]);
-
-  // if (loading) {
-  //   return (
-  //     <SafeAreaView className="bg-white dark:bg-gray-900">
-  //       <ThemedText>Loading flashcards...</ThemedText>
-  //     </SafeAreaView>
-  //   );
-  // }
-
-  // if (error) {
-  //   return (
-  //     <SafeAreaView className="bg-white dark:bg-gray-900">
-  //       <ThemedText>Error: {error}</ThemedText>
-  //     </SafeAreaView>
-  //   );
-  // }
-
-  /* <Label data={labelData} onPress={() => console.log("pressed")} />
-          <HorizontalLabelScroll labels={labels} />
-          <LabelAdd />
-          <Progress percentage={12} /> */
-
-  type TestRecord = {
-    id: number;
-    testNumber: number;
-    testText: string;
-  };
-
-  const [testData, setTestData] = useState<TestRecord[] | undefined>(undefined);
-  const testDataInsert = async () => {
-    console.log("test");
-    await createTestRecord(1, "Test data2");
-    await getTestTableData().then((data) => {
-      console.log("Data retrieved:", data);
-      setTestData(data);
-    });
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView className="flex-1">
@@ -192,102 +141,9 @@ export default function HomeScreen() {
               initialActiveDataset="weekly"
             />
             <MemorizinStreak streak={5} />
-            <ThemedView className=" p-4">
-              <Button onPress={testDataInsert} title="Дата нэмэх" />
-              <ThemedView>
-                {testData?.map((item) => (
-                  <ThemedView key={item.id} className="p-4">
-                    <ThemedText>{item.testNumber}</ThemedText>
-                    <ThemedText>{item.testText}</ThemedText>
-                  </ThemedView>
-                ))}
-              </ThemedView>
-            </ThemedView>
           </ThemedView>
         </ScrollView>
       </ThemedView>
-
-      {/* <LabelAdd data={labelData} />
-        <Label data={labelData} /> */}
-      {/* </ThemedView> */}
-
-      {/* <ThemedText>гэр</ThemedText>
-      <Label data={labelData}></Label>
-      <HorizontalLabelScroll />
-      <ThemedText>test</ThemedText>
-      <View style={tw`p-4`}>
-        <ThemedText>This should be NotoSerif</ThemedText>
-        <Label data={{ text: "Test Label", color: "blue" }} />
-      </View>
-      <Button title="test123456789" />
-      <ThemedText>test</ThemedText>
-      <Button
-        title="Submit"
-        type="contained"
-        size="large"
-        onPress={() => console.log("Pressed")}
-        rightIcon="add"
-      />
-      <Button title="Delete" type="outlined" color="danger" />
-      <Button
-        title="Learn More"
-        type="text"
-        buttonClass="p-0"
-        textClass="underline"
-      />
-      <Button type="icon" color="secondary" />
-      <Button title="Processing..." loading disabled />
-
-      <ScrollView>
-        {flashcards.map((flashcard) => (
-          <View key={flashcard.id} style={tw`p-4 border-b border-gray-200`}>
-            <ThemedText className="text-lg">
-              {flashcard.question_type}
-            </ThemedText>
-            <ThemedText>{flashcard.answer}</ThemedText>
-            <Label data={{ text: flashcard.label, color: "blue" }} />
-
-            <View style={tw`flex-row mt-2`}>
-              <Button
-                title="Edit"
-                type="outlined"
-                onPress={() => {
-                  updateFlashcard(flashcard.id, {
-                    question_type: flashcard.question_type,
-                    question: "Updated question",
-                    answer: flashcard.answer,
-                    label: flashcard.label,
-                    description: flashcard.description,
-                    label_ids: [],
-                  });
-                }}
-              />
-              <Button
-                title="Delete"
-                type="outlined"
-                color="danger"
-                onPress={() => deleteFlashcard(flashcard.id)}
-              />
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-
-      <Button
-        title="Add Flashcard"
-        type="contained"
-        onPress={() => {
-          createFlashcard({
-            group_id: 1,
-            question_type: "New Question",
-            question: "What is...?",
-            answer: "The answer is...",
-            label: "New Label",
-            description: "Description here",
-            label_ids: [],
-          });
-        }}
-      /> */}
     </SafeAreaView>
   );
 }

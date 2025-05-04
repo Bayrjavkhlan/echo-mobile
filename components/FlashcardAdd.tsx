@@ -3,7 +3,7 @@ import { OuterThemedView } from "./OuterThemedView";
 import ThemedIcon from "./ThemedIcon";
 import { ThemedView } from "./ThemedView";
 import { Input } from "./ui/Input";
-import { View, TouchableOpacity, Pressable } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import tw from "twrnc";
 import { LabelType } from "./ui/Label";
 import { useColor } from "@/hooks/useThemeColor";
@@ -21,6 +21,7 @@ interface FlashcardAddProps {
   onChangeLabels: (labels: LabelType[]) => void;
   wrongAnswers?: string[];
   onChangeWrongAnswers?: (answers: string[]) => void;
+  className?: string;
 }
 
 export default function FlashcardAdd({
@@ -34,76 +35,36 @@ export default function FlashcardAdd({
   onChangeLabels,
   wrongAnswers,
   onChangeWrongAnswers,
+  className,
 }: FlashcardAddProps) {
   const colorRed = useColor("red");
 
-  const [wrongAnswersVisibility, setWrongAnswersVisibility] = useState(false);
   return (
-    <ThemedView className="flex-1 p-4">
-      <View style={tw`relative`}>
-        <OuterThemedView className="p-6">
+    <ThemedView style={styles.container} noBackgroundColor>
+      <View style={styles.contentWrapper}>
+        <OuterThemedView className={className}>
           <Input
             title="Асуулт"
             value={question}
             onChangeText={onChangeQuestion}
             hasError={hasError}
+            multiline={true}
+            textInputStyle={styles.textInput}
           />
           <Input
             title="Хариулт"
             value={answer}
             onChangeText={onChangeAnswer}
             hasError={hasError}
+            multiline={true}
+            textInputStyle={styles.textInput}
           />
-          <HorizontalLabelScroll
-            className="py-0"
-            selectedLabels={labels}
-            onChangeSelectedLabels={onChangeLabels}
-          />
-
-          {/* {wrongAnswersVisibility && onChangeWrongAnswers && (
-            <View style={tw`mt-4`}>
-              {(wrongAnswers ?? []).map((item, i) => (
-                <Input
-                  key={i}
-                  title={`Буруу хариулт ${i + 1}`}
-                  value={item}
-                  onChangeText={(text) => {
-                    const updated = [...(wrongAnswers ?? [])];
-                    updated[i] = text;
-                    onChangeWrongAnswers(updated);
-                  }}
-                  rightIcon="close"
-                  onRightIconPress={() => {
-                    const updated = [...(wrongAnswers ?? [])];
-                    updated.splice(i, 1);
-                    onChangeWrongAnswers(updated);
-                  }}
-                />
-              ))}
-
-              <Button
-                title="Буруу хариулт нэмэх"
-                className="mt-2"
-                onPress={() =>
-                  onChangeWrongAnswers([...(wrongAnswers ?? []), ""])
-                }
-              />
-            </View>
-          )}
-          <Pressable
-            onPress={() => setWrongAnswersVisibility(!wrongAnswersVisibility)}
-          >
-            <ThemedView className="w-full justify-center items-center mb-[-20px]">
-              <ThemedIcon
-                name={
-                  wrongAnswersVisibility
-                    ? "keyboard-arrow-up"
-                    : "keyboard-arrow-down"
-                }
-                size={24}
-              />
-            </ThemedView>
-          </Pressable> */}
+          <View>
+            <HorizontalLabelScroll
+              selectedLabels={labels}
+              onChangeSelectedLabels={onChangeLabels}
+            />
+          </View>
         </OuterThemedView>
 
         {onDelete && (
@@ -118,3 +79,18 @@ export default function FlashcardAdd({
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    padding: 0,
+  },
+  contentWrapper: {
+    position: "relative",
+  },
+  textInput: {
+    minHeight: 80,
+    textAlignVertical: "top",
+    paddingTop: 25,
+  },
+});

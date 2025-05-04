@@ -3,7 +3,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useInheritedTheme } from "../context/ThemeInheritContext";
 
 type IconProps = {
-  name: keyof typeof MaterialIcons.glyphMap;
+  name: string | keyof typeof MaterialIcons.glyphMap;
   lightColor?: string;
   darkColor?: string;
   color?: string;
@@ -38,7 +38,7 @@ export default function ThemedIcon({
 
   return (
     <MaterialIcons
-      name={name}
+      name={name as keyof typeof MaterialIcons.glyphMap}
       color={color || iconColor}
       size={size}
       className={className}

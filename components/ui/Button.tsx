@@ -78,7 +78,7 @@ const ButtonComponent = ({
   const textStyles = [
     { fontFamily },
     tw.style(
-      ` text-sm font-medium text-center`,
+      ` text-sm font-medium text-center flex items-center`,
       size === "large" && "font-semibold",
       textClass,
       disabled && "text-gray-400"

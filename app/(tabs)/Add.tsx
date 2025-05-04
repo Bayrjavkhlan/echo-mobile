@@ -251,7 +251,7 @@ export default function AddScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView className="flex-1">
         <ScrollView>
-          <ThemedView className="p-4">
+          <ThemedView className="p-4 pb-0">
             <Input
               title="Флашкарт багцийн гарчиг"
               value={title}
@@ -267,39 +267,42 @@ export default function AddScreen() {
             />
           </ThemedView>
 
-          {flashcards.map((card, index) => (
-            <FlashcardAdd
-              key={card.id}
-              question={card.question}
-              answer={card.answer}
-              onChangeQuestion={(text) => {
-                const newCards = [...flashcards];
-                newCards[index].question = text;
-                setFlashcards(newCards);
-              }}
-              onChangeAnswer={(text) => {
-                const newCards = [...flashcards];
-                newCards[index].answer = text;
-                setFlashcards(newCards);
-              }}
-              hasError={card.error}
-              onDelete={() => handleDeleteFlashcard(card.id)}
-              labels={card.labels}
-              onChangeLabels={(labels) => {
-                const newCards = [...flashcards];
-                newCards[index].labels = labels.filter(
-                  (label): label is LabelType => label.id !== undefined
-                );
-                setFlashcards(newCards);
-              }}
-              wrongAnswers={card.wrongAnswers}
-              onChangeWrongAnswers={(newAnswers) => {
-                const newCards = [...flashcards];
-                newCards[index].wrongAnswers = newAnswers;
-                setFlashcards(newCards);
-              }}
-            />
-          ))}
+          <ThemedView className="p-4 pt-0">
+            {flashcards.map((card, index) => (
+              <FlashcardAdd
+                key={card.id}
+                question={card.question}
+                answer={card.answer}
+                onChangeQuestion={(text) => {
+                  const newCards = [...flashcards];
+                  newCards[index].question = text;
+                  setFlashcards(newCards);
+                }}
+                onChangeAnswer={(text) => {
+                  const newCards = [...flashcards];
+                  newCards[index].answer = text;
+                  setFlashcards(newCards);
+                }}
+                hasError={card.error}
+                onDelete={() => handleDeleteFlashcard(card.id)}
+                labels={card.labels}
+                onChangeLabels={(labels) => {
+                  const newCards = [...flashcards];
+                  newCards[index].labels = labels.filter(
+                    (label): label is LabelType => label.id !== undefined
+                  );
+                  setFlashcards(newCards);
+                }}
+                wrongAnswers={card.wrongAnswers}
+                onChangeWrongAnswers={(newAnswers) => {
+                  const newCards = [...flashcards];
+                  newCards[index].wrongAnswers = newAnswers;
+                  setFlashcards(newCards);
+                }}
+                className="pt-8"
+              />
+            ))}
+          </ThemedView>
 
           <ThemedView className="p-4 pt-0 flex-1 gap-2">
             <Button

@@ -145,8 +145,8 @@ export default function HorizontalLabelScroll({
           title="Шошго нэмэх"
           value={labelInput}
           onChangeText={setLabelInput}
-          className={`bg-[${backgroundColor}]`}
           backgroundColor={backgroundColor}
+          className="mb-0"
         />
       </CustomModal>
     </ThemedView>

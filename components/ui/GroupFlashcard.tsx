@@ -30,7 +30,7 @@ const GroupFlashcard = ({ groupFlashcard, count }: GroupFlashcardProps) => {
     console.log("Navigating to group ID:", groupFlashcard.id);
 
     router.push({
-      pathname: "/group/[id]",
+      pathname: "/group/[id]/Overview",
       params: { id: groupFlashcard.id, name: groupFlashcard.title },
     });
   };

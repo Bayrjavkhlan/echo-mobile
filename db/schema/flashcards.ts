@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { groupsTable } from "./groups";
 
 export const flashcardsTable = sqliteTable("flashcards", {
@@ -8,6 +8,8 @@ export const flashcardsTable = sqliteTable("flashcards", {
     .references(() => groupsTable.id),
   question: text("question").notNull(),
   answer: text("answer").notNull(),
+  easynessFactor: real("easyness_factor").default(2.5),
+  reviewCount: integer("review_count").default(0),
   createdAt: integer("created_at").notNull(),
   updatedBy: text("updated_by").notNull(),
 });

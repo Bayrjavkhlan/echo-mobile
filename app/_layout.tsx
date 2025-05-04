@@ -81,7 +81,6 @@ export default function RootLayout() {
         <Stack.Screen
           name="group/[id]"
           options={{
-            title: "Group Details",
             headerShown: true,
             presentation: "card",
           }}
