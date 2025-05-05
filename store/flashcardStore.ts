@@ -37,32 +37,63 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
     try {
       const result = await getAllFlashcardTableData();
       if (result) {
+        console.log(`Got ${result.length} flashcards from database`);
+
         const flashcardsWithLabels = await Promise.all(
           result.map(async (flashcard: any) => {
-            const labelsResult = await getLabelsForFlashcard(flashcard.id);
-            const labels =
-              labelsResult?.map((item: any) => ({
-                id: String(item.labels.id),
-                name: item.labels.name,
-                color: item.labels.color,
-              })) || [];
+            if (!flashcard || !flashcard.id) {
+              console.warn("Skipping invalid flashcard:", flashcard);
+              return null;
+            }
 
-            return {
-              id: String(flashcard.id),
-              question: flashcard.question,
-              answer: flashcard.answer,
-              groupId: String(flashcard.groupId),
-              labels,
-              createdAt: flashcard.createdAt,
-              updatedAt: flashcard.updatedAt,
-            };
+            try {
+              const labelsResult = await getLabelsForFlashcard(flashcard.id);
+              const labels =
+                labelsResult
+                  ?.map((item: any) => {
+                    // Add null check for labels
+                    if (!item || !item.labels) return null;
+
+                    return {
+                      id: String(item.labels.id || ""),
+                      name: item.labels.name || "",
+                      color: item.labels.color || "",
+                    };
+                  })
+                  .filter(Boolean) || []; // Remove any null values
+
+              return {
+                id: String(flashcard.id),
+                question: flashcard.question || "",
+                answer: flashcard.answer || "",
+                groupId: String(flashcard.groupId || "0"),
+                labels,
+                createdAt: flashcard.createdAt,
+                updatedAt: flashcard.updatedAt,
+              };
+            } catch (itemError) {
+              console.error(
+                `Error processing flashcard ${flashcard.id}:`,
+                itemError
+              );
+              return null;
+            }
           })
         );
 
-        set({ flashcards: flashcardsWithLabels });
+        const validFlashcards = flashcardsWithLabels.filter(Boolean);
+        console.log(
+          `Processed ${validFlashcards.length} valid flashcards out of ${result.length}`
+        );
+
+        set({ flashcards: validFlashcards as Flashcard[] });
+      } else {
+        console.warn("No flashcards returned from getAllFlashcardTableData");
       }
     } catch (error) {
       console.error("Failed to fetch flashcards:", error);
+      set({ flashcards: [] });
+      throw error;
     }
   },
 

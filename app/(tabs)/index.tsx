@@ -17,6 +17,7 @@ import ActivityBarChart from "@/components/ActivityBarChart";
 import { MemorizinStreak } from "@/components/MemorizingStreak";
 import { TestData } from "@/components/TestData";
 import { createTestRecord, getTestTableData } from "../../db/crud/testCrud";
+import WordSuggestion from "@/components/WordSuggestion";
 // const labels = [
 //   { id: 1, name: "Home", icon: "home" },
 //   { id: 2, name: "Profile", icon: "user" },
@@ -133,6 +134,7 @@ export default function HomeScreen() {
         <ScrollView className="">
           <ThemedView className="flex flex-col h-full">
             <ProgressBar totalWords={123} memorizedWords={86} />
+            <WordSuggestion />
 
             <ActivityBarChart
               weeklyData={weeklyActivityData}

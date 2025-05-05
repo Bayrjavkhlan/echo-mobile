@@ -90,6 +90,18 @@ export default function ProfileScreen() {
               onPress={() => console.log("2 pressed")}
             />
             <Button
+              title="Сервертэй мэдээлэл нийцүүлэх"
+              leftIcon={
+                <ThemedIcon name="sentiment-very-satisfied" size={18} />
+              }
+              iconSize={24}
+              type="outlined"
+              alignRightIcon
+              size="extra"
+              textClass="text-[18px]"
+              onPress={() => console.log("sync with server pressed")}
+            />
+            <Button
               title="Санал хүсэлт илгээх"
               leftIcon={
                 <ThemedIcon name="sentiment-very-satisfied" size={18} />

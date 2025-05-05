@@ -16,7 +16,7 @@ import { Flashcard as FlashcardType } from "@/store/flashcardStore";
 import { useColor } from "@/hooks/useThemeColor";
 import ThemedIcon from "./ThemedIcon";
 
-type FlashcardsProps = {
+export type FlashcardsProps = {
   group: FlashcardGroup | null;
   onActiveIndexChange?: (index: number, flashcard: FlashcardType) => void;
 };

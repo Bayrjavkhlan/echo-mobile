@@ -4,27 +4,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState, useCallback } from "react";
 import { useGroupStore } from "@/store/groupStore";
 import Flashcards from "@/components/Flashcards";
-import { ScrollView, StyleSheet, Alert } from "react-native";
+import { ScrollView, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Button } from "@/components/ui/Button";
 import ThemedIcon from "@/components/ThemedIcon";
 import CustomModal from "@/components/ui/Modal";
 import { useColor } from "@/hooks/useThemeColor";
-import { Input } from "@/components/ui/Input";
 import FlashcardAdd from "@/components/FlashcardAdd";
-import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
 import { LabelType } from "@/components/ui/Label";
 import { Flashcard } from "@/store/flashcardStore";
 import {
   updateFlashcardRecord,
   createFlashcardRecord,
   deleteFlashcardRecord,
+  getFlashcardsByGroupId,
 } from "@/db/crud/flashcards";
 import {
   updateFlashcardLabels,
-  addLabelToFlashcard,
   removeAllLabelsFromFlashcard,
 } from "@/db/crud/flashcardLabels";
 import Toast from "react-native-toast-message";
+import { deleteGroupRecord } from "@/db/crud/group";
 
 export default function GroupsOverviewScreen() {
   const params = useLocalSearchParams();
@@ -135,6 +134,33 @@ export default function GroupsOverviewScreen() {
     }
   };
 
+  const checkAndDeleteEmptyGroup = async (groupId: number) => {
+    try {
+      const flashcards = await getFlashcardsByGroupId(groupId);
+      if (!flashcards || flashcards.length === 0) {
+        console.log(
+          `No flashcards left in group ${groupId}, deleting the group...`
+        );
+        await deleteGroupRecord(groupId);
+        await fetchGroups();
+        Toast.show({
+          type: "success",
+          text1: "Амжилттай!",
+          text2: "Хоосон багц автоматаар устгагдлаа.",
+          visibilityTime: 3000,
+          position: "top",
+        });
+
+        router.back();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error checking/deleting empty group:", error);
+      return false;
+    }
+  };
+
   const handleDeleteFlashcard = async () => {
     if (!activeFlashcard) return;
 
@@ -150,18 +176,24 @@ export default function GroupsOverviewScreen() {
           try {
             setLoading(true);
             const flashcardId = Number(activeFlashcard.id);
+            const groupId = Number(id);
+
             await removeAllLabelsFromFlashcard(flashcardId);
             await deleteFlashcardRecord(flashcardId);
-            await fetchGroups();
-            await fetchGroupById(String(id));
+            const groupWasDeleted = await checkAndDeleteEmptyGroup(groupId);
 
-            Toast.show({
-              type: "success",
-              text1: "Амжилттай!",
-              text2: "Флашкарт амжилттай устгагдлаа.",
-              visibilityTime: 3000,
-              position: "top",
-            });
+            if (!groupWasDeleted) {
+              await fetchGroups();
+              await fetchGroupById(String(id));
+
+              Toast.show({
+                type: "success",
+                text1: "Амжилттай!",
+                text2: "Флашкарт амжилттай устгагдлаа.",
+                visibilityTime: 3000,
+                position: "top",
+              });
+            }
           } catch (error) {
             console.error("Error deleting flashcard:", error);
             Toast.show({
@@ -186,9 +218,12 @@ export default function GroupsOverviewScreen() {
     });
   }, [id, name, router]);
 
-  const handleExam = () => {
-    console.log("handleExam pressed");
-  };
+  const handleGroupExam = useCallback(() => {
+    router.push({
+      pathname: "/group/[id]/Exam",
+      params: { id: id, name: name },
+    });
+  }, [id, name, router]);
 
   useEffect(() => {
     const loadGroup = async () => {
@@ -215,10 +250,22 @@ export default function GroupsOverviewScreen() {
     <SafeAreaView style={{ flex: 1 }} edges={["bottom", "left", "right"]}>
       <Stack.Screen
         options={{
-          title: `Багц: ${name}  ` || "Багцын мэдээлэл",
+          title: `Багц: ${name}` || "Багцын мэдээлэл",
           headerBackTitle: "Back",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/(tabs)/Library",
+                });
+              }}
+            >
+              <ThemedIcon name="arrow-back" size={22} />
+            </TouchableOpacity>
+          ),
         }}
       />
+
       <ThemedView className="flex-1">
         <ScrollView
           style={styles.scrollView}
@@ -250,7 +297,7 @@ export default function GroupsOverviewScreen() {
               type="outlined"
               size="extra"
               textClass={`text-[18px]`}
-              onPress={handleExam}
+              onPress={handleGroupExam}
             />
             <Button
               title="Давтах"
