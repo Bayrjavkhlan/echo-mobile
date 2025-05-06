@@ -3,17 +3,42 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { useEffect, useState } from "react";
 import { OuterThemedView } from "./OuterThemedView";
+import { useCalendarStore } from "@/store/calendarStore";
 
 interface MemorizinStreakProps {
-  streak: number;
+  streak?: number;
 }
 
 const days = ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"];
 
 export const MemorizinStreak: React.FC<MemorizinStreakProps> = (props) => {
-  const { streak } = props;
+  const { streak: propStreak } = props;
   const [weekDates, setWeekDates] = useState<number[]>([]);
   const today = new Date();
+
+  // Use the calendar store to get the streak
+  const {
+    streak: storeStreak,
+    fetchStreak,
+    recordAppOpened,
+  } = useCalendarStore();
+
+  // Determine which streak to use - prop has priority if provided
+  const streak = propStreak !== undefined ? propStreak : storeStreak;
+
+  useEffect(() => {
+    const initialize = async () => {
+      // Record app opened when component mounts
+      await recordAppOpened();
+
+      // If streak is not provided as a prop, fetch it from the store
+      if (propStreak === undefined) {
+        await fetchStreak();
+      }
+    };
+
+    initialize();
+  }, [propStreak, fetchStreak, recordAppOpened]);
 
   useEffect(() => {
     const todayDay = today.getDay();

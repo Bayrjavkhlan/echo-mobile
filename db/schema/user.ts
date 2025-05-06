@@ -7,6 +7,8 @@ export const userTable = sqliteTable("user", {
   age: integer("age"),
   email: text("email"),
   password: text("password"),
+  isSync: integer("is_active").default(0),
+
   createdAt: integer("created_at").notNull().default(1),
   updatedBy: text("updated_by").notNull(),
 });

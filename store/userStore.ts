@@ -15,6 +15,8 @@ interface userType {
 }
 
 interface UserStore {
+  userId: number;
+  isLoggedIn: boolean;
   user: userType | null;
   fetchUser: () => Promise<void>;
   fetchUserById: (id: number) => Promise<void>;
@@ -31,9 +33,14 @@ interface UserStore {
     password: string,
     age: number
   ) => Promise<void>;
+  setUserId: (id: number) => void;
+  login: (userId: number) => void;
+  logout: () => void;
 }
 
 export const useUserStore = create<UserStore>((set) => ({
+  userId: 1, // Default user ID for non-logged in users
+  isLoggedIn: false,
   user: null,
 
   fetchUser: async () => {
@@ -103,4 +110,18 @@ export const useUserStore = create<UserStore>((set) => ({
       });
     }
   },
+
+  setUserId: (id: number) => set({ userId: id }),
+
+  login: (userId: number) =>
+    set({
+      userId: userId,
+      isLoggedIn: true,
+    }),
+
+  logout: () =>
+    set({
+      userId: 1, // Reset to default user ID
+      isLoggedIn: false,
+    }),
 }));

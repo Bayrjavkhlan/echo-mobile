@@ -92,6 +92,27 @@
       "when": 1746509670212,
       "tag": "0012_rare_korath",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1746515466920,
+      "tag": "0013_fast_enchantress",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1746519348447,
+      "tag": "0014_fine_morlocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1746519351945,
+      "tag": "0015_slow_the_spike",
+      "breakpoints": true
     }
   ]
 }

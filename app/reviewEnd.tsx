@@ -117,7 +117,6 @@ export default function ReviewEndScreen() {
   }, [allFlashcards, results]);
 
   const handleGoBack = () => {
-    // Go back to home screen
     router.push("/(tabs)");
   };
 
@@ -125,7 +124,7 @@ export default function ReviewEndScreen() {
     <>
       <Stack.Screen
         options={{
-          title: `Шалгалтын үр дүн` || "Үр дүн",
+          title: `Шалгалтын үр дүн: ${name}` || "Үр дүн",
           headerBackTitle: "Back",
           headerLeft: () => (
             <TouchableOpacity

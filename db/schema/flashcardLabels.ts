@@ -10,11 +10,15 @@ export const flashcardLabelsTable = sqliteTable("flashcard_labels", {
   labelId: integer("label_id")
     .notNull()
     .references(() => labelsTable.id),
+  isSync: integer("is_active").default(0),
 });
 
-export const flashcardLabelsRelations = relations(flashcardLabelsTable, ({ one }) => ({
-  label: one(labelsTable, {
-    fields: [flashcardLabelsTable.labelId],
-    references: [labelsTable.id],
-  }),
-}));
+export const flashcardLabelsRelations = relations(
+  flashcardLabelsTable,
+  ({ one }) => ({
+    label: one(labelsTable, {
+      fields: [flashcardLabelsTable.labelId],
+      references: [labelsTable.id],
+    }),
+  })
+);

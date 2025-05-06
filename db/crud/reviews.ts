@@ -1,13 +1,11 @@
-import { sql } from "drizzle-orm";
+import { sql, and, eq, gte } from "drizzle-orm";
 import useDatabase from "@/hooks/useDatabase";
 import { reviewsTable } from "../schema/reviews";
 import { flashcardsTable } from "../schema/flashcards";
-import { reviewTable } from "../schema/reviewTable";
 
 const db = useDatabase();
 
 let reviewsTableExists = false;
-let reviewTableExists = false;
 let lastReviewedAtColumnExists = false;
 
 const checkTablesExist = async () => {
@@ -36,6 +34,7 @@ type ReviewData = {
   timeToAnswer: number;
   groupId: string;
   userAnswer: string;
+  userId?: number; // Optional user ID for tracking
 };
 
 const DEFAULT_EASINESS_FACTOR = 2.5;
@@ -62,6 +61,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
     // Convert string IDs to numbers
     const flashcardId = parseInt(reviewData.flashcardId);
     const groupId = parseInt(reviewData.groupId);
+    const userId = reviewData.userId || null;
 
     if (isNaN(flashcardId) || isNaN(groupId)) {
       console.error(
@@ -77,7 +77,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
         easynessFactor: flashcardsTable.easynessFactor,
       })
       .from(flashcardsTable)
-      .where(sql`${flashcardsTable.id} = ${flashcardId}`)
+      .where(eq(flashcardsTable.id, flashcardId))
       .limit(1);
 
     if (!flashcardResult || flashcardResult.length === 0) {
@@ -109,7 +109,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
           interval: reviewsTable.interval,
         })
         .from(reviewsTable)
-        .where(sql`${reviewsTable.flashcardId} = ${flashcardId}`)
+        .where(eq(reviewsTable.flashcardId, flashcardId))
         .orderBy(sql`${reviewsTable.createdAt} DESC`)
         .limit(1);
 
@@ -175,6 +175,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
         await db.insert(reviewsTable).values({
           flashcardId,
           groupId,
+          userId,
           correct: reviewData.correct ? 1 : 0,
           timeToAnswer: reviewData.timeToAnswer,
           userAnswer: reviewData.userAnswer,
@@ -182,6 +183,10 @@ export const saveReviewData = async (reviewData: ReviewData) => {
           interval,
           nextReview: nextReviewStr,
           easynessFactor: newEF,
+          lastReviewDate: new Date().toISOString(),
+          responseTime: Math.round(reviewData.timeToAnswer * 1000), // Convert seconds to ms
+          lastScore: qualityScore,
+          isSync: 0, // Not synced by default
         });
         console.log(`Saved review record for flashcard ${flashcardId}`);
       } catch (insertError) {
@@ -205,7 +210,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
           easynessFactor: newEF,
           // We'll skip updating lastReviewedAt if the column doesn't exist
         })
-        .where(sql`${flashcardsTable.id} = ${flashcardId}`);
+        .where(eq(flashcardsTable.id, flashcardId));
 
       console.log(
         `Updated flashcard ${flashcardId} SM-2 parameters: EF=${newEF}, reviews=${
@@ -229,7 +234,7 @@ export const getFlashcardReviewHistory = async (flashcardId: number) => {
     return await db
       .select()
       .from(reviewsTable)
-      .where(sql`${reviewsTable.flashcardId} = ${flashcardId}`)
+      .where(eq(reviewsTable.flashcardId, flashcardId))
       .orderBy(sql`${reviewsTable.createdAt} DESC`);
   } catch (error) {
     console.error("Error fetching flashcard review history:", error);
@@ -242,7 +247,7 @@ export const getGroupReviewHistory = async (groupId: number) => {
     return await db
       .select()
       .from(reviewsTable)
-      .where(sql`${reviewsTable.groupId} = ${groupId}`)
+      .where(eq(reviewsTable.groupId, groupId))
       .orderBy(sql`${reviewsTable.createdAt} DESC`);
   } catch (error) {
     console.error("Error fetching group review history:", error);
@@ -250,90 +255,61 @@ export const getGroupReviewHistory = async (groupId: number) => {
   }
 };
 
-// Get flashcards due for review today
 export const getFlashcardsDueForReview = async (userId: number = 1) => {
   try {
-    const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    // Get current date in ISO format
+    const today = new Date().toISOString();
 
-    console.log(`Looking for flashcards due for review on or before: ${today}`);
-
-    // First check if the reviewTable exists
-    try {
-      await db.select().from(reviewTable).limit(1);
-      reviewTableExists = true;
-    } catch (error) {
-      console.warn("Review table doesn't exist yet, using alternative method");
-    }
-
-    if (reviewTableExists) {
-      // If reviewTable exists, use it to find cards due for review
-      try {
-        const dueReviews = await db
-          .select({
-            flashcardId: reviewTable.flashcardId,
-            nextReview: reviewTable.nextReview,
-            interval: reviewTable.interval,
-            easynessFactor: reviewTable.easynessFactor,
-          })
-          .from(reviewTable)
-          .where(
-            sql`${reviewTable.userId} = ${userId} AND ${reviewTable.nextReview} <= ${today}`
-          )
-          .orderBy(reviewTable.nextReview);
-
-        console.log(
-          `Found ${dueReviews.length} flashcards due for review from reviewTable`
-        );
-
-        if (dueReviews.length > 0) {
-          // Get the actual flashcard data for these reviews
-          const flashcardIds = dueReviews.map((review) => review.flashcardId);
-          const dueFlashcards = await db
-            .select()
-            .from(flashcardsTable)
-            .where(sql`${flashcardsTable.id} IN (${flashcardIds.join(",")})`);
-
-          console.log(
-            `Retrieved ${dueFlashcards.length} flashcards for review`
-          );
-          return dueFlashcards;
-        }
-      } catch (error) {
-        console.error("Error fetching due reviews:", error);
-      }
-    }
-
-    // Fallback: If the reviewTable doesn't exist or we couldn't get cards,
-    // select flashcards that haven't been reviewed recently or at all
-    const fallbackFlashcards = await db
-      .select()
+    // Find flashcards with reviews where nextReview <= today
+    const dueFlashcards = await db
+      .select({
+        id: flashcardsTable.id,
+        question: flashcardsTable.question,
+        answer: flashcardsTable.answer,
+        groupId: flashcardsTable.groupId,
+        nextReview: reviewsTable.nextReview,
+      })
       .from(flashcardsTable)
+      .leftJoin(reviewsTable, eq(flashcardsTable.id, reviewsTable.flashcardId))
       .where(
-        sql`${flashcardsTable.lastReviewedAt} IS NULL OR 
-            DATE(${flashcardsTable.lastReviewedAt}) < DATE('now', '-1 day')`
+        and(
+          // Filter by userId
+          userId ? eq(reviewsTable.userId, userId) : sql`1=1`,
+          // Cards due for review (nextReview is before or equal to today)
+          sql`${reviewsTable.nextReview} <= ${today}`
+        )
       )
       .limit(10);
 
-    console.log(
-      `Retrieved ${fallbackFlashcards.length} flashcards for review (fallback method)`
-    );
-    return fallbackFlashcards;
+    // Add flashcards that have never been reviewed
+    const neverReviewedFlashcards = await db
+      .select({
+        id: flashcardsTable.id,
+        question: flashcardsTable.question,
+        answer: flashcardsTable.answer,
+        groupId: flashcardsTable.groupId,
+      })
+      .from(flashcardsTable)
+      .leftJoin(reviewsTable, eq(flashcardsTable.id, reviewsTable.flashcardId))
+      .where(sql`${reviewsTable.id} IS NULL`) // No review records
+      .limit(5);
+
+    return [...dueFlashcards, ...neverReviewedFlashcards];
   } catch (error) {
-    console.error("Error getting flashcards due for review:", error);
+    console.error("Error fetching flashcards due for review:", error);
     return [];
   }
 };
 
-// Calculate next review date based on SM-2 algorithm
+// Helper function to calculate next review date based on SM-2
 export const calculateNextReviewDate = (
   repetitions: number,
   easinessFactor: number
 ): Date => {
-  let interval: number;
+  let interval;
 
-  // SM-2 algorithm for interval calculation
   if (repetitions === 0) {
-    interval = 0; // Review same day (failed card)
+    interval = 0; // Review again today (failed card)
   } else if (repetitions === 1) {
     interval = 1; // 1 day
   } else if (repetitions === 2) {
@@ -348,22 +324,7 @@ export const calculateNextReviewDate = (
     interval = Math.min(interval, MAX_INTERVAL);
   }
 
-  // Calculate the next date
-  try {
-    const nextDate = new Date();
-    nextDate.setDate(nextDate.getDate() + interval);
-
-    // Validate the date is valid
-    if (isNaN(nextDate.getTime())) {
-      throw new Error("Invalid date generated");
-    }
-
-    return nextDate;
-  } catch (error) {
-    console.error("Error in calculateNextReviewDate:", error);
-    // Fallback to a reasonable date (30 days in the future)
-    const fallbackDate = new Date();
-    fallbackDate.setDate(fallbackDate.getDate() + 30);
-    return fallbackDate;
-  }
+  const nextReviewDate = new Date();
+  nextReviewDate.setDate(nextReviewDate.getDate() + interval);
+  return nextReviewDate;
 };

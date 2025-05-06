@@ -1,7 +1,6 @@
 import useDatabase from "@/hooks/useDatabase";
 import { userTable } from "../schema";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcrypt";
 
 const db = useDatabase();
 
@@ -31,14 +30,14 @@ export const createUserTableData = async (
   password: string,
   age: number
 ) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const result = await db
       .insert(userTable)
       .values({
         username: name,
         email,
-        password: hashedPassword,
+        password,
         age,
         createdAt: Date.now(),
         updatedBy: name,

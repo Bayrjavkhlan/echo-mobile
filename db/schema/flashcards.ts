@@ -11,6 +11,8 @@ export const flashcardsTable = sqliteTable("flashcards", {
   easynessFactor: real("easyness_factor").default(2.5),
   reviewCount: integer("review_count").default(0),
   lastReviewedAt: text("last_reviewed_at"),
+  isSync: integer("is_active").default(0),
+
   createdAt: integer("created_at").notNull(),
   updatedBy: text("updated_by").notNull(),
 });

@@ -1,132 +1,84 @@
-import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
-import StackCards from "@/components/StackCards";
-import { ThemedText } from "@/components/ThemedText";
-import { Button } from "@/components/ui/Button";
-import Label from "@/components/ui/Label";
-import { useEffect, useState } from "react";
-import { ScrollView, View, Dimensions } from "react-native";
+import { useState, useEffect } from "react";
+import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import tw from "twrnc";
-import { useFlashcards } from "@/app/hook/useFlashcards";
 import { ProgressBar } from "@/components/ProgressBar";
-import LabelAdd from "@/components/LabelAdd";
 import { ThemedView } from "@/components/ThemedView";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Progress } from "@/components/ui/Progress";
 import ActivityBarChart from "@/components/ActivityBarChart";
 import { MemorizinStreak } from "@/components/MemorizingStreak";
-import { TestData } from "@/components/TestData";
-import { createTestRecord, getTestTableData } from "../../db/crud/testCrud";
 import WordSuggestion from "@/components/WordSuggestion";
-// const labels = [
-//   { id: 1, name: "Home", icon: "home" },
-//   { id: 2, name: "Profile", icon: "user" },
-//   { id: 3, name: "Settings", icon: "settings" },
-//   { id: 4, name: "Messages", icon: "message-circle" },
-//   { id: 5, name: "Notifications", icon: "bell" },
-//   { id: 6, name: "Favorites", icon: "heart" },
-//   { id: 7, name: "Search", icon: "search" },
-//   { id: 8, name: "Camera", icon: "camera" },
-//   { id: 9, name: "Music", icon: "music" },
-//   { id: 10, name: "Weather", icon: "cloud" },
-// ];
-
-const { width: screenWidth } = Dimensions.get("window");
-
-const labels: {
-  text: string;
-  color: string;
-  icon?: keyof typeof MaterialIcons.glyphMap;
-}[] = [
-  { text: "Нэмэх", color: "slate", icon: "add" },
-  { text: "Нэр үг", color: "red" },
-  { text: "Үйл үг", color: "orange" },
-  { text: "Тоо", color: "amber" },
-  { text: "Label 4", color: "yellow" },
-  { text: "Label 5", color: "lime" },
-  { text: "Label 6", color: "green" },
-  { text: "Label 7", color: "emerald" },
-  { text: "Label 8", color: "teal" },
-  { text: "Label 9", color: "cyan" },
-  { text: "Label 10", color: "sky" },
-  { text: "Label 11", color: "blue" },
-  { text: "Label 12", color: "indigo" },
-  { text: "Label 13", color: "violet" },
-  { text: "Label 14", color: "purple" },
-  { text: "Label 15", color: "rose" },
-];
-
-const labelData = {
-  text: "Боловсрол",
-  color: "blue",
-};
-
-// Updated data for user spending hours across the week
-const weeklyActivityData = {
-  labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
-  datasets: [
-    {
-      data: [2.5, 3.7, 1.8, 4.2, 3.0, 5.5, 2.3],
-    },
-  ],
-};
-
-// Monthly activity data
-const monthlyActivityData = {
-  labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
-  datasets: [
-    {
-      data: [18.5, 22.3, 19.8, 25.2, 14.7],
-    },
-  ],
-};
-
-// Learned words data
-const learnedWordsData = {
-  labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
-  datasets: [
-    {
-      data: [12, 23, 8, 15, 19, 27, 10],
-    },
-  ],
-};
+import { useCalendarStore } from "@/store/calendarStore";
 
 export default function HomeScreen() {
-  const [activeDataset, setActiveDataset] = useState<
-    "weekly" | "monthly" | "words"
-  >("weekly");
+  const {
+    streak,
+    weeklyActivity,
+    monthlyActivity,
+    weeklyWordsMemorized,
+    fetchCalendarData,
+    recordAppOpened,
+  } = useCalendarStore();
 
-  // Function to get the current dataset based on the activeDataset state
-  const getCurrentData = () => {
-    switch (activeDataset) {
-      case "weekly":
-        return {
-          data: weeklyActivityData,
-          suffix: " цаг",
-          title: "Апп ашиглалтын цаг (7 хоног)",
-        };
-      case "monthly":
-        return {
-          data: monthlyActivityData,
-          suffix: " цаг",
-          title: "Апп ашиглалтын цаг (Сар)",
-        };
-      case "words":
-        return {
-          data: learnedWordsData,
-          suffix: " үг",
-          title: "Сурсан үгсийн тоо",
-        };
-      default:
-        return {
-          data: weeklyActivityData,
-          suffix: " цаг",
-          title: "Апп ашиглалтын цаг (7 хоног)",
-        };
-    }
+  useEffect(() => {
+    const initializeApp = async () => {
+      // Record app opened and fetch calendar data on component mount
+      await recordAppOpened();
+      await fetchCalendarData();
+    };
+
+    initializeApp();
+  }, [recordAppOpened, fetchCalendarData]);
+
+  // Prepare chart data from calendar store
+  const weeklyActivityData = {
+    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    datasets: [
+      {
+        data:
+          weeklyActivity.length === 7
+            ? [
+                weeklyActivity[1], // Monday
+                weeklyActivity[2], // Tuesday
+                weeklyActivity[3], // Wednesday
+                weeklyActivity[4], // Thursday
+                weeklyActivity[5], // Friday
+                weeklyActivity[6], // Saturday
+                weeklyActivity[0], // Sunday
+              ]
+            : [0, 0, 0, 0, 0, 0, 0],
+      },
+    ],
   };
 
-  const currentData = getCurrentData();
+  // Monthly activity data
+  const monthlyActivityData = {
+    labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
+    datasets: [
+      {
+        data: monthlyActivity,
+      },
+    ],
+  };
+
+  // Learned words data
+  const learnedWordsData = {
+    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    datasets: [
+      {
+        data:
+          weeklyWordsMemorized.length === 7
+            ? [
+                weeklyWordsMemorized[1], // Monday
+                weeklyWordsMemorized[2], // Tuesday
+                weeklyWordsMemorized[3], // Wednesday
+                weeklyWordsMemorized[4], // Thursday
+                weeklyWordsMemorized[5], // Friday
+                weeklyWordsMemorized[6], // Saturday
+                weeklyWordsMemorized[0], // Sunday
+              ]
+            : [0, 0, 0, 0, 0, 0, 0],
+      },
+    ],
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -135,7 +87,7 @@ export default function HomeScreen() {
           <ThemedView className="flex flex-col h-full">
             <ProgressBar totalWords={123} memorizedWords={86} />
             <WordSuggestion />
-            <MemorizinStreak streak={5} />
+            <MemorizinStreak streak={streak} />
             <ActivityBarChart
               weeklyData={weeklyActivityData}
               monthlyData={monthlyActivityData}

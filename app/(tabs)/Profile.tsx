@@ -12,16 +12,18 @@ import { deleteAllLabelTableData } from "@/db/crud/labels";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 import ThemedIcon from "@/components/ThemedIcon";
+import { deleteAllCalendarData } from "@/db/crud/calendar";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const networkState = useNetworkState();
   const handleClearDatabase = async () => {
     try {
-      await deleteAllFlashcardLabelTableData();
-      await deleteAllFlashcardRecords();
-      await deleteAllGroupRecords();
-      await deleteAllLabelTableData();
+      // await deleteAllFlashcardLabelTableData();
+      // await deleteAllFlashcardRecords();
+      // await deleteAllGroupRecords();
+      // await deleteAllLabelTableData();
+      await deleteAllCalendarData();
 
       Toast.show({
         type: "success",

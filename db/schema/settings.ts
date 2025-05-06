@@ -8,7 +8,10 @@ export const settingsTable = sqliteTable("settings", {
     .unique()
     .references(() => userTable.id),
   mode: text("mode", { enum: ["light", "dark", "auto"] }).notNull(),
+  AiGeneratedWrongAnswers: integer("created_at").notNull().default(1),
   language: text("language", { enum: ["mn", "en"] }).notNull(),
+  isSync: integer("is_active").default(0),
+
   createdAt: integer("created_at").notNull().default(1),
   updatedBy: text("updated_by").notNull(),
 });
