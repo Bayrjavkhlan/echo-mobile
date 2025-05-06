@@ -16,6 +16,7 @@ import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import ThemedIcon from "../ThemedIcon";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useColor } from "@/hooks/useThemeColor";
 
 type ButtonType = "contained" | "outlined" | "text" | "icon";
 type ButtonSize = "extra" | "large" | "middle" | "small";
@@ -53,7 +54,7 @@ const ButtonComponent = ({
   shape = "default",
   accessibilityLabel,
   accessibilityHint,
-  color = "#3b82f6",
+  color = useColor("blue"),
   fontFamily = "NotoSerif",
   alignRightIcon = false,
   ...props

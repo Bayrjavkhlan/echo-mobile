@@ -135,14 +135,13 @@ export default function HomeScreen() {
           <ThemedView className="flex flex-col h-full">
             <ProgressBar totalWords={123} memorizedWords={86} />
             <WordSuggestion />
-
+            <MemorizinStreak streak={5} />
             <ActivityBarChart
               weeklyData={weeklyActivityData}
               monthlyData={monthlyActivityData}
               wordsData={learnedWordsData}
               initialActiveDataset="weekly"
             />
-            <MemorizinStreak streak={5} />
           </ThemedView>
         </ScrollView>
       </ThemedView>

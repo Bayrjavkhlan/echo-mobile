@@ -19,5 +19,12 @@ export const reviewsTable = sqliteTable("reviews", {
   correct: integer("correct"), // 1 for correct, 0 for incorrect
   timeToAnswer: real("time_to_answer"), // in seconds
   userAnswer: text("user_answer"), // what the user answered
+
+  // Additional SM-2 fields
+  repetitions: integer("repetitions").default(0),
+  interval: integer("interval").default(1),
+  nextReview: text("next_review"),
+  easynessFactor: real("easyness_factor").default(2.5),
+
   createdAt: text("created_at").default(String(new Date().toISOString())),
 });

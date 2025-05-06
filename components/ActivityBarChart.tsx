@@ -80,7 +80,7 @@ export default function ActivityBarChart({
   const textColor = useColor("text");
 
   return (
-    <View className="py-6">
+    <View className="p-4">
       <ThemedText className="text-lg font-bold mb-4 text-center">
         {currentData.title}
       </ThemedText>

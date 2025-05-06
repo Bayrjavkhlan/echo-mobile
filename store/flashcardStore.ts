@@ -5,6 +5,8 @@ import {
   getAllFlashcardTableData,
   getFlashcardTableData,
 } from "@/db/crud/flashcards";
+import { getWrongAnswersByFlashcardId } from "@/db/crud/wrongAnswers";
+import { WrongAnswer } from "./wrongAnswerStore";
 
 export type Flashcard = {
   id: string;
@@ -17,6 +19,7 @@ export type Flashcard = {
     text?: string;
     color?: string;
   }[];
+  wrongAnswers?: WrongAnswer[];
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -62,12 +65,25 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
                   })
                   .filter(Boolean) || []; // Remove any null values
 
+              // Get wrong answers for this flashcard
+              const wrongAnswersResult = await getWrongAnswersByFlashcardId(
+                flashcard.id
+              );
+              const wrongAnswers = wrongAnswersResult
+                ? wrongAnswersResult.map((wa) => ({
+                    id: String(wa.id),
+                    flashcardId: String(wa.flashcardId),
+                    text: wa.wrongAnswer2 || "",
+                  }))
+                : [];
+
               return {
                 id: String(flashcard.id),
                 question: flashcard.question || "",
                 answer: flashcard.answer || "",
                 groupId: String(flashcard.groupId || "0"),
                 labels,
+                wrongAnswers,
                 createdAt: flashcard.createdAt,
                 updatedAt: flashcard.updatedAt,
               };
@@ -109,12 +125,23 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
             color: item.labels.color,
           })) || [];
 
+        // Get wrong answers for this flashcard
+        const wrongAnswersResult = await getWrongAnswersByFlashcardId(id);
+        const wrongAnswers = wrongAnswersResult
+          ? wrongAnswersResult.map((wa) => ({
+              id: String(wa.id),
+              flashcardId: String(wa.flashcardId),
+              text: wa.wrongAnswer2 || "",
+            }))
+          : [];
+
         const flashcardWithLabels = {
           id: String(flashcard.id),
           question: flashcard.question,
           answer: flashcard.answer,
           groupId: String(flashcard.groupId),
           labels,
+          wrongAnswers,
           createdAt: new Date(flashcard.createdAt),
           updatedBy: "user", // todo get username for it
         };

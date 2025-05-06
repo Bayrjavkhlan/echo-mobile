@@ -3,7 +3,7 @@ import { FlatList, Pressable, View } from "react-native";
 import GroupFlashcard from "@/components/ui/GroupFlashcard";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HorizontalLabelScroll from "@/components/HorizontalLabelScroll";
 import { useGroupStore } from "@/store/groupStore";
@@ -11,13 +11,15 @@ import { useRouter } from "expo-router";
 import { useLabelStore } from "@/store/labelStore";
 import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
+import { LabelType as LabelFromUI } from "@/components/ui/Label";
 
 export default function LibraryScreen() {
-  const { groups, fetchGroups } = useGroupStore();
+  const { groups, fetchGroups, fetchGroupByLabel } = useGroupStore();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const labels = useLabelStore((state) => state.labels);
   const fetchLabels = useLabelStore((state) => state.fetchLabels);
+  const [selectedLabels, setSelectedLabels] = useState<LabelFromUI[]>([]);
 
   useEffect(() => {
     fetchGroups();
@@ -35,6 +37,21 @@ export default function LibraryScreen() {
     }, [])
   );
 
+  const handleLabelSelection = (selected: LabelFromUI[]) => {
+    setSelectedLabels(selected);
+
+    if (selected.length === 0) {
+      // If no labels selected, fetch all groups
+      fetchGroups();
+    } else {
+      // Use the last selected label for filtering
+      const lastSelectedLabel = selected[selected.length - 1];
+      if (lastSelectedLabel.id) {
+        fetchGroupByLabel(String(lastSelectedLabel.id));
+      }
+    }
+  };
+
   console.log("LibraryScreen groups", groups);
 
   return (
@@ -42,7 +59,10 @@ export default function LibraryScreen() {
       <ThemedView className="flex-1">
         {labels.length > 0 && (
           <ThemedView className="p-4 pb-0">
-            <HorizontalLabelScroll />
+            <HorizontalLabelScroll
+              onChangeSelectedLabels={handleLabelSelection}
+              selectedLabels={selectedLabels}
+            />
           </ThemedView>
         )}
         <ThemedView>

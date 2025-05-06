@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import FlashcardExam from "@/components/FlashcardExam";
 import { ThemedView } from "@/components/ThemedView";
 import { SafeAreaView } from "react-native";
 import { useGroupStore } from "@/store/groupStore";
 import { Flashcard } from "@/store/flashcardStore";
-import { ExamResultItem } from "./ExamEnd";
+import { ExamResultItem } from "@/components/EndResult";
 
 export default function GroupsExamScreen() {
   const { id, name } = useLocalSearchParams<{ id: string; name: string }>();
@@ -28,11 +28,9 @@ export default function GroupsExamScreen() {
   const handleExamComplete = (results: ExamResultItem[]) => {
     console.log("Exam completed with results:", results);
 
-    // Get group name from params or current group
     const groupName = name || currentGroup?.title || "";
     console.log("Passing group name to ExamEnd:", groupName);
 
-    // Navigate to the exam results page with the results data and group name
     router.push({
       pathname: "/group/[id]/ExamEnd",
       params: {
@@ -45,6 +43,12 @@ export default function GroupsExamScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Stack.Screen
+        options={{
+          title: `Шалгалт: ${name}  ` || "Шалгалт",
+          headerBackTitle: "Back",
+        }}
+      />
       <ThemedView className="flex-1 p-4">
         <FlashcardExam
           flashcards={groupFlashcards}

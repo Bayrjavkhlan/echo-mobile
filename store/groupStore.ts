@@ -8,6 +8,8 @@ import { Flashcard } from "./flashcardStore";
 import { getAllFlashcardTableData } from "@/db/crud/flashcards";
 import { groupsTable } from "@/db/schema";
 import { getAllLabelTableData } from "@/db/crud/labels";
+import { getWrongAnswersByFlashcardId } from "@/db/crud/wrongAnswers";
+import { WrongAnswer } from "./wrongAnswerStore";
 
 // This type is for the labels in a group summary
 export type LabelType = {
@@ -26,9 +28,11 @@ export type FlashcardGroup = {
 
 interface GroupStore {
   groups: FlashcardGroup[];
+  allGroups: FlashcardGroup[];
   currentGroup: FlashcardGroup | null;
   fetchGroups: () => Promise<void>;
   fetchGroupById: (id: string) => Promise<void>;
+  fetchGroupByLabel: (label: string) => Promise<void>;
   addGroup: (
     group: { id: number; name: string; description: string },
     flashcardsWithLabels: Flashcard[]
@@ -38,6 +42,7 @@ interface GroupStore {
 export const useGroupStore = create<GroupStore>((set, get) => ({
   groups: [],
   currentGroup: null,
+  allGroups: [],
   fetchGroups: async () => {
     console.log("fetchGroups started");
     try {
@@ -114,38 +119,53 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         const flashcardsByGroup = new Map();
 
         // Process each flashcard and add it to the appropriate group
-        flashcardsResult.forEach((flashcard) => {
-          if (!flashcard || !flashcard.id) {
-            console.warn("Invalid flashcard data:", flashcard);
-            return;
-          }
-
-          try {
-            // Get labels for this flashcard from our map
-            const labels = flashcardLabelsMap.get(flashcard.id) || [];
-            console.log(`Labels for flashcard ${flashcard.id}:`, labels);
-
-            // Create a processed flashcard with its labels
-            const processedFlashcard = {
-              id: String(flashcard.id),
-              question: flashcard.question || "",
-              answer: flashcard.answer || "",
-              groupId: String(flashcard.groupId),
-              labels,
-              createdAt: flashcard.createdAt,
-              updatedAt: new Date(flashcard.createdAt || Date.now()),
-            };
-
-            // Add the flashcard to its group
-            const groupId = String(flashcard.groupId);
-            if (!flashcardsByGroup.has(groupId)) {
-              flashcardsByGroup.set(groupId, []);
+        await Promise.all(
+          flashcardsResult.map(async (flashcard) => {
+            if (!flashcard || !flashcard.id) {
+              console.warn("Invalid flashcard data:", flashcard);
+              return;
             }
-            flashcardsByGroup.get(groupId).push(processedFlashcard);
-          } catch (err) {
-            console.error(`Error processing flashcard ${flashcard.id}:`, err);
-          }
-        });
+
+            try {
+              // Get labels for this flashcard from our map
+              const labels = flashcardLabelsMap.get(flashcard.id) || [];
+              console.log(`Labels for flashcard ${flashcard.id}:`, labels);
+
+              // Get wrong answers for this flashcard
+              const wrongAnswersResult = await getWrongAnswersByFlashcardId(
+                flashcard.id
+              );
+              const wrongAnswers: WrongAnswer[] = wrongAnswersResult
+                ? wrongAnswersResult.map((wa) => ({
+                    id: String(wa.id),
+                    flashcardId: String(wa.flashcardId),
+                    text: wa.wrongAnswer2 || "",
+                  }))
+                : [];
+
+              // Create a processed flashcard with its labels and wrong answers
+              const processedFlashcard = {
+                id: String(flashcard.id),
+                question: flashcard.question || "",
+                answer: flashcard.answer || "",
+                groupId: String(flashcard.groupId),
+                labels,
+                wrongAnswers,
+                createdAt: flashcard.createdAt,
+                updatedAt: new Date(flashcard.createdAt || Date.now()),
+              };
+
+              // Add the flashcard to its group
+              const groupId = String(flashcard.groupId);
+              if (!flashcardsByGroup.has(groupId)) {
+                flashcardsByGroup.set(groupId, []);
+              }
+              flashcardsByGroup.get(groupId).push(processedFlashcard);
+            } catch (err) {
+              console.error(`Error processing flashcard ${flashcard.id}:`, err);
+            }
+          })
+        );
 
         // Process each group to create the final structure
         const mappedGroups: FlashcardGroup[] = groupsResult
@@ -208,7 +228,10 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
           .filter((group): group is FlashcardGroup => group !== null); // Type-safe filter to remove nulls
 
         console.log("mappedGroups:\t", mappedGroups.length, "groups processed");
-        set({ groups: mappedGroups });
+        set({
+          groups: mappedGroups,
+          allGroups: mappedGroups, // Store the complete list of groups
+        });
       }
     } catch (error) {
       console.error("Failed to fetch groups with flashcards:", error);
@@ -227,6 +250,44 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
       }
     } catch (error) {
       console.error("Failed to fetch group by id:", error);
+    }
+  },
+
+  fetchGroupByLabel: async (label: string) => {
+    try {
+      // Store or retrieve the full set of groups
+      let allGroups = get().allGroups;
+
+      if (allGroups.length === 0) {
+        // If we don't have any groups yet, fetch them first
+        await get().fetchGroups();
+        // Get the updated all groups
+        allGroups = get().allGroups;
+      }
+
+      // If label is empty, reset to show all groups
+      if (!label || label.trim() === "") {
+        set({ groups: [...allGroups] });
+        return;
+      }
+
+      console.log(`Filtering groups by label: ${label}`);
+
+      // Filter groups that have the selected label
+      const filteredGroups = allGroups.filter((group) =>
+        group.labels.some(
+          (labelObj) =>
+            String(labelObj.id) === String(label) ||
+            labelObj.text.toLowerCase() === label.toLowerCase()
+        )
+      );
+
+      console.log(`Found ${filteredGroups.length} groups with label ${label}`);
+
+      // Update only the displayed groups, keeping the full list in allGroups
+      set({ groups: filteredGroups });
+    } catch (error) {
+      console.error("Failed to filter groups by label:", error);
     }
   },
 
@@ -256,10 +317,14 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         // Convert map back to array
         const uniqueLabels = Array.from(uniqueLabelsMap.values());
 
+        // Keep wrong answers as they are
+        const wrongAnswers = flashcard.wrongAnswers || [];
+
         return {
           ...flashcard,
           // Replace labels with deduplicated ones
           labels: uniqueLabels,
+          wrongAnswers,
         };
       });
 
@@ -269,6 +334,13 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
           `Flashcard ${index + 1} processed labels:`,
           flashcard.labels.map((l) => `${l.id}: ${l.name || l.text}`)
         );
+        if (flashcard.wrongAnswers && flashcard.wrongAnswers.length > 0) {
+          console.log(
+            `Flashcard ${index + 1} has ${
+              flashcard.wrongAnswers.length
+            } wrong answers`
+          );
+        }
       });
 
       // Build a frequency map of labels for this group
@@ -319,12 +391,16 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         flashcards: flashcards as Flashcard[],
       };
 
-      // Add to the store
+      // Update both the groups and allGroups arrays
       set((state) => {
         console.log("Current groups in store:", state.groups.length);
         const newGroups = [...state.groups, newGroup];
+        const newAllGroups = [...state.allGroups, newGroup];
         console.log("New groups count:", newGroups.length);
-        return { groups: newGroups };
+        return {
+          groups: newGroups,
+          allGroups: newAllGroups,
+        };
       });
 
       console.log(

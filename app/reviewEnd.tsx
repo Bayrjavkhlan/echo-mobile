@@ -1,44 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useFlashcardStore, Flashcard } from "@/store/flashcardStore";
-import { useGroupStore } from "@/store/groupStore";
 import { saveReviewData } from "@/db/crud/reviews";
 import ThemedIcon from "@/components/ThemedIcon";
 import EndResult, { ExamResultItem } from "@/components/EndResult";
 
-export default function ExamEndScreen() {
-  const { id: groupId } = useLocalSearchParams<{ id: string }>();
-  const { name } = useLocalSearchParams<{ name: string }>();
+export default function ReviewEndScreen() {
+  const { type = "daily" } = useLocalSearchParams<{ type: string }>();
   const router = useRouter();
   const params = useLocalSearchParams<{ results: string }>();
   const [results, setResults] = useState<ExamResultItem[]>([]);
   const [flashcards, setFlashcards] = useState<Record<string, Flashcard>>({});
   const { fetchFlashcards, flashcards: allFlashcards } = useFlashcardStore();
-  const { fetchGroupById, currentGroup } = useGroupStore();
-  const [groupName, setGroupName] = useState<string>(name || "");
-
-  useEffect(() => {
-    if (!name && groupId) {
-      console.log("Name not provided in params, fetching from group store");
-      fetchGroupById(groupId);
-    }
-  }, [groupId, name, fetchGroupById]);
-
-  useEffect(() => {
-    if (currentGroup && !groupName) {
-      console.log("Retrieved group name from store:", currentGroup.title);
-      setGroupName(currentGroup.title);
-    }
-  }, [currentGroup, groupName]);
 
   useEffect(() => {
     if (params.results) {
       try {
         const parsedResults = JSON.parse(params.results);
         setResults(parsedResults);
-        console.log("Exam results:", parsedResults);
+        console.log("Review results:", parsedResults);
       } catch (error) {
         console.error("Failed to parse results:", error);
       }
@@ -85,10 +67,6 @@ export default function ExamEndScreen() {
           console.error(
             `Flashcard with ID ${result.flashcardId} not found in allFlashcards array`
           );
-          console.log(
-            "Available flashcard IDs:",
-            allFlashcards.slice(0, 5).map((f) => f?.id)
-          );
         }
       });
 
@@ -110,11 +88,15 @@ export default function ExamEndScreen() {
           }
 
           try {
+            // For daily reviews, we don't have a specific group
+            // Use the flashcard's groupId instead
+            const groupId = flashcardsMap[result.flashcardId].groupId || "0";
+
             saveReviewData({
               flashcardId: result.flashcardId,
               correct: result.correct,
               timeToAnswer: result.timeToAnswer,
-              groupId: groupId || "",
+              groupId: groupId,
               userAnswer: result.userAnswer || "",
             });
           } catch (error) {
@@ -132,34 +114,27 @@ export default function ExamEndScreen() {
         `Cannot map results to flashcards: results=${results.length}, flashcards=${allFlashcards.length}`
       );
     }
-  }, [allFlashcards, results, groupId]);
+  }, [allFlashcards, results]);
 
-  const goToGroupOverview = () => {
-    console.log(
-      "Going to group overview with name:",
-      groupName || name || "Unknown Group"
-    );
-    if (groupId) {
-      router.push({
-        pathname: "/group/[id]/Overview",
-        params: {
-          id: groupId,
-          name: groupName || name || "",
-        },
-      });
-    } else {
-      router.push("/(tabs)");
-    }
+  const handleGoBack = () => {
+    // Go back to home screen
+    router.push("/(tabs)");
   };
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: `Шалгалтын үр дүн: ${name}` || "Үр дүн",
+          title: `Шалгалтын үр дүн` || "Үр дүн",
           headerBackTitle: "Back",
           headerLeft: () => (
-            <TouchableOpacity onPress={goToGroupOverview}>
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/(tabs)",
+                });
+              }}
+            >
               <ThemedIcon name="arrow-back" size={22} />
             </TouchableOpacity>
           ),
@@ -168,9 +143,8 @@ export default function ExamEndScreen() {
       <EndResult
         results={results}
         flashcards={flashcards}
-        title={groupName || name || ""}
-        onBackPress={goToGroupOverview}
-        backButtonTitle="Back to Group"
+        onBackPress={handleGoBack}
+        backButtonTitle="Return to Home"
       />
     </>
   );

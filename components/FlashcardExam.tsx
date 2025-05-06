@@ -4,6 +4,8 @@ import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { Button } from "./ui/Button";
 import { Flashcard as FlashcardType } from "@/store/flashcardStore";
+import { useColor } from "@/hooks/useThemeColor";
+import { OuterThemedView } from "./OuterThemedView";
 
 type FlashcardExamProps = {
   flashcards: FlashcardType[];
@@ -27,6 +29,12 @@ export default function FlashcardExam({
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
     null
   );
+
+  const redColor = useColor("red");
+  const blueColor = useColor("blue");
+  const yellowColor = useColor("yellow");
+  const greenColor = useColor("green");
+  const contentBackground = useColor("contentBackground");
   const screenHeight = Dimensions.get("window").height;
 
   const currentFlashcard = flashcards[currentIndex];
@@ -142,7 +150,7 @@ export default function FlashcardExam({
       <ThemedView
         className="rounded-xl items-center justify-center p-4"
         style={{ height: screenHeight * 0.7 * 0.8 }}
-        customBackgroundColor="#f8f9fa"
+        customBackgroundColor={contentBackground}
       >
         <ThemedText className="text-2xl font-bold text-center">
           {currentFlashcard.question}
@@ -153,18 +161,14 @@ export default function FlashcardExam({
           </ThemedText>
         </View>
       </ThemedView>
-      <ThemedView className="p-4" style={{ height: screenHeight * 0.3 * 0.8 }}>
+      <ThemedView className="pt-4" style={{ height: screenHeight * 0.3 * 0.8 }}>
         <View style={{ flex: 1, flexDirection: "column" }}>
           <View style={{ flex: 1, flexDirection: "row", marginBottom: 8 }}>
             <View style={{ flex: 1, marginRight: 4 }}>
               <Button
                 title={shuffledAnswers[0] || ""}
                 onPress={() => handleAnswer(shuffledAnswers[0] || "")}
-                color={
-                  shuffledAnswers[0] === currentFlashcard.answer
-                    ? "blue"
-                    : "red"
-                }
+                color={redColor}
                 size="large"
                 buttonClass="h-full justify-center"
               />
@@ -173,11 +177,7 @@ export default function FlashcardExam({
               <Button
                 title={shuffledAnswers[1] || ""}
                 onPress={() => handleAnswer(shuffledAnswers[1] || "")}
-                color={
-                  shuffledAnswers[1] === currentFlashcard.answer
-                    ? "blue"
-                    : "green"
-                }
+                color={blueColor}
                 size="large"
                 buttonClass="h-full justify-center"
               />
@@ -189,11 +189,7 @@ export default function FlashcardExam({
               <Button
                 title={shuffledAnswers[2] || ""}
                 onPress={() => handleAnswer(shuffledAnswers[2] || "")}
-                color={
-                  shuffledAnswers[2] === currentFlashcard.answer
-                    ? "blue"
-                    : "yellow"
-                }
+                color={greenColor}
                 size="large"
                 buttonClass="h-full justify-center"
               />
@@ -202,11 +198,7 @@ export default function FlashcardExam({
               <Button
                 title={shuffledAnswers[3] || ""}
                 onPress={() => handleAnswer(shuffledAnswers[3] || "")}
-                color={
-                  shuffledAnswers[3] === currentFlashcard.answer
-                    ? "blue"
-                    : "purple"
-                }
+                color={yellowColor}
                 size="large"
                 buttonClass="h-full justify-center"
               />

@@ -57,6 +57,41 @@
       "when": 1746427389972,
       "tag": "0007_tidy_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1746437161023,
+      "tag": "0008_luxuriant_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1746439770550,
+      "tag": "0009_lying_adam_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1746509334267,
+      "tag": "0010_condemned_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1746509410798,
+      "tag": "0011_common_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1746509670212,
+      "tag": "0012_rare_korath",
+      "breakpoints": true
     }
   ]
 }
