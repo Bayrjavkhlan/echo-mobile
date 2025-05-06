@@ -111,7 +111,7 @@ export default function ActivityBarChart({
 
   // Default data if neither props nor store data is available
   const defaultWeeklyData = {
-    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    labels: ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"],
     datasets: [{ data: [0, 0, 0, 0, 0, 0, 0] }],
   };
 
@@ -121,7 +121,7 @@ export default function ActivityBarChart({
   };
 
   const defaultWordsData = {
-    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    labels: ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"],
     datasets: [{ data: [0, 0, 0, 0, 0, 0, 0] }],
   };
 

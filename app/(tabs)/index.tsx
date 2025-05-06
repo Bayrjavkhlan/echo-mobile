@@ -20,7 +20,6 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const initializeApp = async () => {
-      // Record app opened and fetch calendar data on component mount
       await recordAppOpened();
       await fetchCalendarData();
     };
@@ -30,21 +29,21 @@ export default function HomeScreen() {
 
   // Prepare chart data from calendar store
   const weeklyActivityData = {
-    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    labels: ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"],
     datasets: [
       {
         data:
           weeklyActivity.length === 7
             ? [
+                weeklyActivity[0], // Sunday
                 weeklyActivity[1], // Monday
                 weeklyActivity[2], // Tuesday
                 weeklyActivity[3], // Wednesday
                 weeklyActivity[4], // Thursday
                 weeklyActivity[5], // Friday
                 weeklyActivity[6], // Saturday
-                weeklyActivity[0], // Sunday
               ]
-            : [0, 0, 0, 0, 0, 0, 0],
+            : [1, 2, 3, 4, 5, 6, 7],
       },
     ],
   };
@@ -61,7 +60,7 @@ export default function HomeScreen() {
 
   // Learned words data
   const learnedWordsData = {
-    labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
+    labels: ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"],
     datasets: [
       {
         data:

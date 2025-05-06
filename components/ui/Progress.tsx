@@ -17,8 +17,8 @@ export const Progress: React.FC<ProgressProps> = ({ percentage }) => {
         <ThemedView
           className="h-2 rounded"
           style={{ width: `${percentage}%` }}
-          lightColor={Colors.light.red}
-          darkColor={Colors.dark.red}
+          lightColor={Colors.light.green}
+          darkColor={Colors.dark.green}
         />
       </ThemedView>
       <ThemedText className="flex-shrink-0">{percentage}%</ThemedText>

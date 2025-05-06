@@ -73,7 +73,7 @@ const ButtonComponent = ({
     size === "small" && tw`py-1 px-2 rounded-lg`,
     shape === "round" && tw`rounded-lg`,
     shape === "circle" && tw`rounded-full`,
-    disabled && type !== "text" && tw`bg-gray-200`,
+    disabled && type !== "text" && tw`bg-gray-300`,
   ];
 
   const textStyles = [

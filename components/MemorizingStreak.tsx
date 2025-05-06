@@ -9,7 +9,7 @@ interface MemorizinStreakProps {
   streak?: number;
 }
 
-const days = ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"];
+const days = ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"];
 
 export const MemorizinStreak: React.FC<MemorizinStreakProps> = (props) => {
   const { streak: propStreak } = props;
@@ -91,9 +91,7 @@ export const MemorizinStreak: React.FC<MemorizinStreakProps> = (props) => {
               <ThemedView key={index} className="items-center flex-1">
                 <ThemedText className="text-sm font-semibold">{day}</ThemedText>
                 <ThemedText
-                  className={`text-base font-semibold mt-1 ${
-                    isToday ? "text-red-500" : ""
-                  }`}
+                  className={`text-base mt-1 ${isToday ? "text-red-500" : ""}`}
                 >
                   {date}
                 </ThemedText>

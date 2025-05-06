@@ -8,6 +8,8 @@ import {
   PanResponder,
   GestureResponderEvent,
   PanResponderGestureState,
+  Platform,
+  AppState,
 } from "react-native";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
@@ -20,7 +22,7 @@ import { useColor } from "@/hooks/useThemeColor";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH - 60;
 const CARD_HEIGHT = SCREEN_HEIGHT * 0.7;
-const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.25;
+const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.1;
 const SWIPE_OUT_DURATION = 250;
 
 type FlashcardTrainProps = {
@@ -31,12 +33,67 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
   const [group, setGroup] = useState<FlashcardGroup | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  const [isAnimating, setIsAnimating] = useState(false);
   const contentBackground = useColor("contentBackground");
 
   const position = useRef(new Animated.ValueXY()).current;
+
+  const goToNext = () => {
+    if (!group?.flashcards) return;
+
+    if (currentIndex < group.flashcards.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setCurrentIndex(0);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (!group?.flashcards) return;
+
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else {
+      setCurrentIndex(group.flashcards.length - 1);
+    }
+  };
+
+  const forceSwipe = (direction: "left" | "right") => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+    const x = direction === "left" ? SCREEN_WIDTH : -SCREEN_WIDTH;
+    Animated.timing(position, {
+      toValue: { x, y: 0 },
+      duration: SWIPE_OUT_DURATION,
+      useNativeDriver: false,
+    }).start(() => {
+      if (direction === "left") {
+        goToPrevious();
+      } else {
+        goToNext();
+      }
+
+      // Reset position after a brief delay to ensure clean transition
+      setTimeout(() => {
+        position.setValue({ x: 0, y: 0 });
+        setIsAnimating(false);
+      }, 100);
+    });
+  };
+
+  const resetPosition = () => {
+    Animated.spring(position, {
+      toValue: { x: 0, y: 0 },
+      useNativeDriver: false,
+    }).start(() => {
+      setIsAnimating(false);
+    });
+  };
+
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () => !isAnimating,
       onPanResponderMove: (_, gesture) => {
         position.setValue({ x: gesture.dx, y: 0 });
       },
@@ -52,16 +109,41 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
     })
   ).current;
 
+  // Completely reset position when index changes
   useEffect(() => {
     position.setValue({ x: 0, y: 0 });
-  }, [currentIndex, position]);
+    setIsAnimating(false);
+  }, [currentIndex]);
 
   useEffect(() => {
     if (rawGroup && rawGroup.flashcards && rawGroup.flashcards.length > 0) {
       const shuffled = [...rawGroup.flashcards].sort(() => Math.random() - 0.5);
       setGroup({ ...rawGroup, flashcards: shuffled });
+      setCurrentIndex(0); // Reset to first card when group changes
+      position.setValue({ x: 0, y: 0 });
     }
   }, [rawGroup]);
+
+  // Add this emergency reset function
+  const resetCardState = () => {
+    position.setValue({ x: 0, y: 0 });
+    setIsAnimating(false);
+  };
+
+  // Emergency reset if app comes back from background
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        resetCardState();
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+
+  // Emergency reset on mount
+  useEffect(() => {
+    resetCardState();
+  }, []);
 
   if (!group || !group.flashcards || group.flashcards.length === 0) {
     return (
@@ -70,43 +152,6 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
       </ThemedView>
     );
   }
-
-  const forceSwipe = (direction: "left" | "right") => {
-    const x = direction === "left" ? SCREEN_WIDTH : -SCREEN_WIDTH;
-    Animated.timing(position, {
-      toValue: { x, y: 0 },
-      duration: SWIPE_OUT_DURATION,
-      useNativeDriver: false,
-    }).start(() => onSwipeComplete(direction));
-  };
-
-  const onSwipeComplete = (direction: "left" | "right") => {
-    const item = group.flashcards[currentIndex];
-    direction === "left" ? goToPrevious() : goToNext();
-  };
-
-  const resetPosition = () => {
-    Animated.spring(position, {
-      toValue: { x: 0, y: 0 },
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const goToNext = () => {
-    if (currentIndex < group.flashcards.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      setCurrentIndex(0);
-    }
-  };
-
-  const goToPrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    } else {
-      setCurrentIndex(group.flashcards.length - 1);
-    }
-  };
 
   const toggleCardFlip = (cardId: string) => {
     setFlippedCards((prev) => ({
@@ -178,6 +223,25 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
     );
   };
 
+  // Update the button handlers to make sure they work regardless of animation state
+  const handleNextButton = () => {
+    // Cancel any ongoing animations
+    if (isAnimating) {
+      position.stopAnimation();
+      // resetCardState();
+    }
+    goToNext();
+  };
+
+  const handlePrevButton = () => {
+    // Cancel any ongoing animations
+    if (isAnimating) {
+      position.stopAnimation();
+      // resetCardState();
+    }
+    goToPrevious();
+  };
+
   return (
     <ThemedView className="flex-1">
       <View style={styles.carouselContainer}>{renderCard()}</View>
@@ -195,10 +259,10 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
       </ThemedView>
 
       <View style={styles.navButtons}>
-        <TouchableOpacity style={styles.navButton} onPress={goToPrevious}>
+        <TouchableOpacity style={styles.navButton} onPress={handlePrevButton}>
           <ThemedIcon name="arrow-back" size={26} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={goToNext}>
+        <TouchableOpacity style={styles.navButton} onPress={handleNextButton}>
           <ThemedIcon name="arrow-forward" size={26} />
         </TouchableOpacity>
       </View>
