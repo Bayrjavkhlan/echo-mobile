@@ -59,7 +59,10 @@ export const MemorizinStreak: React.FC<MemorizinStreakProps> = (props) => {
     <ThemedView className="flex-1 p-4 pb-2">
       <OuterThemedView>
         <ThemedText className="text-center text-lg">
-          Та <ThemedText className="text-xl font-bold">{streak}</ThemedText>{" "}
+          Та
+          <ThemedText className="text-lg font-bold">
+            {" " + streak + " "}
+          </ThemedText>
           хоног тасралтгүй өөрийгөө хөгжүүллээ
         </ThemedText>
         <ThemedView className="items-center justify-center relative">

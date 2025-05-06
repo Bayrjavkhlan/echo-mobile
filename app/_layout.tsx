@@ -3,7 +3,6 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import { Stack, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -18,14 +17,32 @@ import { drizzle } from "drizzle-orm/expo-sqlite";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "@/drizzle/migrations";
 import { View, Text } from "react-native";
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_700Bold,
+  Roboto_400Regular_Italic,
+  Roboto_700Bold_Italic,
+} from "@expo-google-fonts/roboto";
+import { configureGlobalFonts } from "@/utils/font-config";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    // SpaceMono: require("@/assets/fonts/SpaceMono-Regular.ttf"),
-    NotoSerif: require("../assets/fonts/NotoSerif_Condensed-Medium.ttf"),
+
+  const [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_700Bold,
+    Roboto_400Regular_Italic,
+    Roboto_700Bold_Italic,
   });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      configureGlobalFonts();
+    }
+  }, [fontsLoaded]);
 
   const navigation = useNavigation();
 
@@ -36,10 +53,10 @@ export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
@@ -53,7 +70,7 @@ export default function RootLayout() {
     };
   }, [navigation]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
@@ -61,7 +78,9 @@ export default function RootLayout() {
     console.log("Migration error:", error);
     return (
       <View>
-        <Text>Migration error: {error.message}</Text>
+        <Text style={{ fontFamily: "Roboto_400Regular" }}>
+          Migration error: {error.message}
+        </Text>
       </View>
     );
   }
@@ -69,22 +88,30 @@ export default function RootLayout() {
   if (!success) {
     return (
       <View>
-        <Text>Migration is in progress...</Text>
+        <Text style={{ fontFamily: "Roboto_400Regular" }}>
+          Migration is in progress...
+        </Text>
       </View>
     );
   }
 
+  // Create a theme with Roboto font for headers
+  const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName="(tabs)">
+    <ThemeProvider value={theme}>
+      <Stack
+        initialRouteName="(tabs)"
+        screenOptions={{
+          headerTitleStyle: {
+            fontFamily: "Roboto_400Regular",
+          },
+          headerBackTitleStyle: {
+            fontFamily: "Roboto_400Regular",
+          },
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="group/[id]"
-          options={{
-            headerShown: true,
-            presentation: "card",
-          }}
-        />
         <Stack.Screen
           name="labelModal"
           options={{

@@ -3,9 +3,8 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { Colors } from "@/constants/Colors";
 import { useGroupStore } from "@/store/groupStore";
-import FlashcardCarousel from "@/components/FlashcardTrain";
+import FlashcardTrain from "@/components/FlashcardTrain";
 
 export default function GroupTrainScreen() {
   const params = useLocalSearchParams();
@@ -41,7 +40,7 @@ export default function GroupTrainScreen() {
             <ThemedText className="text-lg">Loading flashcards...</ThemedText>
           </ThemedView>
         ) : (
-          <FlashcardCarousel group={currentGroup} />
+          <FlashcardTrain rawGroup={currentGroup} />
         )}
       </ThemedView>
     </SafeAreaView>

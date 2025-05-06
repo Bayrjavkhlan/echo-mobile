@@ -35,7 +35,7 @@ export interface ButtonProps extends TouchableOpacityProps, AccessibilityProps {
   size?: ButtonSize;
   shape?: ButtonShape;
   color?: string;
-  fontFamily?: "NotoSerif" | "System" | string;
+  fontFamily?: "Roboto_400Regular" | "System" | string;
   alignRightIcon?: boolean;
 }
 
@@ -55,7 +55,7 @@ const ButtonComponent = ({
   accessibilityLabel,
   accessibilityHint,
   color = useColor("blue"),
-  fontFamily = "NotoSerif",
+  fontFamily = "Roboto_400Regular",
   alignRightIcon = false,
   ...props
 }: ButtonProps) => {

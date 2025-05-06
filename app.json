@@ -38,12 +38,10 @@
     "experiments": {
       "typedRoutes": true
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "extra": {
       "fonts": {
-        "NotoSerif": "./assets/fonts/NotoSerif_Condensed-Medium.ttf"
+        "Roboto": "./node_modules/@expo-google-fonts/roboto/Roboto_400Regular.ttf"
       }
     }
   }

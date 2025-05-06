@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@expo-google-fonts/noto-serif": "^0.3.0",
+    "@expo-google-fonts/roboto": "^0.3.0",
+    "@expo-google-fonts/roboto-flex": "^0.3.0",
     "@expo/vector-icons": "^14.0.2",
     "@libsql/client": "^0.15.4",
     "@react-navigation/bottom-tabs": "^7.2.0",

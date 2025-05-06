@@ -100,7 +100,9 @@ export default function ExamEndScreen() {
       setFlashcards(flashcardsMap);
 
       if (Object.keys(flashcardsMap).length > 0) {
-        console.log("Saving review data to database...");
+        console.log(
+          "Saving review data to database using custom SM-2 algorithm..."
+        );
         results.forEach((result) => {
           if (!result.flashcardId || !flashcardsMap[result.flashcardId]) {
             console.warn(
@@ -110,6 +112,9 @@ export default function ExamEndScreen() {
           }
 
           try {
+            console.log(
+              `Saving review with answer time: ${result.timeToAnswer}s for flashcard: ${result.flashcardId}`
+            );
             saveReviewData({
               flashcardId: result.flashcardId,
               correct: result.correct,

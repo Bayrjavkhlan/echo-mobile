@@ -5,6 +5,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { Button } from "@/components/ui/Button";
 import { Flashcard } from "@/store/flashcardStore";
 import ThemedIcon from "@/components/ThemedIcon";
+import { useColor } from "@/hooks/useThemeColor";
 
 export type ExamResultItem = {
   flashcardId: string;
@@ -28,6 +29,9 @@ export default function EndResult({
   onBackPress,
   backButtonTitle,
 }: EndResultProps) {
+  const colorRed = useColor("red");
+  const colorGreen = useColor("green");
+  const colorGray = useColor("gray");
   const totalQuestions = results.length;
   const correctAnswers = results.filter((r) => r.correct).length;
   const accuracy =
@@ -42,26 +46,24 @@ export default function EndResult({
       <ThemedText className="text-2xl font-bold mb-2">
         Шалгалтын хураангуй
       </ThemedText>
-      <ThemedView className="bg-white p-4 rounded-xl mb-4">
+      <ThemedView className="p-4 rounded-xl mb-4">
         <View style={styles.statRow}>
-          <ThemedText className="text-gray-600">Нийт асуулт:</ThemedText>
-          <ThemedText className="font-bold">{totalQuestions}</ThemedText>
+          <ThemedText textColor={colorGray}>Нийт асуулт:</ThemedText>
+          <ThemedText>{totalQuestions}</ThemedText>
         </View>
         <View style={styles.statRow}>
-          <ThemedText className="text-gray-600">Зөв харуилсан</ThemedText>
-          <ThemedText className="font-bold">{correctAnswers}</ThemedText>
+          <ThemedText textColor={colorGray}>Зөв хариулсан тоо:</ThemedText>
+          <ThemedText>{correctAnswers}</ThemedText>
         </View>
         <View style={styles.statRow}>
-          <ThemedText className="text-gray-600">Зөв хариулсан хувь:</ThemedText>
-          <ThemedText className="font-bold">{accuracy.toFixed(1)}%</ThemedText>
+          <ThemedText textColor={colorGray}>Зөв хариулсан хувь:</ThemedText>
+          <ThemedText>{accuracy.toFixed(1)}%</ThemedText>
         </View>
         <View style={styles.statRow}>
-          <ThemedText className="text-gray-600">
+          <ThemedText textColor={colorGray}>
             Хариулсан дундаж хугацаа:
           </ThemedText>
-          <ThemedText className="font-bold">
-            {avgTime.toFixed(1)} секунд
-          </ThemedText>
+          <ThemedText>{avgTime.toFixed(1)} секунд</ThemedText>
         </View>
       </ThemedView>
 
@@ -76,33 +78,46 @@ export default function EndResult({
           return (
             <ThemedView
               key={index}
-              className={`mb-4 p-4 rounded-xl ${
+              className={`mb-2 p-4 rounded-xl ${
                 result.correct ? "bg-green-50" : "bg-red-50"
               }`}
             >
-              <ThemedText className="text-lg font-bold mb-1">
-                Асуулт № {index + 1}: {result.correct ? "✓" : "✗"}
-              </ThemedText>
-              <ThemedText className="mb-2">{flashcard.question}</ThemedText>
               <View style={styles.answerRow}>
-                <ThemedText className="text-gray-600">Зөв хариулт:</ThemedText>
-                <ThemedText className="font-bold text-green-600">
+                <ThemedView className="flex-row items-center mb-1">
+                  <ThemedText className="text-lg  mr-2">
+                    Асуулт № {index + 1}:
+                  </ThemedText>
+                  <ThemedIcon
+                    name={result.correct ? "check" : "close"}
+                    size={22}
+                    color={result.correct ? colorGreen : colorRed}
+                  />
+                </ThemedView>
+                <ThemedText className="mb-2">{flashcard.question}</ThemedText>
+              </View>
+
+              <View style={styles.answerRow}>
+                <ThemedText textColor={colorGray}>Зөв хариулт:</ThemedText>
+                <ThemedText textColor={colorGreen}>
                   {flashcard.answer}
                 </ThemedText>
               </View>
               {result.userAnswer && result.userAnswer !== flashcard.answer && (
                 <View style={styles.answerRow}>
-                  <ThemedText className="text-gray-600">
-                    Таны хариулт:
+                  <ThemedText textColor={colorGray}>
+                    Сонгосон хариулт:
                   </ThemedText>
-                  <ThemedText className="font-bold text-red-600">
+                  <ThemedText textColor={colorRed}>
                     {result.userAnswer}
                   </ThemedText>
                 </View>
               )}
-              <ThemedText className="text-xs text-gray-500 mt-2">
-                Хариулсан хугацаа: {result.timeToAnswer} секунд
-              </ThemedText>
+              <View style={styles.answerRow}>
+                <ThemedText textColor={colorGray}>
+                  Хариулсан хугацаа:
+                </ThemedText>
+                <ThemedText>{result.timeToAnswer} секунд</ThemedText>
+              </View>
             </ThemedView>
           );
         })}
@@ -129,6 +144,6 @@ const styles = StyleSheet.create({
   answerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 2,
+    marginVertical: 1,
   },
 });

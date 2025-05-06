@@ -58,7 +58,7 @@ export default function WordSuggestion() {
         <ThemedView className="rounded-xl ">
           <ThemedText className="text-lg text-center pt-0">
             Таньд давтах
-            <ThemedText className="text-2xl font-bold ">
+            <ThemedText className="text-lg font-bold  ">
               {" " + dueFlashcards.length + " "}
             </ThemedText>
             Флашкарт байна

@@ -50,10 +50,6 @@ const Label = ({
   const { icon } = data;
   const contentBackground = useColor("contentBackground");
 
-  // if (data.id) {
-  //   console.log(`Rendering label: ${data.id} - Text: ${labelText}`);
-  // }
-
   return (
     <TouchableOpacity
       onPress={handlePress}
@@ -68,9 +64,7 @@ const Label = ({
         ]}
         customBackgroundColor={contentBackground}
       >
-        <ThemedText type="defaultSemiBold" className="text-sm py-[2px] ">
-          {labelText}
-        </ThemedText>
+        <ThemedText className="text-sm py-[2px] ">{labelText}</ThemedText>
         {icon && (
           <ThemedIcon
             name={icon as keyof typeof MaterialIcons.glyphMap}

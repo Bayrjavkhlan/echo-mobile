@@ -87,7 +87,7 @@ const AnimatedCard = ({
         },
       ]}
     >
-      <Text style={tw`text-lg font-bold`}>{title}</Text>
+      <Text style={tw`text-lg `}>{title}</Text>
     </Animated.View>
   );
 };

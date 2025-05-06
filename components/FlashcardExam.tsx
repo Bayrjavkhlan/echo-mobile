@@ -23,6 +23,9 @@ export default function FlashcardExam({
   flashcards = [],
   onComplete,
 }: FlashcardExamProps) {
+  const [shuffledFlashcards, setShuffledFlashcards] = useState<FlashcardType[]>(
+    []
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timer, setTimer] = useState(0);
   const [results, setResults] = useState<ExamResult[]>([]);
@@ -37,7 +40,20 @@ export default function FlashcardExam({
   const contentBackground = useColor("contentBackground");
   const screenHeight = Dimensions.get("window").height;
 
-  const currentFlashcard = flashcards[currentIndex];
+  // Shuffle flashcards when they change
+  useEffect(() => {
+    if (flashcards && flashcards.length > 0) {
+      // Create a copy of the flashcards and shuffle them
+      const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+      setShuffledFlashcards(shuffled);
+      // Reset current index when flashcards change
+      setCurrentIndex(0);
+      // Reset results
+      setResults([]);
+    }
+  }, [flashcards]);
+
+  const currentFlashcard = shuffledFlashcards[currentIndex];
 
   const getWrongAnswers = useCallback(() => {
     if (!currentFlashcard) return ["Option 1", "Option 2", "Option 3"];
@@ -97,7 +113,7 @@ export default function FlashcardExam({
 
     setResults((prevResults) => [...prevResults, newResult]);
 
-    if (currentIndex < flashcards.length - 1) {
+    if (currentIndex < shuffledFlashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       if (onComplete) {
@@ -141,7 +157,7 @@ export default function FlashcardExam({
 
   return (
     <ThemedView className="flex-1">
-      <ThemedView className="items-center justify-center py-2">
+      <ThemedView className="items-center justify-center pb-2">
         <ThemedText className="text-lg font-bold">
           {formatTime(timer)}
         </ThemedText>
@@ -152,12 +168,12 @@ export default function FlashcardExam({
         style={{ height: screenHeight * 0.7 * 0.8 }}
         customBackgroundColor={contentBackground}
       >
-        <ThemedText className="text-2xl font-bold text-center">
+        <ThemedText className="text-2xl  text-center">
           {currentFlashcard.question}
         </ThemedText>
         <View style={styles.indexIndicator}>
           <ThemedText className="text-xs">
-            {currentIndex + 1} / {flashcards.length}
+            {currentIndex + 1} / {shuffledFlashcards.length}
           </ThemedText>
         </View>
       </ThemedView>

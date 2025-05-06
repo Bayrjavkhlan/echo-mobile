@@ -24,10 +24,11 @@ const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.25;
 const SWIPE_OUT_DURATION = 250;
 
 type FlashcardTrainProps = {
-  group: FlashcardGroup | null;
+  rawGroup: FlashcardGroup | null;
 };
 
-export default function FlashcardTrain({ group }: FlashcardTrainProps) {
+export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
+  const [group, setGroup] = useState<FlashcardGroup | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
   const contentBackground = useColor("contentBackground");
@@ -55,10 +56,17 @@ export default function FlashcardTrain({ group }: FlashcardTrainProps) {
     position.setValue({ x: 0, y: 0 });
   }, [currentIndex, position]);
 
+  useEffect(() => {
+    if (rawGroup && rawGroup.flashcards && rawGroup.flashcards.length > 0) {
+      const shuffled = [...rawGroup.flashcards].sort(() => Math.random() - 0.5);
+      setGroup({ ...rawGroup, flashcards: shuffled });
+    }
+  }, [rawGroup]);
+
   if (!group || !group.flashcards || group.flashcards.length === 0) {
     return (
       <ThemedView className="items-center justify-center py-8">
-        <ThemedText className="text-lg">No flashcards available</ThemedText>
+        <ThemedText className="text-lg">Флашкарт хоосон байна</ThemedText>
       </ThemedView>
     );
   }
