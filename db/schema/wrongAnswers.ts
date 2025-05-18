@@ -6,6 +6,6 @@ export const wrongAnswersTable = sqliteTable("wrong_answers", {
   flashcardId: integer("flashcard_id")
     .notNull()
     .references(() => flashcardsTable.id),
-  wrongAnswer2: text("text"),
+  wrongAnswer: text("text"),
   isSync: integer("is_active").default(0),
 });
