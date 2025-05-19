@@ -54,9 +54,6 @@ export default function HorizontalLabelScroll({
     }
   }, []);
 
-  console.log("Available labels:", labels);
-  console.log("Selected labels:", selectedLabels || internalSelected);
-
   const normalizeLabel = (label: LabelType): LabelType => {
     const id = String(label.id);
     const text = label.text || label.name || "Unknown";

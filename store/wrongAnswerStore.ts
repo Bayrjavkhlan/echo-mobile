@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import {
   getAllWrongAnswerTableData,
-  getWrongAnswersByFlashcardId,
+  getWrongAnswerTableDataByFlashcardId,
   createWrongAnswerTableData,
   createManyWrongAnswerTableData,
   updateWrongAnswerTableData,
@@ -51,7 +51,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
           const processedWrongAnswer: WrongAnswer = {
             id: String(wrongAnswer.id),
             flashcardId,
-            text: wrongAnswer.wrongAnswer2 || "",
+            text: wrongAnswer.wrongText || "",
           };
 
           if (!wrongAnswersByFlashcard[flashcardId]) {
@@ -83,7 +83,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
         return [];
       }
 
-      const wrongAnswersResult = await getWrongAnswersByFlashcardId(
+      const wrongAnswersResult = await getWrongAnswerTableDataByFlashcardId(
         numericFlashcardId
       );
 
@@ -95,7 +95,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
         (wrongAnswer) => ({
           id: String(wrongAnswer.id),
           flashcardId: String(wrongAnswer.flashcardId),
-          text: wrongAnswer.wrongAnswer2 || "",
+          text: wrongAnswer.wrongText || "",
         })
       );
 
@@ -120,14 +120,14 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
     try {
       const result = await createWrongAnswerTableData({
         flashcardId: wrongAnswer.flashcardId,
-        wrongAnswer2: wrongAnswer.text,
+        wrongText: wrongAnswer.text,
       });
 
       if (result) {
         const newWrongAnswer: WrongAnswer = {
           id: String(result.id),
           flashcardId: String(result.flashcardId),
-          text: result.wrongAnswer2 || "",
+          text: result.wrongText || "",
         };
 
         // Update the store
@@ -156,7 +156,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
     try {
       const dbWrongAnswers = wrongAnswers.map((wa) => ({
         flashcardId: wa.flashcardId,
-        wrongAnswer2: wa.text,
+        wrongText: wa.text,
       }));
 
       const results = await createManyWrongAnswerTableData(dbWrongAnswers);
@@ -165,7 +165,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
         const processedWrongAnswers: WrongAnswer[] = results.map((result) => ({
           id: String(result.id),
           flashcardId: String(result.flashcardId),
-          text: result.wrongAnswer2 || "",
+          text: result.wrongText || "",
         }));
 
         // Update the store
@@ -204,14 +204,14 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       }
 
       const result = await updateWrongAnswerTableData(numericId, {
-        wrongAnswer2: text,
+        wrongText: text,
       });
 
       if (result) {
         const updatedWrongAnswer: WrongAnswer = {
           id: String(result.id),
           flashcardId: String(result.flashcardId),
-          text: result.wrongAnswer2 || "",
+          text: result.wrongText || "",
         };
 
         // Update the store

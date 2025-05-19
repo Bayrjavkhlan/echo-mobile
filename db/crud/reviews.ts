@@ -265,3 +265,14 @@ export const calculateNextReviewDate = (
 
   return new Date(sm2Result.nextReview);
 };
+
+export const getAllReviewTableData = async () => {
+  try {
+    const result = await db.query.reviewsTable.findMany();
+    console.log("Retrieved all review table data:", result.length, "records");
+    return result;
+  } catch (error) {
+    console.error("Error fetching all review table data:", error);
+    return [];
+  }
+};

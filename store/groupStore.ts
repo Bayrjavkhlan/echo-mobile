@@ -8,7 +8,7 @@ import { Flashcard } from "./flashcardStore";
 import { getAllFlashcardTableData } from "@/db/crud/flashcards";
 import { groupsTable } from "@/db/schema";
 import { getAllLabelTableData } from "@/db/crud/labels";
-import { getWrongAnswersByFlashcardId } from "@/db/crud/wrongAnswers";
+import { getWrongAnswerTableDataByFlashcardId } from "@/db/crud/wrongAnswers";
 import { WrongAnswer } from "./wrongAnswerStore";
 
 // This type is for the labels in a group summary
@@ -132,14 +132,13 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
               console.log(`Labels for flashcard ${flashcard.id}:`, labels);
 
               // Get wrong answers for this flashcard
-              const wrongAnswersResult = await getWrongAnswersByFlashcardId(
-                flashcard.id
-              );
+              const wrongAnswersResult =
+                await getWrongAnswerTableDataByFlashcardId(flashcard.id);
               const wrongAnswers: WrongAnswer[] = wrongAnswersResult
                 ? wrongAnswersResult.map((wa) => ({
                     id: String(wa.id),
                     flashcardId: String(wa.flashcardId),
-                    text: wa.wrongAnswer2 || "",
+                    text: wa.wrongText || "",
                   }))
                 : [];
 

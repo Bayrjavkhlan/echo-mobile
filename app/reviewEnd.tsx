@@ -124,7 +124,7 @@ export default function ReviewEndScreen() {
     <>
       <Stack.Screen
         options={{
-          title: `Шалгалтын үр дүн: ${name}` || "Үр дүн",
+          title: "Шалгалтын үр дүн",
           headerBackTitle: "Back",
           headerLeft: () => (
             <TouchableOpacity

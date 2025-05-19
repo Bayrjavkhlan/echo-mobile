@@ -1,73 +1,30 @@
+import { eq, asc, and, desc } from "drizzle-orm";
 import useDatabase from "@/hooks/useDatabase";
-import { wrongAnswersTable } from "@/db/schema/wrongAnswers";
-import { eq } from "drizzle-orm";
+import { wrongAnswersTable } from "../schema";
 
 const db = useDatabase();
 
-export const createWrongAnswerTableData = async (wrongAnswer: {
-  flashcardId: number;
-  wrongAnswer2: string | null;
-}) => {
-  try {
-    const result = await db
-      .insert(wrongAnswersTable)
-      .values(wrongAnswer)
-      .returning();
-    return result[0];
-  } catch (error) {
-    console.error("Error creating wrong answer:", error);
-    return null;
-  }
-};
-
-export const createManyWrongAnswerTableData = async (
-  wrongAnswers: {
-    flashcardId: number;
-    wrongAnswer2: string | null;
-  }[]
-) => {
-  try {
-    const result = await db
-      .insert(wrongAnswersTable)
-      .values(wrongAnswers)
-      .returning();
-    return result;
-  } catch (error) {
-    console.error("Error creating multiple wrong answers:", error);
-    return null;
-  }
-};
-
 export const getAllWrongAnswerTableData = async () => {
   try {
-    const result = await db.select().from(wrongAnswersTable);
-    return result;
+    return await db
+      .select()
+      .from(wrongAnswersTable)
+      .orderBy(desc(wrongAnswersTable.createdAt));
   } catch (error) {
-    console.error("Error getting all wrong answers:", error);
+    console.error("Error getting wrong answers:", error);
     return null;
   }
 };
 
-export const getWrongAnswerTableData = async (id: number) => {
+export const getWrongAnswerTableDataByFlashcardId = async (
+  flashcardId: number
+) => {
   try {
-    const result = await db
+    return await db
       .select()
       .from(wrongAnswersTable)
-      .where(eq(wrongAnswersTable.id, id));
-    return result[0] || null;
-  } catch (error) {
-    console.error(`Error getting wrong answer with id ${id}:`, error);
-    return null;
-  }
-};
-
-export const getWrongAnswersByFlashcardId = async (flashcardId: number) => {
-  try {
-    const result = await db
-      .select()
-      .from(wrongAnswersTable)
-      .where(eq(wrongAnswersTable.flashcardId, flashcardId));
-    return result;
+      .where(eq(wrongAnswersTable.flashcardId, flashcardId))
+      .orderBy(desc(wrongAnswersTable.createdAt));
   } catch (error) {
     console.error(
       `Error getting wrong answers for flashcard ${flashcardId}:`,
@@ -77,35 +34,94 @@ export const getWrongAnswersByFlashcardId = async (flashcardId: number) => {
   }
 };
 
+export const createWrongAnswerTableData = async (wrongAnswer: {
+  flashcardId: number;
+  wrongText: string;
+  correctText: string;
+  userId?: number | null;
+  isSync?: number | null;
+}) => {
+  try {
+    return await db.insert(wrongAnswersTable).values({
+      flashcardId: wrongAnswer.flashcardId,
+      wrongText: wrongAnswer.wrongText,
+      correctText: wrongAnswer.correctText,
+      userId: wrongAnswer.userId || null,
+      createdAt: Date.now(),
+      isSync: wrongAnswer.isSync || 0,
+    });
+  } catch (error) {
+    console.error("Error creating wrong answer:", error);
+    return null;
+  }
+};
+
 export const updateWrongAnswerTableData = async (
   id: number,
-  wrongAnswer: Partial<{
+  data: Partial<{
     flashcardId: number;
-    wrongAnswer2: string | null;
+    wrongText: string;
+    correctText: string;
+    userId: number | null;
+    isSync: number | null;
   }>
 ) => {
   try {
-    const result = await db
+    return await db
       .update(wrongAnswersTable)
-      .set(wrongAnswer)
-      .where(eq(wrongAnswersTable.id, id))
-      .returning();
-    return result[0];
+      .set({
+        ...data,
+        updatedAt: Date.now(),
+      })
+      .where(eq(wrongAnswersTable.id, id));
   } catch (error) {
-    console.error(`Error updating wrong answer with id ${id}:`, error);
+    console.error(`Error updating wrong answer ${id}:`, error);
     return null;
   }
 };
 
 export const deleteWrongAnswerTableData = async (id: number) => {
   try {
-    const result = await db
+    return await db
       .delete(wrongAnswersTable)
-      .where(eq(wrongAnswersTable.id, id))
-      .returning();
-    return result[0];
+      .where(eq(wrongAnswersTable.id, id));
   } catch (error) {
-    console.error(`Error deleting wrong answer with id ${id}:`, error);
+    console.error(`Error deleting wrong answer ${id}:`, error);
+    return null;
+  }
+};
+
+export const deleteAllWrongAnswerTableData = async () => {
+  try {
+    return await db.delete(wrongAnswersTable);
+  } catch (error) {
+    console.error("Error deleting all wrong answers:", error);
+    return null;
+  }
+};
+
+export const getWrongAnswersByUserId = async (userId: number) => {
+  try {
+    return await db
+      .select()
+      .from(wrongAnswersTable)
+      .where(eq(wrongAnswersTable.userId, userId))
+      .orderBy(desc(wrongAnswersTable.createdAt));
+  } catch (error) {
+    console.error(`Error getting wrong answers for user ${userId}:`, error);
+    return null;
+  }
+};
+
+export const getLatestWrongAnswers = async (limit: number = 10) => {
+  try {
+    return await db
+      .select()
+      .from(wrongAnswersTable)
+      .orderBy(desc(wrongAnswersTable.createdAt))
+      .limit(limit);
+  } catch (error) {
+    console.error(`Error getting latest wrong answers:`, error);
     return null;
   }
 };

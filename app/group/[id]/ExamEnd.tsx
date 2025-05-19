@@ -175,7 +175,7 @@ export default function ExamEndScreen() {
         flashcards={flashcards}
         title={groupName || name || ""}
         onBackPress={goToGroupOverview}
-        backButtonTitle="Back to Group"
+        backButtonTitle={groupName + ` багцруу буцах ` || name || ""}
       />
     </>
   );

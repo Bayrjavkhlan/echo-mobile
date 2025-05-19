@@ -1,7 +1,7 @@
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { Stack, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -25,6 +25,9 @@ import {
   Roboto_700Bold_Italic,
 } from "@expo-google-fonts/roboto";
 import { configureGlobalFonts } from "@/utils/font-config";
+import { SyncProvider } from "@/context/SyncContext";
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -98,33 +101,49 @@ export default function RootLayout() {
   // Create a theme with Roboto font for headers
   const theme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
+  // Configure sync options
+  const syncOptions = {
+    syncOnAppOpen: true,
+    syncOnNetworkChange: true,
+    syncInterval: 15, // sync every 15 minutes
+    enableBackgroundSync: true,
+    maxRetries: 3,
+  };
+
   return (
-    <ThemeProvider value={theme}>
-      <Stack
-        initialRouteName="(tabs)"
-        screenOptions={{
-          headerTitleStyle: {
-            fontFamily: "Roboto_400Regular",
-          },
-          headerBackTitleStyle: {
-            fontFamily: "Roboto_400Regular",
-          },
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="labelModal"
-          options={{
-            title: "Шошго нэмэх",
-            headerShown: true,
-            presentation: "modal",
-          }}
-        />
-        <Stack.Screen name="screens/login.page" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-      <Toast />
+    <ThemeProvider>
+      <AuthProvider>
+        <SyncProvider options={syncOptions}>
+          <NavigationThemeProvider value={theme}>
+            <Stack
+              initialRouteName="(tabs)"
+              screenOptions={{
+                headerTitleStyle: {
+                  fontFamily: "Roboto_400Regular",
+                },
+                headerBackTitleStyle: {
+                  fontFamily: "Roboto_400Regular",
+                },
+              }}
+            >
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="labelModal"
+                options={{
+                  title: "Шошго нэмэх",
+                  headerShown: true,
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen name="signUp" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+            <Toast />
+          </NavigationThemeProvider>
+        </SyncProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

@@ -10,40 +10,56 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SERVER_URL } from "../config";
 import { Colors } from "../constants/colors";
 import { useAuth } from "../context/AuthContext";
-import { SERVER_URL } from "../config";
 
-export default function LoginScreen() {
+export default function SignUpScreen() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert("Error", "Please enter both username and password");
+  const handleSignUp = async () => {
+    // Basic validation
+    if (!username || !email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all required fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long");
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${SERVER_URL}/auth/login/mobile`, {
+      const response = await fetch(`${SERVER_URL}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username,
+          email,
           password,
+          full_name: fullName || undefined,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || "Login failed");
+        throw new Error(data.detail || "Sign up failed");
       }
 
       // Use the login function from auth context
@@ -53,11 +69,13 @@ export default function LoginScreen() {
         email: data.user.email || "",
       });
 
-      // Navigate to the home screen (will be handled by auth context)
+      Alert.alert("Success", "Account created successfully!", [{ text: "OK" }]);
+
+      // Navigation will be handled by auth context
     } catch (error: any) {
       Alert.alert(
-        "Login Failed",
-        error.message || "An error occurred during login"
+        "Sign Up Failed",
+        error.message || "An error occurred during sign up"
       );
       console.log(error.message);
     } finally {
@@ -65,21 +83,21 @@ export default function LoginScreen() {
     }
   };
 
-  const navigateToSignUp = () => {
-    router.push("/signUp" as any);
+  const navigateToLogin = () => {
+    router.push("/login" as any);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Echo</Text>
-        <Text style={styles.subtitle}>Login to your account</Text>
+        <Text style={styles.subtitle}>Create a new account</Text>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.label}>Username *</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter your username"
+            placeholder="Choose a username"
             value={username}
             onChangeText={setUsername}
             autoCapitalize="none"
@@ -87,30 +105,63 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Email *</Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter your password"
+            placeholder="Enter your email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your full name (optional)"
+            value={fullName}
+            onChangeText={setFullName}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Password *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Create a password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
         </View>
 
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Confirm Password *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+        </View>
+
         <TouchableOpacity
           style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleLogin}
+          onPress={handleSignUp}
           disabled={isLoading}
         >
           <Text style={styles.buttonText}>
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? "Creating Account..." : "Sign Up"}
           </Text>
         </TouchableOpacity>
 
-        <View style={styles.signupContainer}>
-          <Text style={styles.signupText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={navigateToSignUp}>
-            <Text style={styles.signupLink}>Sign Up</Text>
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>Already have an account? </Text>
+          <TouchableOpacity onPress={navigateToLogin}>
+            <Text style={styles.loginLink}>Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -152,7 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
     fontSize: 16,
@@ -180,16 +231,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  signupContainer: {
+  loginContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
   },
-  signupText: {
+  loginText: {
     color: Colors.textDark,
     fontSize: 16,
   },
-  signupLink: {
+  loginLink: {
     color: Colors.primary,
     fontSize: 16,
     fontWeight: "bold",

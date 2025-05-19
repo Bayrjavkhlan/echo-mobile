@@ -26,12 +26,14 @@ export const getGroupTableData = async (groupId: number) => {
 };
 export const createGroupRecord = async (
   groupName: string,
-  description: string
+  description: string,
+  userId: number = 0 // Default userId is 0 until user creates an account
 ) => {
   try {
     const result = await db.insert(groupsTable).values({
       name: groupName,
       description,
+      userId, // Added userId field
       createdAt: Date.now(),
       updatedBy: "user", // todo get the user name or id
     });

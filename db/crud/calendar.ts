@@ -335,3 +335,14 @@ export const deleteAllCalendarData = async () => {
     throw error;
   }
 };
+
+export const getAllCalendarTableData = async () => {
+  try {
+    const result = await db.query.calendarTable.findMany();
+    console.log("Retrieved all calendar table data:", result.length, "records");
+    return result;
+  } catch (error) {
+    console.error("Error fetching all calendar table data:", error);
+    return [];
+  }
+};

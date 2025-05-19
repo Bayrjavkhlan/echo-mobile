@@ -5,7 +5,7 @@ import {
   getAllFlashcardTableData,
   getFlashcardTableData,
 } from "@/db/crud/flashcards";
-import { getWrongAnswersByFlashcardId } from "@/db/crud/wrongAnswers";
+import { getWrongAnswerTableDataByFlashcardId } from "@/db/crud/wrongAnswers";
 import { WrongAnswer } from "./wrongAnswerStore";
 
 export type Flashcard = {
@@ -66,14 +66,13 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
                   .filter(Boolean) || []; // Remove any null values
 
               // Get wrong answers for this flashcard
-              const wrongAnswersResult = await getWrongAnswersByFlashcardId(
-                flashcard.id
-              );
+              const wrongAnswersResult =
+                await getWrongAnswerTableDataByFlashcardId(flashcard.id);
               const wrongAnswers = wrongAnswersResult
                 ? wrongAnswersResult.map((wa) => ({
                     id: String(wa.id),
                     flashcardId: String(wa.flashcardId),
-                    text: wa.wrongAnswer2 || "",
+                    text: wa.wrongText || "",
                   }))
                 : [];
 
@@ -126,12 +125,14 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
           })) || [];
 
         // Get wrong answers for this flashcard
-        const wrongAnswersResult = await getWrongAnswersByFlashcardId(id);
+        const wrongAnswersResult = await getWrongAnswerTableDataByFlashcardId(
+          id
+        );
         const wrongAnswers = wrongAnswersResult
           ? wrongAnswersResult.map((wa) => ({
               id: String(wa.id),
               flashcardId: String(wa.flashcardId),
-              text: wa.wrongAnswer2 || "",
+              text: wa.wrongText || "",
             }))
           : [];
 

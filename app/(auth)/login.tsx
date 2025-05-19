@@ -12,7 +12,9 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors } from "../constants/colors";
 import { useAuth } from "../context/AuthContext";
-import { SERVER_URL } from "../config";
+import config from "@/config";
+
+const SERVER_URL = config.SERVER_URL;
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -53,7 +55,7 @@ export default function LoginScreen() {
         email: data.user.email || "",
       });
 
-      // Navigate to the home screen (will be handled by auth context)
+      // Navigation will be handled by auth context
     } catch (error: any) {
       Alert.alert(
         "Login Failed",

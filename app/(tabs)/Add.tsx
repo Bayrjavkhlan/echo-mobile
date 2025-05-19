@@ -106,7 +106,7 @@ export default function AddScreen() {
 
     try {
       // 1. Create group
-      const groupRes = await createGroupRecord(title, description);
+      const groupRes = await createGroupRecord(title, description, 0);
       const groupId = groupRes?.lastInsertRowId;
       console.log("groupId:", groupId);
       if (!groupId) throw new Error("Group ID not returned");
