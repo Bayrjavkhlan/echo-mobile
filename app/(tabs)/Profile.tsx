@@ -18,6 +18,12 @@ import { useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import SyncStatus from "@/components/SyncStatus";
+import { insertDummyData } from "@/db/crud/insertDummyData";
+import { useGroupStore } from "@/store/groupStore";
+import { useLabelStore } from "@/store/labelStore";
+import { useFlashcardStore } from "@/store/flashcardStore";
+import { useCalendarStore } from "@/store/calendarStore";
+import { useWrongAnswerStore } from "@/store/wrongAnswerStore";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -85,11 +91,19 @@ export default function ProfileScreen() {
 
   const handleClearDatabase = async () => {
     try {
-      // await deleteAllFlashcardLabelTableData();
-      // await deleteAllFlashcardRecords();
-      // await deleteAllGroupRecords();
-      // await deleteAllLabelTableData();
+      await deleteAllFlashcardLabelTableData();
+      await deleteAllFlashcardRecords();
+      await deleteAllGroupRecords();
+      await deleteAllLabelTableData();
       await deleteAllCalendarData();
+
+      await Promise.all([
+        useGroupStore.getState().fetchGroups(),
+        useLabelStore.getState().fetchLabels(),
+        useFlashcardStore.getState().fetchFlashcards(),
+        useCalendarStore.getState().fetchCalendarData(),
+        useWrongAnswerStore.getState().fetchAllWrongAnswers(),
+      ]);
 
       Toast.show({
         type: "success",
@@ -138,6 +152,33 @@ export default function ProfileScreen() {
     if (!lastSyncTime) return "";
     const date = new Date(lastSyncTime);
     return ` (Сүүлд: ${date.toLocaleDateString()} ${date.toLocaleTimeString()})`;
+  };
+
+  const handleInsertDummyData = async () => {
+    try {
+      await insertDummyData();
+      await Promise.all([
+        useGroupStore.getState().fetchGroups(),
+        useLabelStore.getState().fetchLabels(),
+        useFlashcardStore.getState().fetchFlashcards(),
+        useCalendarStore.getState().fetchCalendarData(),
+        useWrongAnswerStore.getState().fetchAllWrongAnswers(),
+      ]);
+      Toast.show({
+        type: "success",
+        text1: "Амжилттай",
+        text2: "Тестийн дата амжилттай нэмэгдлээ.",
+        visibilityTime: 3000,
+      });
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Алдаа",
+        text2: "Тестийн дата нэмэхэд алдаа гарлаа.",
+        visibilityTime: 3000,
+      });
+      console.error("Failed to insert dummy data:", error);
+    }
   };
 
   return (
@@ -205,6 +246,16 @@ export default function ProfileScreen() {
               size="extra"
               textClass="text-[18px]"
               onPress={() => console.log("3 pressed")}
+            />
+            <Button
+              title="Тестийн дата"
+              leftIcon={<ThemedIcon name="add" size={18} />}
+              iconSize={24}
+              type="outlined"
+              alignRightIcon
+              size="extra"
+              textClass="text-[18px]"
+              onPress={handleInsertDummyData}
             />
             <Button
               title="Бүх мэдээлэлийг устгах"

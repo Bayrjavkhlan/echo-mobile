@@ -32,39 +32,42 @@ export default function ActivityBarChart({
   wordsData: propWordsData,
   initialActiveDataset = "weekly",
 }: ActivityBarChartProps) {
-  const [activeDataset, setActiveDataset] = useState<
-    "weekly" | "monthly" | "words"
-  >(initialActiveDataset);
+  // New state for data type and period
+  const [dataType, setDataType] = useState<"time" | "words">("time");
+  const [period, setPeriod] = useState<"today" | "weekly" | "monthly">(
+    "weekly"
+  );
 
   // Get data from the calendar store
   const {
+    entries,
     weeklyActivity,
     monthlyActivity,
     weeklyWordsMemorized,
     fetchWeeklyActivityData,
     fetchMonthlyActivityData,
     fetchWeeklyWordsMemorizedData,
+    fetchCalendarData,
   } = useCalendarStore();
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Fetch all chart data
-      await Promise.all([
-        fetchWeeklyActivityData(),
-        fetchMonthlyActivityData(),
-        fetchWeeklyWordsMemorizedData(),
-      ]);
-    };
+    // Fetch all chart data
+    fetchCalendarData();
+  }, [fetchCalendarData]);
 
-    fetchData();
-  }, [
-    fetchWeeklyActivityData,
-    fetchMonthlyActivityData,
-    fetchWeeklyWordsMemorizedData,
-  ]);
+  // Helper to get today's date string
+  const getTodayString = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
+  // Compute today's data from entries
+  const todayEntry = entries.find((e) => e.date === getTodayString());
+  const todayTime = todayEntry?.minutesSpent ?? 0;
+  const todayWords = todayEntry?.wordsMemorized ?? 0;
 
   // Prepare data objects from store data
-  const storeWeeklyData: ChartData = {
+  const storeWeeklyTimeData: ChartData = {
     labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
     datasets: [
       {
@@ -84,12 +87,12 @@ export default function ActivityBarChart({
     ],
   };
 
-  const storeMonthlyData: ChartData = {
+  const storeMonthlyTimeData: ChartData = {
     labels: ["1-7", "8-14", "15-21", "22-28", "29-31"],
     datasets: [{ data: monthlyActivity }],
   };
 
-  const storeWordsData: ChartData = {
+  const storeWeeklyWordsData: ChartData = {
     labels: ["Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям", "Ням"],
     datasets: [
       {
@@ -125,68 +128,90 @@ export default function ActivityBarChart({
     datasets: [{ data: [0, 0, 0, 0, 0, 0, 0] }],
   };
 
-  console.log("weeklyActivity", weeklyActivity);
-  console.log("monthlyActivity", monthlyActivity);
-
   // Use props if provided, otherwise use store data, and fall back to defaults if needed
-  const finalWeeklyData =
+  const finalWeeklyTimeData =
     propWeeklyData ||
     (weeklyActivity.some((val) => val > 0)
-      ? storeWeeklyData
+      ? storeWeeklyTimeData
       : defaultWeeklyData);
 
-  const finalMonthlyData =
+  const finalMonthlyTimeData =
     propMonthlyData ||
     (monthlyActivity.some((val) => val > 0)
-      ? storeMonthlyData
+      ? storeMonthlyTimeData
       : defaultMonthlyData);
 
-  const finalWordsData =
+  const finalWeeklyWordsData =
     propWordsData ||
     (weeklyWordsMemorized.some((val) => val > 0)
-      ? storeWordsData
+      ? storeWeeklyWordsData
       : defaultWordsData);
 
-  // Function to get the current dataset based on the activeDataset state
+  // Function to get the current dataset based on the state
   const getCurrentData = () => {
-    switch (activeDataset) {
-      case "weekly":
+    if (dataType === "time") {
+      if (period === "today") {
         return {
-          data: finalWeeklyData,
+          data: {
+            labels: ["Өнөөдөр"],
+            datasets: [{ data: [todayTime] }],
+          },
           suffix: " цаг",
-          title: "Апп ашиглалтын цаг (7 хоног)",
         };
-      case "monthly":
+      } else if (period === "weekly") {
         return {
-          data: finalMonthlyData,
+          data: finalWeeklyTimeData,
           suffix: " цаг",
-          title: "Апп ашиглалтын цаг (Сар)",
         };
-      case "words":
+      } else {
         return {
-          data: finalWordsData,
+          data: finalMonthlyTimeData,
+          suffix: " цаг",
+        };
+      }
+    } else {
+      if (period === "today") {
+        return {
+          data: {
+            labels: ["Өнөөдөр"],
+            datasets: [{ data: [todayWords] }],
+          },
           suffix: " үг",
-          title: "Сурсан үгсийн тоо",
         };
-      default:
+      } else if (period === "weekly") {
         return {
-          data: finalWeeklyData,
-          suffix: " цаг",
-          title: "Апп ашиглалтын цаг (7 хоног)",
+          data: finalWeeklyWordsData,
+          suffix: " үг",
         };
+      } else {
+        return {
+          data: finalWeeklyWordsData,
+          suffix: " үг",
+        };
+      }
     }
   };
 
   const currentData = getCurrentData();
-
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
 
   return (
     <View className="p-4">
-      <ThemedText className="text-lg font-bold mb-4 text-center">
-        {currentData.title}
-      </ThemedText>
+      {/* Top buttons */}
+      <ThemedView className="flex flex-row justify-center items-center gap-4 mt-4 px-4">
+        <Button
+          title="цаг"
+          buttonClass={`flex-1 ${dataType === "time" ? "bg-indigo-500" : ""}`}
+          onPress={() => setDataType("time")}
+        />
+        <Button
+          title="үг"
+          buttonClass={`flex-1 ${dataType === "words" ? "bg-indigo-500" : ""}`}
+          onPress={() => setDataType("words")}
+        />
+      </ThemedView>
+
       <ThemedView style={{ padding: 16 }}>
         <BarChart
           data={currentData.data}
@@ -208,23 +233,22 @@ export default function ActivityBarChart({
         />
       </ThemedView>
 
-      <ThemedView className="flex flex-row justify-center items-center gap-4 px-4">
+      {/* Bottom buttons */}
+      <ThemedView className="flex flex-row justify-center items-center gap-4 px-4 pt-0">
+        <Button
+          title="өнөөдөр"
+          buttonClass={`flex-1 ${period === "today" ? "bg-indigo-500" : ""}`}
+          onPress={() => setPeriod("today")}
+        />
         <Button
           title="7 хоног"
-          buttonClass="flex-1"
-          onPress={() => setActiveDataset("weekly")}
+          buttonClass={`flex-1 ${period === "weekly" ? "bg-indigo-500" : ""}`}
+          onPress={() => setPeriod("weekly")}
         />
-
         <Button
-          title="Сар"
-          buttonClass="flex-1"
-          onPress={() => setActiveDataset("monthly")}
-        />
-
-        <Button
-          title="Үгс"
-          buttonClass="flex-1"
-          onPress={() => setActiveDataset("words")}
+          title="сар"
+          buttonClass={`flex-1 ${period === "monthly" ? "bg-indigo-500" : ""}`}
+          onPress={() => setPeriod("monthly")}
         />
       </ThemedView>
     </View>

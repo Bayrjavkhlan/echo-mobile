@@ -21,6 +21,8 @@ import m0016 from './0016_nasty_wolverine.sql';
 import m0017 from './0017_bent_selene.sql';
 import m0018 from './0018_common_makkari.sql';
 import m0019 from './0019_busy_gunslinger.sql';
+import m0020 from './0020_tiresome_microchip.sql';
+import m0021 from './0021_moaning_tarot.sql';
 
   export default {
     journal,
@@ -44,7 +46,9 @@ m0015,
 m0016,
 m0017,
 m0018,
-m0019
+m0019,
+m0020,
+m0021
     }
   }
   
