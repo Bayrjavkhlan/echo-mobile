@@ -1,5 +1,5 @@
 import useDatabase from "@/hooks/useDatabase";
-import { eq } from "drizzle-orm";
+import { eq, gt } from "drizzle-orm";
 import { flashcardsTable } from "../schema";
 
 const db = useDatabase();
@@ -11,6 +11,27 @@ export const getAllFlashcardTableData = async () => {
     return result;
   } catch (error) {
     console.error("Error retrieving data:", error);
+  }
+};
+
+export const getFlashcardStats = async () => {
+  try {
+    // Get total number of flashcards
+    const totalResult = await db.select().from(flashcardsTable);
+
+    // Filtered EF > 2.6
+    const efAboveResult = await db
+      .select()
+      .from(flashcardsTable)
+      .where(gt(flashcardsTable.easynessFactor, 2.6));
+
+    return {
+      total: totalResult.length || 0,
+      efAbove2_6: efAboveResult.length || 0,
+    };
+  } catch (error) {
+    console.error("Error retrieving flashcard stats:", error);
+    return null;
   }
 };
 

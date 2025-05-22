@@ -3,12 +3,10 @@ import { OuterThemedView } from "./OuterThemedView";
 import ThemedIcon from "./ThemedIcon";
 import { ThemedView } from "./ThemedView";
 import { Input } from "./ui/Input";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import tw from "twrnc";
 import { LabelType } from "./ui/Label";
 import { useColor } from "@/hooks/useThemeColor";
-import { useState } from "react";
-import { Button } from "./ui/Button";
 
 interface FlashcardAddProps {
   onDelete?: () => void;
@@ -22,6 +20,7 @@ interface FlashcardAddProps {
   wrongAnswers?: string[];
   onChangeWrongAnswers?: (answers: string[]) => void;
   className?: string;
+  wrongAnswerAddEnabled?: boolean;
 }
 
 export default function FlashcardAdd({
@@ -36,6 +35,7 @@ export default function FlashcardAdd({
   wrongAnswers,
   onChangeWrongAnswers,
   className,
+  wrongAnswerAddEnabled = true,
 }: FlashcardAddProps) {
   const colorRed = useColor("red");
 
@@ -65,6 +65,56 @@ export default function FlashcardAdd({
               onChangeSelectedLabels={onChangeLabels}
             />
           </View>
+
+          {wrongAnswerAddEnabled &&
+            onChangeWrongAnswers &&
+            wrongAnswers &&
+            wrongAnswers.length > 0 && (
+              <View style={{ width: "100%", marginTop: 8 }}>
+                {wrongAnswers.map((wa, idx) => (
+                  <ThemedView
+                    key={idx}
+                    className="flex flex-row justify-center items-center gap-4"
+                  >
+                    <Input
+                      title={`Буруу хариулт ${idx + 1}`}
+                      value={wa}
+                      onChangeText={(text) => {
+                        const updated = [...wrongAnswers];
+                        updated[idx] = text;
+                        onChangeWrongAnswers(updated);
+                      }}
+                      multiline={true}
+                    />
+                    <TouchableOpacity
+                      style={tw`flex  justify-center items-center self-center  mb-4`}
+                      onPress={() => {
+                        const updated = wrongAnswers.filter(
+                          (_, i) => i !== idx
+                        );
+                        onChangeWrongAnswers(updated);
+                      }}
+                    >
+                      <ThemedIcon name="close" size={24} color={colorRed} />
+                    </TouchableOpacity>
+                  </ThemedView>
+                ))}
+              </View>
+            )}
+          <ThemedView className="w-full flex items-center pb-0">
+            <Pressable
+              onPress={() => {
+                if (onChangeWrongAnswers) {
+                  const newAnswers = wrongAnswers
+                    ? [...wrongAnswers, ""]
+                    : [""];
+                  onChangeWrongAnswers(newAnswers);
+                }
+              }}
+            >
+              <ThemedIcon name="keyboard-arrow-down" size={24} />
+            </Pressable>
+          </ThemedView>
         </OuterThemedView>
 
         {onDelete && (

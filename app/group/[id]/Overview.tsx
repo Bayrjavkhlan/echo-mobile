@@ -356,6 +356,7 @@ export default function GroupsOverviewScreen() {
           hasError={hasError}
           labels={selectedLabels}
           onChangeLabels={setSelectedLabels}
+          wrongAnswerAddEnabled={false}
         />
       </CustomModal>
     </SafeAreaView>

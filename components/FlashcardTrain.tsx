@@ -6,10 +6,8 @@ import {
   View,
   Animated,
   PanResponder,
-  TextInput,
-  KeyboardAvoidingView,
-  Modal,
-  ScrollView,
+  GestureResponderEvent,
+  PanResponderGestureState,
   Platform,
   AppState,
 } from "react-native";
@@ -20,15 +18,6 @@ import { Flashcard } from "@/store/flashcardStore";
 import { Colors } from "@/constants/Colors";
 import ThemedIcon from "./ThemedIcon";
 import { useColor } from "@/hooks/useThemeColor";
-import { useTheme } from "@/context/ThemeContext";
-import { Button } from "./ui/Button";
-import {
-  createWrongAnswerTableData,
-  deleteWrongAnswerTableData,
-} from "@/db/crud/wrongAnswers";
-import WrongAnswersList from "./WrongAnswersList";
-import Toast from "react-native-toast-message";
-import { useAuth } from "@/app/context/AuthContext";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH - 60;
@@ -41,18 +30,11 @@ type FlashcardTrainProps = {
 };
 
 export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
-  const { theme } = useTheme();
-  const { user } = useAuth();
   const [group, setGroup] = useState<FlashcardGroup | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const contentBackground = useColor("contentBackground");
-
-  // Wrong answer tracking
-  const [wrongAnswerText, setWrongAnswerText] = useState("");
-  const [showWrongAnswerModal, setShowWrongAnswerModal] = useState(false);
-  const [showWrongAnswersList, setShowWrongAnswersList] = useState(false);
 
   const position = useRef(new Animated.ValueXY()).current;
 
@@ -190,64 +172,6 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
     };
   };
 
-  const handleSaveWrongAnswer = async () => {
-    if (!wrongAnswerText.trim()) {
-      return;
-    }
-
-    const currentFlashcard = group.flashcards[currentIndex];
-
-    try {
-      await createWrongAnswerTableData({
-        flashcardId: parseInt(currentFlashcard.id),
-        wrongText: wrongAnswerText.trim(),
-        correctText: currentFlashcard.answer,
-        userId: user?.id ? parseInt(user.id) : null,
-      });
-
-      Toast.show({
-        type: "success",
-        text1: "Saved",
-        text2: "Your answer was recorded",
-        visibilityTime: 2000,
-      });
-
-      // Clear the input and close the modal
-      setWrongAnswerText("");
-      setShowWrongAnswerModal(false);
-    } catch (error) {
-      console.error("Error saving wrong answer:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to save your answer",
-        visibilityTime: 3000,
-      });
-    }
-  };
-
-  const handleDeleteWrongAnswer = async (wrongAnswerId: number) => {
-    try {
-      await deleteWrongAnswerTableData(wrongAnswerId);
-      Toast.show({
-        type: "success",
-        text1: "Deleted",
-        text2: "Wrong answer was removed",
-        visibilityTime: 2000,
-      });
-      return true;
-    } catch (error) {
-      console.error("Error deleting wrong answer:", error);
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Failed to delete wrong answer",
-        visibilityTime: 3000,
-      });
-      return false;
-    }
-  };
-
   const renderCard = () => {
     const item = group.flashcards[currentIndex];
     const isFlipped = flippedCards[item.id] || false;
@@ -282,7 +206,7 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
                   <ThemedText className="text-sm text-gray-500">
                     {!isFlipped
                       ? "Товшоод хариултаа хараарай"
-                      : "Товшоод асуултаа хараарай"}
+                      : "Товшоод асуултаа харарай"}
                   </ThemedText>
                 </ThemedView>
               </>
@@ -319,172 +243,30 @@ export default function FlashcardTrain({ rawGroup }: FlashcardTrainProps) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ThemedView className="flex-1">
-        <View style={styles.carouselContainer}>{renderCard()}</View>
+    <ThemedView className="flex-1">
+      <View style={styles.carouselContainer}>{renderCard()}</View>
 
-        <ThemedView className="flex-row justify-center mb-2">
-          {group.flashcards.map((_, idx) => (
-            <View
-              key={idx}
-              style={[
-                styles.dot,
-                {
-                  backgroundColor:
-                    idx === currentIndex ? Colors.gray[500] : Colors.gray[300],
-                },
-              ]}
-            />
-          ))}
-        </ThemedView>
-
-        <ThemedView className="flex-row justify-around px-4 py-2">
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={handlePrevButton}
-            disabled={isAnimating}
-          >
-            <ThemedIcon name="chevron-left" size={30} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => setShowWrongAnswerModal(true)}
-          >
-            <ThemedIcon
-              name="error-outline"
-              size={26}
-              color={theme.colors.error}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => setShowWrongAnswersList(true)}
-          >
-            <ThemedIcon name="list" size={26} />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={handleNextButton}
-            disabled={isAnimating}
-          >
-            <ThemedIcon name="chevron-right" size={30} />
-          </TouchableOpacity>
-        </ThemedView>
+      <ThemedView className="flex-row justify-center ">
+        {group.flashcards.map((_, idx) => (
+          <View
+            key={idx}
+            style={[
+              styles.dot,
+              currentIndex === idx ? styles.activeDot : styles.inactiveDot,
+            ]}
+          />
+        ))}
       </ThemedView>
 
-      {/* Wrong Answer Input Modal */}
-      <Modal
-        visible={showWrongAnswerModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowWrongAnswerModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.colors.background },
-            ]}
-          >
-            <ThemedText style={styles.modalTitle}>
-              Record Wrong Answer
-            </ThemedText>
-            <ThemedText style={styles.modalSubtitle}>
-              What answer did you think was correct?
-            </ThemedText>
-
-            <TextInput
-              style={[
-                styles.textInput,
-                {
-                  backgroundColor: theme.colors.cardBackground,
-                  color: theme.colors.text,
-                  borderColor: theme.colors.border,
-                },
-              ]}
-              value={wrongAnswerText}
-              onChangeText={setWrongAnswerText}
-              placeholder="Enter your answer"
-              placeholderTextColor={theme.colors.textSecondary}
-              multiline
-            />
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  { backgroundColor: theme.colors.border },
-                ]}
-                onPress={() => setShowWrongAnswerModal(false)}
-              >
-                <ThemedText>Cancel</ThemedText>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.modalButton,
-                  {
-                    backgroundColor: wrongAnswerText.trim()
-                      ? theme.colors.primary
-                      : theme.colors.border,
-                  },
-                ]}
-                onPress={handleSaveWrongAnswer}
-                disabled={!wrongAnswerText.trim()}
-              >
-                <ThemedText
-                  style={{
-                    color: wrongAnswerText.trim()
-                      ? theme.colors.background
-                      : theme.colors.text,
-                  }}
-                >
-                  Save
-                </ThemedText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Wrong Answers List Modal */}
-      <Modal
-        visible={showWrongAnswersList}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowWrongAnswersList(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modalContent,
-              styles.listModalContent,
-              { backgroundColor: theme.colors.background },
-            ]}
-          >
-            <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Wrong Answers</ThemedText>
-              <TouchableOpacity onPress={() => setShowWrongAnswersList(false)}>
-                <ThemedIcon name="close" size={24} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.listScrollView}>
-              <WrongAnswersList
-                flashcardId={parseInt(group.flashcards[currentIndex].id)}
-                onDelete={handleDeleteWrongAnswer}
-              />
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-    </KeyboardAvoidingView>
+      <View style={styles.navButtons}>
+        <TouchableOpacity style={styles.navButton} onPress={handlePrevButton}>
+          <ThemedIcon name="arrow-back" size={26} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={handleNextButton}>
+          <ThemedIcon name="arrow-forward" size={26} />
+        </TouchableOpacity>
+      </View>
+    </ThemedView>
   );
 }
 
@@ -492,32 +274,50 @@ const styles = StyleSheet.create({
   carouselContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    width: "100%",
+    height: "100%",
   },
   cardWrapper: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    // Shadow styles for iOS
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    // And for Android
-    elevation: 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardContainer: {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    borderRadius: 16,
-    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   cardTouchable: {
     flex: 1,
   },
   cardContent: {
-    flex: 1,
-    padding: 20,
+    position: "relative",
     borderRadius: 16,
+    width: "100%",
+    height: "100%",
+  },
+  card: {
+    width: CARD_WIDTH,
+    height: CARD_HEIGHT,
+    borderRadius: 16,
+    backgroundColor: Colors.light.contentBackground,
+  },
+  indexIndicator: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    backgroundColor: "rgba(200, 200, 200, 0.3)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   dot: {
     width: 8,
@@ -525,78 +325,29 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 4,
   },
+  activeDot: {
+    backgroundColor: Colors.light.tint,
+  },
+  inactiveDot: {
+    backgroundColor: "rgba(200, 200, 200, 0.5)",
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: Colors.light.tint,
+    padding: 10,
+    borderRadius: 5,
+  },
+  navButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+  },
   navButton: {
     padding: 10,
-  },
-  actionButton: {
-    padding: 10,
-  },
-  indexIndicator: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "rgba(0,0,0,0.1)",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    padding: 20,
-  },
-  modalContent: {
-    width: "90%",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-  },
-  listModalContent: {
-    height: "80%",
-    alignItems: "stretch",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  modalSubtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  textInput: {
-    width: "100%",
-    minHeight: 100,
-    borderWidth: 1,
+    backgroundColor: "rgba(200, 200, 200, 0.3)",
     borderRadius: 8,
-    padding: 12,
-    marginBottom: 20,
-    textAlignVertical: "top",
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  modalButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    minWidth: 120,
+    width: 100,
     alignItems: "center",
-  },
-  listScrollView: {
-    flex: 1,
-    width: "100%",
   },
 });

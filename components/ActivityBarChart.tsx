@@ -156,17 +156,17 @@ export default function ActivityBarChart({
             labels: ["Өнөөдөр"],
             datasets: [{ data: [todayTime] }],
           },
-          suffix: " цаг",
+          suffix: " минут",
         };
       } else if (period === "weekly") {
         return {
           data: finalWeeklyTimeData,
-          suffix: " цаг",
+          suffix: " минут",
         };
       } else {
         return {
           data: finalMonthlyTimeData,
-          suffix: " цаг",
+          suffix: " минут",
         };
       }
     } else {

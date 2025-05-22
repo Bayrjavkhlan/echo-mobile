@@ -7,6 +7,7 @@ import ActivityBarChart from "@/components/ActivityBarChart";
 import { MemorizinStreak } from "@/components/MemorizingStreak";
 import WordSuggestion from "@/components/WordSuggestion";
 import { useCalendarStore } from "@/store/calendarStore";
+import { getFlashcardStats } from "@/db/crud/flashcards";
 
 export default function HomeScreen() {
   const {
@@ -17,17 +18,20 @@ export default function HomeScreen() {
     fetchCalendarData,
     recordAppOpened,
   } = useCalendarStore();
+  const calendarFetch = useCalendarStore((state) => state.fetchCalendarData);
+  const [totalWords, setTotalWords] = useState(0);
+  const [memorizedWords, setMemorizedWords] = useState(0);
 
   useEffect(() => {
     const initializeApp = async () => {
       await recordAppOpened();
       await fetchCalendarData();
+      await calendarFetch();
     };
 
     initializeApp();
   }, [recordAppOpened, fetchCalendarData]);
 
-  // Prepare chart data from calendar store
   const weeklyActivityData = {
     labels: ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"],
     datasets: [
@@ -79,12 +83,28 @@ export default function HomeScreen() {
     ],
   };
 
+  useEffect(() => {
+    const loadProgress = async () => {
+      const data = await getFlashcardStats();
+      if (data) {
+        console.log("EF > 2.6:", data.efAbove2_6);
+        console.log("Total flashcards:", data.total);
+        setTotalWords(data.total);
+        setMemorizedWords(data.efAbove2_6);
+      }
+    };
+    loadProgress();
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView className="flex-1">
         <ScrollView className="">
-          <ThemedView className="flex flex-col h-full">
-            <ProgressBar totalWords={123} memorizedWords={86} />
+          <ThemedView className="flex flex-col h-full pb-4">
+            <ProgressBar
+              totalWords={totalWords}
+              memorizedWords={memorizedWords}
+            />
             <WordSuggestion />
             <MemorizinStreak streak={streak} />
             <ActivityBarChart

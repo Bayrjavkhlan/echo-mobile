@@ -5,14 +5,24 @@ import { useColor } from "@/hooks/useThemeColor";
 import { Button } from "@/components/ui/Button";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNetworkState } from "expo-network";
-import { deleteAllFlashcardLabelTableData } from "@/db/crud/flashcardLabels";
-import { deleteAllFlashcardRecords } from "@/db/crud/flashcards";
-import { deleteAllGroupRecords } from "@/db/crud/group";
-import { deleteAllLabelTableData } from "@/db/crud/labels";
+import {
+  addLabelToFlashcard,
+  deleteAllFlashcardLabelTableData,
+} from "@/db/crud/flashcardLabels";
+import {
+  createFlashcardRecord,
+  createManyFlashcards,
+  deleteAllFlashcardRecords,
+} from "@/db/crud/flashcards";
+import { createGroupRecord, deleteAllGroupRecords } from "@/db/crud/group";
+import {
+  createLabelTableData,
+  deleteAllLabelTableData,
+} from "@/db/crud/labels";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 import ThemedIcon from "@/components/ThemedIcon";
-import { deleteAllCalendarData } from "@/db/crud/calendar";
+import { deleteAllCalendarData, saveCalendarData } from "@/db/crud/calendar";
 import { useSync } from "@/context/SyncContext";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
@@ -24,6 +34,15 @@ import { useLabelStore } from "@/store/labelStore";
 import { useFlashcardStore } from "@/store/flashcardStore";
 import { useCalendarStore } from "@/store/calendarStore";
 import { useWrongAnswerStore } from "@/store/wrongAnswerStore";
+import {
+  createWrongAnswerTableData,
+  getAllWrongAnswerTableData,
+  getWrongAnswerTableDataByFlashcardId,
+} from "@/db/crud/wrongAnswers";
+import { dummyWeekCalendarData, insertTestFlashcardGroup } from "./dummdata";
+
+const userId = 1; // Set this to the correct user ID
+const baseDate = new Date("2025-05-18"); // Start from a Sunday
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -181,6 +200,30 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleTest = async () => {
+    // await createWrongAnswerTableData({
+    //   flashcardId: 3,
+    //   wrongText: "Gulug1",
+    //   isSync: 0,
+    // });
+    // await createWrongAnswerTableData({
+    //   flashcardId: 1,
+    //   wrongText: "Pauls Theory",
+    //   isSync: 0,
+    // });
+    // const wrongAnswer = await getWrongAnswerTableDataByFlashcardId(3);
+
+    // const allWrongAnswers = await getAllWrongAnswerTableData();
+    // // console.log("Test button pressed", allWrongAnswers);
+    // console.log("\nTest button wrong answer", wrongAnswer);
+
+    for (const entry of dummyWeekCalendarData) {
+      await saveCalendarData(entry);
+    }
+    insertTestFlashcardGroup();
+    console.log("Dummy calendar data inserted");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView className="flex-1 p-4">
@@ -205,7 +248,7 @@ export default function ProfileScreen() {
             ) : (
               <>
                 <Button
-                  title="Хувийн мэдээлэлээ өөрчлөх"
+                  title="Хувийн мэдээллээ өөрчлөх"
                   leftIcon={<ThemedIcon name="edit" size={18} />}
                   rightIcon="chevron-right"
                   iconSize={24}
@@ -223,7 +266,6 @@ export default function ProfileScreen() {
                 />
               </>
             )}
-            <SyncStatus />
             <Button
               title="Тохиргоо"
               leftIcon={<ThemedIcon name="settings" size={18} />}
@@ -235,6 +277,18 @@ export default function ProfileScreen() {
               textClass="text-[18px]"
               onPress={() => console.log("2 pressed")}
             />
+            <SyncStatus />
+            {/* <Button
+              title="Тест"
+              leftIcon={<ThemedIcon name="settings" size={18} />}
+              rightIcon="chevron-right"
+              iconSize={24}
+              type="outlined"
+              alignRightIcon
+              size="extra"
+              textClass="text-[18px]"
+              onPress={handleTest}
+            /> */}
             <Button
               title="Санал хүсэлт илгээх"
               leftIcon={
@@ -247,7 +301,7 @@ export default function ProfileScreen() {
               textClass="text-[18px]"
               onPress={() => console.log("3 pressed")}
             />
-            <Button
+            {/* <Button
               title="Тестийн дата"
               leftIcon={<ThemedIcon name="add" size={18} />}
               iconSize={24}
@@ -256,8 +310,8 @@ export default function ProfileScreen() {
               size="extra"
               textClass="text-[18px]"
               onPress={handleInsertDummyData}
-            />
-            <Button
+            /> */}
+            {/* <Button
               title="Бүх мэдээлэлийг устгах"
               leftIcon={<ThemedIcon name="delete" size={18} color={redColor} />}
               iconSize={24}
@@ -267,7 +321,7 @@ export default function ProfileScreen() {
               textClass={`text-[18px] text-[${redColor}]`}
               color={redColor}
               onPress={handleClearDatabase}
-            />
+            /> */}
             {user && (
               <Button
                 title="Гарах"

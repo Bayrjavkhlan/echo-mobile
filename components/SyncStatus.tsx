@@ -68,10 +68,10 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ compact = false }) => {
   // Get a text message based on sync status
   const getStatusText = () => {
     if (!isConnected) return "Оффлайн";
-    if (isSyncing) return "Шалгаж байна...";
+    if (isSyncing) return "Хадгалж байна байна...";
     if (lastSyncResult?.success === false) return "Амжилтгүй";
-    if (lastSyncTime) return `Сүүлд нийцүүлсэн: ${formatDate(lastSyncTime)}`;
-    return "Нийцүүлээгүй";
+    if (lastSyncTime) return `Сүүлд хадгалсан: ${formatDate(lastSyncTime)}`;
+    return "Серверт датагаа хадгалах";
   };
 
   if (compact) {
@@ -80,10 +80,10 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ compact = false }) => {
         <ThemedIcon name="backup" size={16} color={iconColor} />
         <Text style={[styles.compactText, { color: getStatusColor() }]}>
           {isSyncing
-            ? "Шалгаж байна..."
+            ? "Хадгалаж байна..."
             : lastSyncTime
-            ? "Нийцсэн"
-            : "Нийцээгүй"}
+            ? "Хадгалагдсан"
+            : "Хадгалах"}
         </Text>
       </View>
     );
@@ -137,7 +137,7 @@ const SyncStatus: React.FC<SyncStatusProps> = ({ compact = false }) => {
                     },
                   ]}
                 >
-                  Нийцүүлэх
+                  Хадгалах
                 </Text>
               </>
             </TouchableOpacity>
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   statusContainer: {
     borderWidth: 1,
     borderRadius: 12,
-    padding: 16,
+    padding: 13,
   },
   statusHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginLeft: 5,
+    marginLeft: 8,
   },
   statusIconContainer: {
     flexDirection: "row",

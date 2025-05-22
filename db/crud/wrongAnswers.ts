@@ -1,4 +1,4 @@
-import { eq, asc, and, desc } from "drizzle-orm";
+import { eq, asc, and, desc, count } from "drizzle-orm";
 import useDatabase from "@/hooks/useDatabase";
 import { wrongAnswersTable } from "../schema";
 
@@ -6,10 +6,7 @@ const db = useDatabase();
 
 export const getAllWrongAnswerTableData = async () => {
   try {
-    return await db
-      .select()
-      .from(wrongAnswersTable)
-      .orderBy(desc(wrongAnswersTable.createdAt));
+    return await db.query.wrongAnswersTable.findMany();
   } catch (error) {
     console.error("Error getting wrong answers:", error);
     return null;
@@ -23,8 +20,7 @@ export const getWrongAnswerTableDataByFlashcardId = async (
     return await db
       .select()
       .from(wrongAnswersTable)
-      .where(eq(wrongAnswersTable.flashcardId, flashcardId))
-      .orderBy(desc(wrongAnswersTable.createdAt));
+      .where(eq(wrongAnswersTable.flashcardId, flashcardId));
   } catch (error) {
     console.error(
       `Error getting wrong answers for flashcard ${flashcardId}:`,
@@ -34,20 +30,34 @@ export const getWrongAnswerTableDataByFlashcardId = async (
   }
 };
 
+export const getCountOfWrongAnswerByFlashcardId = async (
+  flashcardId: number
+) => {
+  try {
+    const result = await db
+      .select({ count: count() })
+      .from(wrongAnswersTable)
+      .where(eq(wrongAnswersTable.flashcardId, flashcardId));
+
+    return result[0]?.count ?? 0;
+  } catch (error) {
+    console.error(
+      `Error counting wrong answers for flashcard ${flashcardId}:`,
+      error
+    );
+    return 0;
+  }
+};
+
 export const createWrongAnswerTableData = async (wrongAnswer: {
   flashcardId: number;
   wrongText: string;
-  correctText: string;
-  userId?: number | null;
   isSync?: number | null;
 }) => {
   try {
     return await db.insert(wrongAnswersTable).values({
       flashcardId: wrongAnswer.flashcardId,
       wrongText: wrongAnswer.wrongText,
-      correctText: wrongAnswer.correctText,
-      userId: wrongAnswer.userId || null,
-      createdAt: Date.now(),
       isSync: wrongAnswer.isSync || 0,
     });
   } catch (error) {
@@ -61,8 +71,6 @@ export const updateWrongAnswerTableData = async (
   data: Partial<{
     flashcardId: number;
     wrongText: string;
-    correctText: string;
-    userId: number | null;
     isSync: number | null;
   }>
 ) => {
@@ -71,7 +79,6 @@ export const updateWrongAnswerTableData = async (
       .update(wrongAnswersTable)
       .set({
         ...data,
-        updatedAt: Date.now(),
       })
       .where(eq(wrongAnswersTable.id, id));
   } catch (error) {
@@ -102,11 +109,7 @@ export const deleteAllWrongAnswerTableData = async () => {
 
 export const getWrongAnswersByUserId = async (userId: number) => {
   try {
-    return await db
-      .select()
-      .from(wrongAnswersTable)
-      .where(eq(wrongAnswersTable.userId, userId))
-      .orderBy(desc(wrongAnswersTable.createdAt));
+    return await db.select().from(wrongAnswersTable);
   } catch (error) {
     console.error(`Error getting wrong answers for user ${userId}:`, error);
     return null;
@@ -115,11 +118,7 @@ export const getWrongAnswersByUserId = async (userId: number) => {
 
 export const getLatestWrongAnswers = async (limit: number = 10) => {
   try {
-    return await db
-      .select()
-      .from(wrongAnswersTable)
-      .orderBy(desc(wrongAnswersTable.createdAt))
-      .limit(limit);
+    return await db.select().from(wrongAnswersTable).limit(limit);
   } catch (error) {
     console.error(`Error getting latest wrong answers:`, error);
     return null;

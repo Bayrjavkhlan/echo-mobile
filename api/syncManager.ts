@@ -49,7 +49,8 @@ export const performFullSync = async (): Promise<SyncResult> => {
         hasErrors = true;
       }
     } catch (error) {
-      console.error(`Error syncing ${table} to server:`, error);
+      // nuguu
+      // console.error(`Error syncing ${table} to server:`, error);
       results[`push_${table}`] = {
         success: false,
         message: `Failed to sync ${table} due to error`,
@@ -171,7 +172,7 @@ export const pushAllLocalChanges = async (): Promise<SyncResult> => {
         hasErrors = true;
       }
     } catch (error) {
-      console.error(`Error syncing ${table} to server:`, error);
+      // console.error(`Error syncing ${table} to server:`, error);
       results[table] = {
         success: false,
         message: `Failed to sync ${table} due to error`,

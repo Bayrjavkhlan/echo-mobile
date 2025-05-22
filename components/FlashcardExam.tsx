@@ -6,6 +6,7 @@ import { Button } from "./ui/Button";
 import { Flashcard as FlashcardType } from "@/store/flashcardStore";
 import { useColor } from "@/hooks/useThemeColor";
 import { OuterThemedView } from "./OuterThemedView";
+import { getCountOfWrongAnswerByFlashcardId } from "@/db/crud/wrongAnswers";
 
 type FlashcardExamProps = {
   flashcards: FlashcardType[];
@@ -39,7 +40,7 @@ export default function FlashcardExam({
   const greenColor = useColor("green");
   const contentBackground = useColor("contentBackground");
   const screenHeight = Dimensions.get("window").height;
-
+  console.log("First groupId:", shuffledFlashcards[0]?.groupId);
   // Shuffle flashcards when they change
   useEffect(() => {
     if (flashcards && flashcards.length > 0) {
@@ -54,10 +55,25 @@ export default function FlashcardExam({
   }, [flashcards]);
 
   const currentFlashcard = shuffledFlashcards[currentIndex];
+  const wrongAnswerCount = async (groupId: number) => {
+    const count = await getCountOfWrongAnswerByFlashcardId(groupId);
+    return count;
+  };
 
   const getWrongAnswers = useCallback(() => {
-    if (!currentFlashcard) return ["Option 1", "Option 2", "Option 3"];
-    return ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"];
+    if (!currentFlashcard || !currentFlashcard.wrongAnswers) {
+      return ["", "", ""];
+    }
+
+    const wrongs = [...currentFlashcard.wrongAnswers];
+    const shuffled = wrongs.sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 3);
+
+    return [
+      selected[0]?.text || "",
+      selected[1]?.text || "",
+      selected[2]?.text || "",
+    ];
   }, [currentFlashcard]);
 
   const getShuffledAnswers = useCallback(() => {

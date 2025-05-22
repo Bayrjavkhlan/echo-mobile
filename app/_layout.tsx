@@ -135,8 +135,7 @@ export default function RootLayout() {
                   presentation: "modal",
                 }}
               />
-              <Stack.Screen name="login" options={{ headerShown: false }} />
-              <Stack.Screen name="signUp" options={{ headerShown: false }} />
+
               <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="auto" />

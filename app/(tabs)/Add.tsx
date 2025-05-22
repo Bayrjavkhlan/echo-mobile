@@ -22,6 +22,7 @@ export default function AddScreen() {
   const backgroundColor = useColor("background");
   const router = useRouter();
   const addGroup = useGroupStore((state) => state.addGroup);
+  const refetchGroup = useGroupStore();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

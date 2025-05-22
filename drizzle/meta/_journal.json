@@ -155,6 +155,20 @@
       "when": 1747648533600,
       "tag": "0021_moaning_tarot",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1747765354468,
+      "tag": "0022_dashing_night_nurse",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1747765382178,
+      "tag": "0023_lame_william_stryker",
+      "breakpoints": true
     }
   ]
 }

@@ -22,6 +22,7 @@ export default function GroupsExamScreen() {
   useEffect(() => {
     if (currentGroup) {
       setGroupFlashcards(currentGroup.flashcards);
+      console.log("WrongAnswers:\t", currentGroup.flashcards[0].wrongAnswers);
     }
   }, [currentGroup]);
 

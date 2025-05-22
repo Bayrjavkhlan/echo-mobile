@@ -138,7 +138,7 @@ export const syncUnsyncedForTable = async (tableName: string) => {
         };
       }
     } catch (error) {
-      console.error(`Error syncing ${tableName}:`, error);
+      // console.error(`Error syncing ${tableName}:`, error);
       return {
         success: false,
         message: `Sync failed for ${tableName} due to an error`,

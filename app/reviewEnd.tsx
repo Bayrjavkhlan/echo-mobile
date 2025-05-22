@@ -143,7 +143,7 @@ export default function ReviewEndScreen() {
         results={results}
         flashcards={flashcards}
         onBackPress={handleGoBack}
-        backButtonTitle="Return to Home"
+        backButtonTitle="Нүүр хуудасруу буцах"
       />
     </>
   );

@@ -23,6 +23,8 @@ import m0018 from './0018_common_makkari.sql';
 import m0019 from './0019_busy_gunslinger.sql';
 import m0020 from './0020_tiresome_microchip.sql';
 import m0021 from './0021_moaning_tarot.sql';
+import m0022 from './0022_dashing_night_nurse.sql';
+import m0023 from './0023_lame_william_stryker.sql';
 
   export default {
     journal,
@@ -48,7 +50,9 @@ m0017,
 m0018,
 m0019,
 m0020,
-m0021
+m0021,
+m0022,
+m0023
     }
   }
   
