@@ -31,7 +31,7 @@ export const useLabelStore = create<LabelStore>((set) => ({
         console.log("Labels fetched successfully:", result.length);
       }
     } catch (error) {
-      console.error("Error fetching labels:", error);
+      console.log("Error fetching labels:", error);
     }
   },
   addLabel: async (labelText: string) => {
@@ -56,7 +56,7 @@ export const useLabelStore = create<LabelStore>((set) => ({
         );
       }
     } catch (error) {
-      console.error("Error adding label:", error);
+      console.log("Error adding label:", error);
     }
   },
 }));

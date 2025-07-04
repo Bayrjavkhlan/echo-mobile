@@ -239,7 +239,7 @@ export default function AddScreen() {
       // Navigate to Library tab to see the newly created group
       router.push("/(tabs)/Library");
     } catch (error) {
-      console.error("Error saving flashcard set:", error);
+      console.log("Error saving flashcard set:", error);
       Toast.show({
         type: "error",
         text1: "Алдаа",

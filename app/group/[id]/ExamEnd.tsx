@@ -40,7 +40,7 @@ export default function ExamEndScreen() {
         setResults(parsedResults);
         console.log("Exam results:", parsedResults);
       } catch (error) {
-        console.error("Failed to parse results:", error);
+        console.log("Failed to parse results:", error);
       }
     } else {
       console.warn("No results parameter found in URL");
@@ -50,7 +50,7 @@ export default function ExamEndScreen() {
   useEffect(() => {
     console.log("Fetching flashcards...");
     fetchFlashcards().catch((error) => {
-      console.error("Error fetching flashcards:", error);
+      console.log("Error fetching flashcards:", error);
     });
   }, [fetchFlashcards]);
 
@@ -68,7 +68,7 @@ export default function ExamEndScreen() {
 
       results.forEach((result) => {
         if (!result.flashcardId) {
-          console.error("Found result with missing flashcardId:", result);
+          console.log("Found result with missing flashcardId:", result);
           return;
         }
 
@@ -82,7 +82,7 @@ export default function ExamEndScreen() {
           console.log(`Found matching flashcard: ${flashcard.question}`);
           flashcardsMap[result.flashcardId] = flashcard;
         } else {
-          console.error(
+          console.log(
             `Flashcard with ID ${result.flashcardId} not found in allFlashcards array`
           );
           console.log(
@@ -123,14 +123,14 @@ export default function ExamEndScreen() {
               userAnswer: result.userAnswer || "",
             });
           } catch (error) {
-            console.error(
+            console.log(
               `Error saving review for flashcard ${result.flashcardId}:`,
               error
             );
           }
         });
       } else {
-        console.error("No flashcards found in map, skipping review data save");
+        console.log("No flashcards found in map, skipping review data save");
       }
     } else {
       console.warn(

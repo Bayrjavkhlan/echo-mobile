@@ -10,7 +10,7 @@ export const getAllFlashcardTableData = async () => {
     console.log("getAllFlashcardTableData:\t", result);
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -30,7 +30,7 @@ export const getFlashcardStats = async () => {
       efAbove2_6: efAboveResult.length || 0,
     };
   } catch (error) {
-    console.error("Error retrieving flashcard stats:", error);
+    console.log("Error retrieving flashcard stats:", error);
     return null;
   }
 };
@@ -43,7 +43,7 @@ export const getFlashcardTableData = async (flashcardId: number) => {
 
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -54,7 +54,7 @@ export const getFlashcardsByGroupId = async (groupId: number) => {
     });
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -73,7 +73,7 @@ export const createFlashcardRecord = async (
     });
     return result;
   } catch (error) {
-    console.error("Error creating record:", error);
+    console.log("Error creating record:", error);
   }
 };
 export const createManyFlashcards = async (
@@ -95,7 +95,7 @@ export const createManyFlashcards = async (
     );
     return result;
   } catch (error) {
-    console.error("Error creating flashcards:", error);
+    console.log("Error creating flashcards:", error);
   }
 };
 export const updateFlashcardRecord = async (
@@ -114,7 +114,7 @@ export const updateFlashcardRecord = async (
       .where(eq(flashcardsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error updating record:", error);
+    console.log("Error updating record:", error);
   }
 };
 
@@ -125,7 +125,7 @@ export const deleteFlashcardRecord = async (id: number) => {
       .where(eq(flashcardsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error deleting record:", error);
+    console.log("Error deleting record:", error);
   }
 };
 export const deleteFlashcardsByGroupId = async (groupId: number) => {
@@ -135,7 +135,7 @@ export const deleteFlashcardsByGroupId = async (groupId: number) => {
       .where(eq(flashcardsTable.groupId, groupId));
     return result;
   } catch (error) {
-    console.error("Error deleting flashcards for group:", error);
+    console.log("Error deleting flashcards for group:", error);
   }
 };
 export const deleteAllFlashcardRecords = async () => {
@@ -143,6 +143,6 @@ export const deleteAllFlashcardRecords = async () => {
     const result = await db.delete(flashcardsTable);
     return result;
   } catch (error) {
-    console.error("Error deleting all records:", error);
+    console.log("Error deleting all records:", error);
   }
 };

@@ -43,7 +43,7 @@ export const flashcardApi = {
       console.log(response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching flashcards123:", error);
+      console.log("Error fetching flashcards123:", error);
       throw error;
     }
   },
@@ -52,7 +52,7 @@ export const flashcardApi = {
       const response = await axios.get(`${API_URL}/flashcards/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error fetching flashcard by id:", error);
+      console.log("Error fetching flashcard by id:", error);
       throw error;
     }
   },
@@ -63,7 +63,7 @@ export const flashcardApi = {
       );
       return response.data;
     } catch (error) {
-      console.error("Error fetching group flashcards:", error);
+      console.log("Error fetching group flashcards:", error);
       throw error;
     }
   },
@@ -74,7 +74,7 @@ export const flashcardApi = {
       const response = await axios.post(`${API_URL}/flashcards`, flashcard);
       return response.data;
     } catch (error) {
-      console.error("Error creating flashcard:", error);
+      console.log("Error creating flashcard:", error);
       throw error;
     }
   },
@@ -89,7 +89,7 @@ export const flashcardApi = {
       );
       return response.data;
     } catch (error) {
-      console.error("Error updating flashcard:", error);
+      console.log("Error updating flashcard:", error);
       throw error;
     }
   },
@@ -98,7 +98,7 @@ export const flashcardApi = {
       const response = await axios.delete(`${API_URL}/flashcards/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Error deleting flashcard:", error);
+      console.log("Error deleting flashcard:", error);
       throw error;
     }
   },

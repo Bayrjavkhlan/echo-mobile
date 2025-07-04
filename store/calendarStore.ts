@@ -72,7 +72,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
         get().fetchWeeklyWordsMemorizedData(),
       ]);
     } catch (error) {
-      console.error("Failed to fetch user calendar data:", error);
+      console.log("Failed to fetch user calendar data:", error);
     } finally {
       set({ isLoading: false });
     }
@@ -88,7 +88,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       set({ streak: finalStreak });
       return finalStreak;
     } catch (error) {
-      console.error("Failed to fetch user streak:", error);
+      console.log("Failed to fetch user streak:", error);
       return 1; // Default to 1 instead of 0
     }
   },
@@ -100,7 +100,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       set({ weeklyActivity });
       return weeklyActivity;
     } catch (error) {
-      console.error("Failed to fetch weekly activity data:", error);
+      console.log("Failed to fetch weekly activity data:", error);
       return Array(7).fill(0);
     }
   },
@@ -112,7 +112,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       set({ monthlyActivity });
       return monthlyActivity;
     } catch (error) {
-      console.error("Failed to fetch monthly activity data:", error);
+      console.log("Failed to fetch monthly activity data:", error);
       return Array(5).fill(0);
     }
   },
@@ -124,7 +124,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       set({ weeklyWordsMemorized });
       return weeklyWordsMemorized;
     } catch (error) {
-      console.error("Failed to fetch weekly words memorized data:", error);
+      console.log("Failed to fetch weekly words memorized data:", error);
       return Array(7).fill(0);
     }
   },
@@ -148,7 +148,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       // Refresh data
       await get().fetchCalendarData();
     } catch (error) {
-      console.error("Failed to record app usage:", error);
+      console.log("Failed to record app usage:", error);
     }
   },
 
@@ -171,7 +171,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       // Refresh data
       await get().fetchCalendarData();
     } catch (error) {
-      console.error("Failed to record words memorized:", error);
+      console.log("Failed to record words memorized:", error);
     }
   },
 
@@ -193,7 +193,7 @@ export const useCalendarStore = create<CalendarStore>((set, get) => ({
       // Fetch data to update the UI
       await get().fetchCalendarData();
     } catch (error) {
-      console.error("Failed to record app opened:", error);
+      console.log("Failed to record app opened:", error);
     }
   },
 }));

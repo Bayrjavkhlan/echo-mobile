@@ -88,7 +88,7 @@ export default function SignUpScreen() {
         data = JSON.parse(responseText);
         console.log("Signup response data:", JSON.stringify(data, null, 2));
       } catch (parseError) {
-        console.error("Failed to parse response as JSON:", parseError);
+        console.log("Failed to parse response as JSON:", parseError);
         throw new Error(
           `Server returned invalid JSON. Status: ${
             response.status
@@ -126,7 +126,7 @@ export default function SignUpScreen() {
 
       // Navigation will be handled by auth context
     } catch (error: any) {
-      console.error("Signup error:", error);
+      console.log("Signup error:", error);
 
       // Ensure we get a string message even if error is an object
       const errorMessage =

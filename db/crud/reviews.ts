@@ -27,7 +27,7 @@ const checkTablesExist = async () => {
   );
 };
 
-checkTablesExist().catch(console.error);
+checkTablesExist().catch(console.log);
 
 type ReviewData = {
   flashcardId: string;
@@ -46,7 +46,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
   try {
     // Validate input to prevent undefined IDs
     if (!reviewData.flashcardId || !reviewData.groupId) {
-      console.error("Invalid review data: Missing flashcard ID or group ID");
+      console.log("Invalid review data: Missing flashcard ID or group ID");
       return false;
     }
 
@@ -56,7 +56,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
     const userId = reviewData.userId || null;
 
     if (isNaN(flashcardId) || isNaN(groupId)) {
-      console.error(
+      console.log(
         "Invalid IDs: Could not parse flashcardId or groupId to numbers"
       );
       return false;
@@ -73,7 +73,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
       .limit(1);
 
     if (!flashcardResult || flashcardResult.length === 0) {
-      console.error(`Flashcard with ID ${flashcardId} not found in database`);
+      console.log(`Flashcard with ID ${flashcardId} not found in database`);
       return false;
     }
 
@@ -139,7 +139,7 @@ export const saveReviewData = async (reviewData: ReviewData) => {
         });
         console.log(`Saved review record for flashcard ${flashcardId}`);
       } catch (insertError) {
-        console.error("Error inserting review record:", insertError);
+        console.log("Error inserting review record:", insertError);
       }
     } else {
       console.log("Skipping review data save - table doesn't exist yet");
@@ -167,13 +167,13 @@ export const saveReviewData = async (reviewData: ReviewData) => {
         }`
       );
     } catch (updateError) {
-      console.error("Error updating flashcard SM-2 parameters:", updateError);
+      console.log("Error updating flashcard SM-2 parameters:", updateError);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error("Error saving review data:", error);
+    console.log("Error saving review data:", error);
     return false;
   }
 };
@@ -186,7 +186,7 @@ export const getFlashcardReviewHistory = async (flashcardId: number) => {
       .where(eq(reviewsTable.flashcardId, flashcardId))
       .orderBy(sql`${reviewsTable.createdAt} DESC`);
   } catch (error) {
-    console.error("Error fetching flashcard review history:", error);
+    console.log("Error fetching flashcard review history:", error);
     return [];
   }
 };
@@ -199,7 +199,7 @@ export const getGroupReviewHistory = async (groupId: number) => {
       .where(eq(reviewsTable.groupId, groupId))
       .orderBy(sql`${reviewsTable.createdAt} DESC`);
   } catch (error) {
-    console.error("Error fetching group review history:", error);
+    console.log("Error fetching group review history:", error);
     return [];
   }
 };
@@ -245,7 +245,7 @@ export const getFlashcardsDueForReview = async (userId: number = 1) => {
 
     return [...dueFlashcards, ...neverReviewedFlashcards];
   } catch (error) {
-    console.error("Error fetching flashcards due for review:", error);
+    console.log("Error fetching flashcards due for review:", error);
     return [];
   }
 };
@@ -272,7 +272,7 @@ export const getAllReviewTableData = async () => {
     console.log("Retrieved all review table data:", result.length, "records");
     return result;
   } catch (error) {
-    console.error("Error fetching all review table data:", error);
+    console.log("Error fetching all review table data:", error);
     return [];
   }
 };

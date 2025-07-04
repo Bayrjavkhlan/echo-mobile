@@ -9,7 +9,7 @@ export const getAllUserTableData = async () => {
     const result = await db.query.userTable.findMany();
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -20,7 +20,7 @@ export const getUserTableData = async (userId: number) => {
     });
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -45,7 +45,7 @@ export const createUserTableData = async (
       .returning({ id: userTable.id });
     return result;
   } catch (error) {
-    console.error("Error creating record:", error);
+    console.log("Error creating record:", error);
   }
 };
 export const updateUserTableData = async (
@@ -68,7 +68,7 @@ export const updateUserTableData = async (
       .where(eq(userTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error updating record:", error);
+    console.log("Error updating record:", error);
   }
 };
 export const deleteUserTableData = async (id: number) => {
@@ -76,6 +76,6 @@ export const deleteUserTableData = async (id: number) => {
     const result = await db.delete(userTable).where(eq(userTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error deleting record:", error);
+    console.log("Error deleting record:", error);
   }
 };

@@ -113,7 +113,7 @@ export const saveCalendarData = async (data: CalendarData) => {
       return result[0];
     }
   } catch (error) {
-    console.error("Error saving calendar data:", error);
+    console.log("Error saving calendar data:", error);
     throw error;
   }
 };
@@ -128,7 +128,7 @@ export const getCalendarDataByUserId = async (userId: number) => {
 
     return result;
   } catch (error) {
-    console.error("Error fetching calendar data:", error);
+    console.log("Error fetching calendar data:", error);
     return [];
   }
 };
@@ -167,7 +167,7 @@ export const calculateStreak = async (userId: number) => {
 
     return streak;
   } catch (error) {
-    console.error("Error calculating streak:", error);
+    console.log("Error calculating streak:", error);
     return 1; // Default to 1 on error
   }
 };
@@ -215,7 +215,7 @@ export const getWeeklyActivityData = async (userId: number) => {
 
     return weeklyData;
   } catch (error) {
-    console.error("Error fetching weekly activity data:", error);
+    console.log("Error fetching weekly activity data:", error);
     return [0, 0, 0, 0, 0, 0, 0];
   }
 };
@@ -272,7 +272,7 @@ export const getMonthlyActivityData = async (userId: number) => {
 
     return monthlyData;
   } catch (error) {
-    console.error("Error fetching monthly activity data:", error);
+    console.log("Error fetching monthly activity data:", error);
     return [0, 0, 0, 0, 0];
   }
 };
@@ -320,7 +320,7 @@ export const getWeeklyWordsMemorized = async (userId: number) => {
 
     return weeklyData;
   } catch (error) {
-    console.error("Error fetching weekly words memorized data:", error);
+    console.log("Error fetching weekly words memorized data:", error);
     return [0, 0, 0, 0, 0, 0, 0];
   }
 };
@@ -331,7 +331,7 @@ export const deleteAllCalendarData = async () => {
     console.log("All calendar data deleted.");
     return result;
   } catch (error) {
-    console.error("Error deleting all calendar data:", error);
+    console.log("Error deleting all calendar data:", error);
     throw error;
   }
 };
@@ -342,7 +342,7 @@ export const getAllCalendarTableData = async () => {
     console.log("Retrieved all calendar table data:", result.length, "records");
     return result;
   } catch (error) {
-    console.error("Error fetching all calendar table data:", error);
+    console.log("Error fetching all calendar table data:", error);
     return [];
   }
 };

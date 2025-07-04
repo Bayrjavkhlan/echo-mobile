@@ -87,7 +87,7 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
                 updatedAt: flashcard.updatedAt,
               };
             } catch (itemError) {
-              console.error(
+              console.log(
                 `Error processing flashcard ${flashcard.id}:`,
                 itemError
               );
@@ -106,7 +106,7 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
         console.warn("No flashcards returned from getAllFlashcardTableData");
       }
     } catch (error) {
-      console.error("Failed to fetch flashcards:", error);
+      console.log("Failed to fetch flashcards:", error);
       set({ flashcards: [] });
       throw error;
     }
@@ -150,7 +150,7 @@ export const useFlashcardStore = create<FlashcardStore>((set, get) => ({
         set({ currentFlashcard: flashcardWithLabels });
       }
     } catch (error) {
-      console.error("Failed to fetch flashcard by id:", error);
+      console.log("Failed to fetch flashcard by id:", error);
     }
   },
 

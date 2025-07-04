@@ -10,7 +10,7 @@ export const getAllFlashcardLabelsTableData = async () => {
     console.log("getAllFlashcardLabels: ", result);
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -33,7 +33,7 @@ export const getLabelsForFlashcard = async (flashcardId: number) => {
     console.log("Labels for flashcard:", result);
     return result;
   } catch (error) {
-    console.error("Error retrieving labels for flashcard:", error);
+    console.log("Error retrieving labels for flashcard:", error);
     throw error;
   }
 };
@@ -50,7 +50,7 @@ export const getFlashcardsForLabel = async (labelId: number) => {
       .where(eq(flashcardLabelsTable.labelId, labelId));
     return result;
   } catch (error) {
-    console.error("Error retrieving flashcards for label:", error);
+    console.log("Error retrieving flashcards for label:", error);
   }
 };
 
@@ -87,7 +87,7 @@ export const addLabelToFlashcard = async (
       return { changes: 0, lastInsertRowId: 0 };
     }
   } catch (error) {
-    console.error(
+    console.log(
       `Error adding label ${labelId} to flashcard ${flashcardId}:`,
       error
     );
@@ -109,7 +109,7 @@ export const removeLabelFromFlashcard = async (
       );
     return result;
   } catch (error) {
-    console.error(
+    console.log(
       `Error removing label ${labelId} from flashcard ${flashcardId}:`,
       error
     );
@@ -123,7 +123,7 @@ export const removeAllLabelsFromFlashcard = async (flashcardId: number) => {
       .where(eq(flashcardLabelsTable.flashcardId, flashcardId));
     return result;
   } catch (error) {
-    console.error(
+    console.log(
       `Error removing all labels from flashcard ${flashcardId}:`,
       error
     );
@@ -151,7 +151,7 @@ export const updateFlashcardLabels = async (
 
     return await getLabelsForFlashcard(flashcardId);
   } catch (error) {
-    console.error("Error updating flashcard labels:", error);
+    console.log("Error updating flashcard labels:", error);
     throw error;
   }
 };
@@ -161,6 +161,6 @@ export const deleteAllFlashcardLabelTableData = async () => {
     const result = await db.delete(flashcardLabelsTable);
     return result;
   } catch (error) {
-    console.error("Error deleting all records:", error);
+    console.log("Error deleting all records:", error);
   }
 };

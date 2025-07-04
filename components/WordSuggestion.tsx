@@ -22,7 +22,7 @@ export default function WordSuggestion() {
       setDueFlashcards(Array.isArray(flashcards) ? flashcards : []);
       setLoading(false);
     } catch (error) {
-      console.error("Error loading due flashcards:", error);
+      console.log("Error loading due flashcards:", error);
       setLoading(false);
     }
   };
@@ -59,14 +59,16 @@ export default function WordSuggestion() {
           <ThemedText className="text-lg text-center pt-0">
             Таньд давтах
             <ThemedText className="text-lg font-bold  ">
-              {" " + dueFlashcards.length + " "}
+              {/* {" " + dueFlashcards.length + " "} */}
+              {" " + 0 + " "}
             </ThemedText>
             Флашкарт байна
           </ThemedText>
           <Button
             title={loading ? "Ачааллаж байна..." : "Шалгалт өгөх"}
             onPress={handleTodayExam}
-            disabled={loading || dueFlashcards.length === 0}
+            // disabled={loading || dueFlashcards.length === 0}
+            disabled={true}
             buttonClass="mt-2 rounded-lg"
           />
         </ThemedView>

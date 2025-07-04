@@ -67,7 +67,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
         );
       }
     } catch (error) {
-      console.error("Failed to fetch all wrong answers:", error);
+      console.log("Failed to fetch all wrong answers:", error);
     }
   },
 
@@ -79,7 +79,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
           : flashcardId;
 
       if (isNaN(numericFlashcardId)) {
-        console.error("Invalid flashcard ID:", flashcardId);
+        console.log("Invalid flashcard ID:", flashcardId);
         return [];
       }
 
@@ -108,7 +108,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
 
       return processedWrongAnswers;
     } catch (error) {
-      console.error(
+      console.log(
         `Failed to fetch wrong answers for flashcard ${flashcardId}:`,
         error
       );
@@ -147,7 +147,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       }
       return null;
     } catch (error) {
-      console.error("Failed to add wrong answer:", error);
+      console.log("Failed to add wrong answer:", error);
       return null;
     }
   },
@@ -189,7 +189,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       }
       return null;
     } catch (error) {
-      console.error("Failed to add multiple wrong answers:", error);
+      console.log("Failed to add multiple wrong answers:", error);
       return null;
     }
   },
@@ -199,7 +199,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       const numericId = typeof id === "string" ? parseInt(id, 10) : id;
 
       if (isNaN(numericId)) {
-        console.error("Invalid wrong answer ID:", id);
+        console.log("Invalid wrong answer ID:", id);
         return null;
       }
 
@@ -232,7 +232,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       }
       return null;
     } catch (error) {
-      console.error(`Failed to update wrong answer with id ${id}:`, error);
+      console.log(`Failed to update wrong answer with id ${id}:`, error);
       return null;
     }
   },
@@ -242,7 +242,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
       const numericId = typeof id === "string" ? parseInt(id, 10) : id;
 
       if (isNaN(numericId)) {
-        console.error("Invalid wrong answer ID:", id);
+        console.log("Invalid wrong answer ID:", id);
         return;
       }
 
@@ -269,7 +269,7 @@ export const useWrongAnswerStore = create<WrongAnswerStore>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error(`Failed to delete wrong answer with id ${id}:`, error);
+      console.log(`Failed to delete wrong answer with id ${id}:`, error);
     }
   },
 }));

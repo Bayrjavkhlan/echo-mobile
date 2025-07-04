@@ -22,7 +22,7 @@ export const SQLiteService = {
             resolve(result);
           },
           (_, error) => {
-            console.error("SQL Error:", error);
+            console.log("SQL Error:", error);
             reject(error);
             return false;
           }
@@ -65,7 +65,7 @@ export const SQLiteService = {
         }
       }
     } catch (error) {
-      console.error(`Error marking items as synced for ${tableName}:`, error);
+      console.log(`Error marking items as synced for ${tableName}:`, error);
       throw error;
     }
   },
@@ -170,7 +170,7 @@ export const SQLiteService = {
         }
       }
     } catch (error) {
-      console.error(`Error upserting server item for ${tableName}:`, error);
+      console.log(`Error upserting server item for ${tableName}:`, error);
       throw error;
     }
   },

@@ -8,7 +8,7 @@ export const getAllWrongAnswerTableData = async () => {
   try {
     return await db.query.wrongAnswersTable.findMany();
   } catch (error) {
-    console.error("Error getting wrong answers:", error);
+    console.log("Error getting wrong answers:", error);
     return null;
   }
 };
@@ -22,7 +22,7 @@ export const getWrongAnswerTableDataByFlashcardId = async (
       .from(wrongAnswersTable)
       .where(eq(wrongAnswersTable.flashcardId, flashcardId));
   } catch (error) {
-    console.error(
+    console.log(
       `Error getting wrong answers for flashcard ${flashcardId}:`,
       error
     );
@@ -41,7 +41,7 @@ export const getCountOfWrongAnswerByFlashcardId = async (
 
     return result[0]?.count ?? 0;
   } catch (error) {
-    console.error(
+    console.log(
       `Error counting wrong answers for flashcard ${flashcardId}:`,
       error
     );
@@ -61,7 +61,7 @@ export const createWrongAnswerTableData = async (wrongAnswer: {
       isSync: wrongAnswer.isSync || 0,
     });
   } catch (error) {
-    console.error("Error creating wrong answer:", error);
+    console.log("Error creating wrong answer:", error);
     return null;
   }
 };
@@ -82,7 +82,7 @@ export const updateWrongAnswerTableData = async (
       })
       .where(eq(wrongAnswersTable.id, id));
   } catch (error) {
-    console.error(`Error updating wrong answer ${id}:`, error);
+    console.log(`Error updating wrong answer ${id}:`, error);
     return null;
   }
 };
@@ -93,7 +93,7 @@ export const deleteWrongAnswerTableData = async (id: number) => {
       .delete(wrongAnswersTable)
       .where(eq(wrongAnswersTable.id, id));
   } catch (error) {
-    console.error(`Error deleting wrong answer ${id}:`, error);
+    console.log(`Error deleting wrong answer ${id}:`, error);
     return null;
   }
 };
@@ -102,7 +102,7 @@ export const deleteAllWrongAnswerTableData = async () => {
   try {
     return await db.delete(wrongAnswersTable);
   } catch (error) {
-    console.error("Error deleting all wrong answers:", error);
+    console.log("Error deleting all wrong answers:", error);
     return null;
   }
 };
@@ -111,7 +111,7 @@ export const getWrongAnswersByUserId = async (userId: number) => {
   try {
     return await db.select().from(wrongAnswersTable);
   } catch (error) {
-    console.error(`Error getting wrong answers for user ${userId}:`, error);
+    console.log(`Error getting wrong answers for user ${userId}:`, error);
     return null;
   }
 };
@@ -120,7 +120,7 @@ export const getLatestWrongAnswers = async (limit: number = 10) => {
   try {
     return await db.select().from(wrongAnswersTable).limit(limit);
   } catch (error) {
-    console.error(`Error getting latest wrong answers:`, error);
+    console.log(`Error getting latest wrong answers:`, error);
     return null;
   }
 };

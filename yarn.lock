@@ -4336,11 +4336,11 @@ expo-asset@~11.0.5:
     md5-file "^3.2.3"
 
 expo-background-fetch@~12.0.3:
-  version "13.0.6"
-  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-13.0.6.tgz#795d848e8676ff6e184994b30ca0a67e41dbab26"
-  integrity sha512-fhSpPA7U/CIuBwYbMVSbfPxczsvHKF8MWmFumfMgriDqop6bp/ccLbnpU1vPLQDPmRPS5dMdTz04KYIMdTpD9w==
+  version "13.1.6-canary-20250613-b29d676"
+  resolved "https://registry.yarnpkg.com/expo-background-fetch/-/expo-background-fetch-13.1.6-canary-20250613-b29d676.tgz#2ebe7dea8e35c6939357d605d4c9f7c99431bfdb"
+  integrity sha512-ijV0nG0j2huyC8l2YhJNypkYj0BTcf9LyrK+2FuK6+KbzNmqo3ITFrZHK8H5Fu1zMJbA1l6ioCd05dcONbV9BQ==
   dependencies:
-    expo-task-manager "~12.0.6"
+    expo-task-manager "13.1.6-canary-20250613-b29d676"
 
 expo-blur@~14.0.3:
   version "14.0.3"
@@ -4464,7 +4464,14 @@ expo-system-ui@~4.0.8:
     "@react-native/normalize-colors" "0.76.8"
     debug "^4.3.2"
 
-expo-task-manager@~12.0.3, expo-task-manager@~12.0.6:
+expo-task-manager@13.1.6-canary-20250613-b29d676:
+  version "13.1.6-canary-20250613-b29d676"
+  resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-13.1.6-canary-20250613-b29d676.tgz#35cf6bd0fac403d15ffddc8fdd938eaf656f08bd"
+  integrity sha512-LCFmsRh9gJfO5roqVcwslqAvBG/wPqzbCyFQJYCEgp7RyJ0GckWxIkMZW5VUj9VeqjilsjxWkj6sOpCVQHXqYg==
+  dependencies:
+    unimodules-app-loader "5.1.4-canary-20250613-b29d676"
+
+expo-task-manager@~12.0.3:
   version "12.0.6"
   resolved "https://registry.yarnpkg.com/expo-task-manager/-/expo-task-manager-12.0.6.tgz#074cd10505d8866d43e8fe3a4c6520cd97332ff9"
   integrity sha512-yGbS64OL95z7tAQAvryy0sGHuQgrcpvnJsdyuGL8MA9bcPtr+kytLZ4dOCDac7foQS7+FLDGgtiAR6v/64B5Pg==
@@ -8436,6 +8443,11 @@ unicode-property-aliases-ecmascript@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-2.1.0.tgz"
   integrity sha512-6t3foTQI9qne+OZoVQB/8x8rk2k1eVy1gRXhV3oFQ5T6R1dqQ1xtin3XqSlx3+ATBkliTaR/hHyJBm+LVPNM8w==
+
+unimodules-app-loader@5.1.4-canary-20250613-b29d676:
+  version "5.1.4-canary-20250613-b29d676"
+  resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-5.1.4-canary-20250613-b29d676.tgz#2b665632fedbcbf7aa5ac35bdd3f8ea85c79824a"
+  integrity sha512-FMx8sNz2U6EFTDXJvcnAko8pb0cHeooZ2Eg8hOev0AgcCU7a6YUGwvnB/gzGQr1SQ3rGzd5pai5L5BCDVbbtvg==
 
 unimodules-app-loader@~5.0.1:
   version "5.0.1"

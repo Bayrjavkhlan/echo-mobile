@@ -127,7 +127,7 @@ export default function GroupsOverviewScreen() {
         await fetchGroupById(String(id));
       }
     } catch (error) {
-      console.error("Error saving flashcard:", error);
+      console.log("Error saving flashcard:", error);
     } finally {
       setLoading(false);
       handleCloseModal();
@@ -156,7 +156,7 @@ export default function GroupsOverviewScreen() {
       }
       return false;
     } catch (error) {
-      console.error("Error checking/deleting empty group:", error);
+      console.log("Error checking/deleting empty group:", error);
       return false;
     }
   };
@@ -195,7 +195,7 @@ export default function GroupsOverviewScreen() {
               });
             }
           } catch (error) {
-            console.error("Error deleting flashcard:", error);
+            console.log("Error deleting flashcard:", error);
             Toast.show({
               type: "error",
               text1: "Алдаа!",

@@ -114,7 +114,7 @@ export default function FlashcardExam({
     }
 
     if (!currentFlashcard || !currentFlashcard.id || !currentFlashcard.answer) {
-      console.error("Cannot process answer: Invalid or missing flashcard data");
+      console.log("Cannot process answer: Invalid or missing flashcard data");
       return;
     }
 

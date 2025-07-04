@@ -12,10 +12,10 @@ async function testSync() {
     if (result.success) {
       console.log("Sync test completed successfully!");
     } else {
-      console.error("Sync test failed:", result.message);
+      console.log("Sync test failed:", result.message);
     }
   } catch (error) {
-    console.error("Error during sync test:", error);
+    console.log("Error during sync test:", error);
   }
 }
 

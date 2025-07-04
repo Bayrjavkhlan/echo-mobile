@@ -10,7 +10,7 @@ export const getAllGroupTableData = async () => {
     console.log("getAllGroupTableData:", result);
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 export const getGroupTableData = async (groupId: number) => {
@@ -21,7 +21,7 @@ export const getGroupTableData = async (groupId: number) => {
 
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 export const createGroupRecord = async (
@@ -39,7 +39,7 @@ export const createGroupRecord = async (
     });
     return result;
   } catch (error) {
-    console.error("Error creating record:", error);
+    console.log("Error creating record:", error);
   }
 };
 export const updateGroupRecord = async (
@@ -58,7 +58,7 @@ export const updateGroupRecord = async (
       .where(eq(groupsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error updating record:", error);
+    console.log("Error updating record:", error);
   }
 };
 export const deleteGroupRecord = async (id: number) => {
@@ -66,7 +66,7 @@ export const deleteGroupRecord = async (id: number) => {
     const result = await db.delete(groupsTable).where(eq(groupsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error deleting record:", error);
+    console.log("Error deleting record:", error);
   }
 };
 export const deleteAllGroupRecords = async () => {
@@ -74,7 +74,7 @@ export const deleteAllGroupRecords = async () => {
     const result = await db.delete(groupsTable);
     return result;
   } catch (error) {
-    console.error("Error deleting all records:", error);
+    console.log("Error deleting all records:", error);
   }
 };
 // use this to get the all of needed data jawhaa
@@ -98,6 +98,6 @@ export const getGroupWithFlashcardsAndLabels = async (groupId: number) => {
 
     return group;
   } catch (error) {
-    console.error("Error retrieving group with flashcards:", error);
+    console.log("Error retrieving group with flashcards:", error);
   }
 };

@@ -45,7 +45,7 @@ const WrongAnswersList: React.FC<WrongAnswersListProps> = ({
         setWrongAnswers([]);
       }
     } catch (error) {
-      console.error("Error loading wrong answers:", error);
+      console.log("Error loading wrong answers:", error);
     } finally {
       setLoading(false);
     }

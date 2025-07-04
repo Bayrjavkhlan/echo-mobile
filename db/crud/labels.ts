@@ -9,7 +9,7 @@ export const getAllLabelTableData = async () => {
     const result = await db.query.labelsTable.findMany();
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 export const getLabelTableData = async (labelId: number) => {
@@ -19,7 +19,7 @@ export const getLabelTableData = async (labelId: number) => {
     });
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 export const createLabelTableData = async (name: string) => {
@@ -37,7 +37,7 @@ export const createLabelTableData = async (name: string) => {
 
     return result;
   } catch (error) {
-    console.error("Error creating record:", error);
+    console.log("Error creating record:", error);
   }
 };
 export const updateLabelTableData = async (
@@ -55,7 +55,7 @@ export const updateLabelTableData = async (
       .where(eq(labelsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error updating record:", error);
+    console.log("Error updating record:", error);
   }
 };
 export const deleteLabelTableData = async (id: number) => {
@@ -63,7 +63,7 @@ export const deleteLabelTableData = async (id: number) => {
     const result = await db.delete(labelsTable).where(eq(labelsTable.id, id));
     return result;
   } catch (error) {
-    console.error("Error deleting record:", error);
+    console.log("Error deleting record:", error);
   }
 };
 
@@ -72,6 +72,6 @@ export const deleteAllLabelTableData = async () => {
     const result = await db.delete(labelsTable);
     return result;
   } catch (error) {
-    console.error("Error deleting record:", error);
+    console.log("Error deleting record:", error);
   }
 };

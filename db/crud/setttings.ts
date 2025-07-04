@@ -8,7 +8,7 @@ export const getAllSettingsTableData = async () => {
     const result = await db.query.settingsTable.findMany();
     return result;
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    console.log("Error retrieving data:", error);
   }
 };
 
@@ -24,6 +24,6 @@ export const updateSettingsTableData = async (
     });
     return result;
   } catch (error) {
-    console.error("Error updating record:", error);
+    console.log("Error updating record:", error);
   }
 };

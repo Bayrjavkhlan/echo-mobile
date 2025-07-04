@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         }
       } catch (error) {
-        console.error("Error loading user data:", error);
+        console.log("Error loading user data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Update the user state
       setUser(userData);
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.log("Error logging in:", error);
       throw error;
     }
   };
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Redirect to login screen
       router.replace("/login");
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.log("Error logging out:", error);
       throw error;
     }
   };

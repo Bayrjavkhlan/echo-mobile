@@ -15,5 +15,5 @@ try {
 
   console.log("✅ All tables cleared.");
 } catch (error) {
-  console.error("❌ Failed to clear database tables:", error);
+  console.log("❌ Failed to clear database tables:", error);
 }

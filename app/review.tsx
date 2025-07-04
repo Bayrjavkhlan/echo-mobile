@@ -24,7 +24,7 @@ export default function DailyReviewScreen() {
         setReviewFlashcards(parsedFlashcards);
         console.log(`Loaded ${parsedFlashcards.length} flashcards for review`);
       } catch (error) {
-        console.error("Failed to parse flashcards:", error);
+        console.log("Failed to parse flashcards:", error);
       }
     } else {
       console.warn("No flashcards parameter found in URL");

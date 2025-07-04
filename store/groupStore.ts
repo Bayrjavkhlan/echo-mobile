@@ -161,7 +161,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
               }
               flashcardsByGroup.get(groupId).push(processedFlashcard);
             } catch (err) {
-              console.error(`Error processing flashcard ${flashcard.id}:`, err);
+              console.log(`Error processing flashcard ${flashcard.id}:`, err);
             }
           })
         );
@@ -233,7 +233,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error("Failed to fetch groups with flashcards:", error);
+      console.log("Failed to fetch groups with flashcards:", error);
     }
   },
 
@@ -248,7 +248,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         console.log("Group not found in store");
       }
     } catch (error) {
-      console.error("Failed to fetch group by id:", error);
+      console.log("Failed to fetch group by id:", error);
     }
   },
 
@@ -286,7 +286,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
       // Update only the displayed groups, keeping the full list in allGroups
       set({ groups: filteredGroups });
     } catch (error) {
-      console.error("Failed to filter groups by label:", error);
+      console.log("Failed to filter groups by label:", error);
     }
   },
 
@@ -408,7 +408,7 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
         "unique labels"
       );
     } catch (error) {
-      console.error("Failed to add group to store:", error);
+      console.log("Failed to add group to store:", error);
     }
   },
 }));
