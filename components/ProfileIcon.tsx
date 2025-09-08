@@ -5,7 +5,7 @@ import { ThemedText } from "./ThemedText";
 import { useColor } from "@/hooks/useThemeColor";
 
 interface ProfileIconProps {
-  userName: string;
+  userName?: string;
   connectedToInternet?: boolean;
 }
 
@@ -43,7 +43,9 @@ export default function ProfileIcon({
             </ThemedView>
           </Pressable>
         </ThemedView>
-        <ThemedText className="text-xl ">{userName}</ThemedText>
+        <ThemedText className="text-xl ">
+          {userName ? userName : "Jack"}
+        </ThemedText>
       </ThemedView>
     </ThemedView>
   );

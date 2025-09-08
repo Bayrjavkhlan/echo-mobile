@@ -15,7 +15,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "echo.mobile.app",
+      "versionCode": 1,
+      "permissions": [
+        "VIBRATE",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "READ_MEDIA_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +55,14 @@
     "extra": {
       "fonts": {
         "Roboto": "./node_modules/@expo-google-fonts/roboto/Roboto_400Regular.ttf"
+      },
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1597161f-b512-46d8-a686-3ef30a3ae482"
       }
-    }
+    },
+    "owner": "jawhaa"
   }
 }

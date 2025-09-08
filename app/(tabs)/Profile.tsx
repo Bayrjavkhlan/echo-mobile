@@ -26,7 +26,7 @@ import { deleteAllCalendarData, saveCalendarData } from "@/db/crud/calendar";
 // import { useSync } from "@/context/SyncContext";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 // import SyncStatus from "@/components/SyncStatus";
 import { insertDummyData } from "@/db/crud/insertDummyData";
 import { useGroupStore } from "@/store/groupStore";
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const networkState = useNetworkState();
   // const { fullSync, isSyncing, lastSyncTime } = useSync();
-  const { user, logout } = useAuth();
+  // const { user, logout } = useAuth();
   // const [syncStatus, setSyncStatus] = useState<string | null>(null);
 
   // const handleSyncWithServer = async () => {
@@ -142,29 +142,29 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleLogin = () => {
-    router.push("/login");
-  };
+  // const handleLogin = () => {
+  //   router.push("/login");
+  // };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      Toast.show({
-        type: "success",
-        text1: "Амжилттай",
-        text2: "Та системээс гарлаа.",
-        visibilityTime: 3000,
-      });
-    } catch (error) {
-      console.log("Logout error:", error);
-      Toast.show({
-        type: "error",
-        text1: "Алдаа",
-        text2: "Системээс гарахад алдаа гарлаа.",
-        visibilityTime: 3000,
-      });
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout();
+  //     Toast.show({
+  //       type: "success",
+  //       text1: "Амжилттай",
+  //       text2: "Та системээс гарлаа.",
+  //       visibilityTime: 3000,
+  //     });
+  //   } catch (error) {
+  //     console.log("Logout error:", error);
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Алдаа",
+  //       text2: "Системээс гарахад алдаа гарлаа.",
+  //       visibilityTime: 3000,
+  //     });
+  //   }
+  // };
 
   const redColor = useColor("red");
   // const getLastSyncTimeText = () => {
@@ -229,11 +229,11 @@ export default function ProfileScreen() {
       <ThemedView className="flex-1 p-4">
         <ThemedView className="flex justify-center items-center gap-4">
           <ProfileIcon
-            userName={user?.username || "Зочин"}
+            // userName={user?.username || "Зочин"}
             connectedToInternet={networkState.isConnected}
           />
           <ThemedView className="flex gap-2">
-            {!user ? (
+            {/* {!user ? (
               <Button
                 title="Нэвтрэх"
                 leftIcon={<ThemedIcon name="login" size={18} />}
@@ -243,7 +243,7 @@ export default function ProfileScreen() {
                 alignRightIcon
                 size="extra"
                 textClass="text-[18px]"
-                onPress={handleLogin}
+                // onPress={handleLogin}
               />
             ) : (
               <>
@@ -265,7 +265,7 @@ export default function ProfileScreen() {
                   }
                 />
               </>
-            )}
+            )} */}
             <Button
               title="Тохиргоо"
               leftIcon={<ThemedIcon name="settings" size={18} />}
@@ -278,7 +278,7 @@ export default function ProfileScreen() {
               onPress={() => console.log("2 pressed")}
             />
             {/* <SyncStatus /> */}
-            {/* <Button
+            <Button
               title="Тест"
               leftIcon={<ThemedIcon name="settings" size={18} />}
               rightIcon="chevron-right"
@@ -288,7 +288,7 @@ export default function ProfileScreen() {
               size="extra"
               textClass="text-[18px]"
               onPress={handleTest}
-            /> */}
+            />
             {/* <Button
               title="Санал хүсэлт илгээх"
               leftIcon={
@@ -301,7 +301,7 @@ export default function ProfileScreen() {
               textClass="text-[18px]"
               onPress={() => console.log("3 pressed")}
             /> */}
-            {/* <Button
+            <Button
               title="Тестийн дата"
               leftIcon={<ThemedIcon name="add" size={18} />}
               iconSize={24}
@@ -310,8 +310,8 @@ export default function ProfileScreen() {
               size="extra"
               textClass="text-[18px]"
               onPress={handleInsertDummyData}
-            /> */}
-            {/* <Button
+            />
+            <Button
               title="Бүх мэдээлэлийг устгах"
               leftIcon={<ThemedIcon name="delete" size={18} color={redColor} />}
               iconSize={24}
@@ -321,8 +321,8 @@ export default function ProfileScreen() {
               textClass={`text-[18px] text-[${redColor}]`}
               color={redColor}
               onPress={handleClearDatabase}
-            /> */}
-            {user && (
+            />
+            {/* {user && (
               <Button
                 title="Гарах"
                 leftIcon={
@@ -334,9 +334,9 @@ export default function ProfileScreen() {
                 size="extra"
                 textClass={`text-[18px] text-[${redColor}]`}
                 color={redColor}
-                onPress={handleLogout}
+                // onPress={handleLogout}
               />
-            )}
+            )} */}
           </ThemedView>
         </ThemedView>
       </ThemedView>

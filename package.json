@@ -16,9 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo-google-fonts/noto-serif": "^0.3.0",
     "@expo-google-fonts/roboto": "^0.3.0",
-    "@expo-google-fonts/roboto-flex": "^0.3.0",
     "@expo/vector-icons": "^14.0.2",
     "@libsql/client": "^0.15.4",
     "@react-native-async-storage/async-storage": "^1.23.1",
@@ -31,7 +29,7 @@
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
     "expo": "^52.0.46",
-    "expo-background-fetch": "~12.0.3",
+    "expo-background-fetch": "^13.1.6",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",
     "expo-font": "~13.0.4",

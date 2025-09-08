@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 16.13.4",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "cache": {
+        "key": "dev-v1",
+        "cacheDefaultPaths": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "cache": {
+        "key": "preview-v1",
+        "cacheDefaultPaths": true
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "cache": {
+        "key": "prod-v1",
+        "cacheDefaultPaths": true
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

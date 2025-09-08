@@ -27,7 +27,7 @@ import {
 import { configureGlobalFonts } from "@/utils/font-config";
 // import { SyncProvider } from "@/context/SyncContext";
 // ene nuguu servlu offline data shidej bga
-import { AuthProvider } from "./context/AuthContext";
+// import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 SplashScreen.preventAutoHideAsync();
@@ -113,37 +113,37 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <AuthProvider>
-        {/* <SyncProvider options={syncOptions}> */}
-        <NavigationThemeProvider value={theme}>
-          <Stack
-            initialRouteName="(tabs)"
-            screenOptions={{
-              headerTitleStyle: {
-                fontFamily: "Roboto_400Regular",
-              },
-              headerBackTitleStyle: {
-                fontFamily: "Roboto_400Regular",
-              },
+      {/* <AuthProvider> */}
+      {/* <SyncProvider options={syncOptions}> */}
+      <NavigationThemeProvider value={theme}>
+        <Stack
+          initialRouteName="(tabs)"
+          screenOptions={{
+            headerTitleStyle: {
+              fontFamily: "Roboto_400Regular",
+            },
+            headerBackTitleStyle: {
+              fontFamily: "Roboto_400Regular",
+            },
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="labelModal"
+            options={{
+              title: "Шошго нэмэх",
+              headerShown: true,
+              presentation: "modal",
             }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="labelModal"
-              options={{
-                title: "Шошго нэмэх",
-                headerShown: true,
-                presentation: "modal",
-              }}
-            />
+          />
 
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
-          <Toast />
-        </NavigationThemeProvider>
-        {/* </SyncProvider> */}
-      </AuthProvider>
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+        <Toast />
+      </NavigationThemeProvider>
+      {/* </SyncProvider> */}
+      {/* </AuthProvider> */}
     </ThemeProvider>
   );
 }
