@@ -3,8 +3,6 @@ import { ThemedView } from "@/components/ThemedView";
 import ProfileIcon from "@/components/ProfileIcon";
 import { useColor } from "@/hooks/useThemeColor";
 import { Button } from "@/components/ui/Button";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNetworkState } from "expo-network";
 import {
   addLabelToFlashcard,
   deleteAllFlashcardLabelTableData,
@@ -46,7 +44,6 @@ const baseDate = new Date("2025-05-18"); // Start from a Sunday
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const networkState = useNetworkState();
   // const { fullSync, isSyncing, lastSyncTime } = useSync();
   // const { user, logout } = useAuth();
   // const [syncStatus, setSyncStatus] = useState<string | null>(null);
@@ -230,7 +227,6 @@ export default function ProfileScreen() {
         <ThemedView className="flex justify-center items-center gap-4">
           <ProfileIcon
             // userName={user?.username || "Зочин"}
-            connectedToInternet={networkState.isConnected}
           />
           <ThemedView className="flex gap-2">
             {/* {!user ? (

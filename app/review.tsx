@@ -42,7 +42,7 @@ export default function DailyReviewScreen() {
       },
     });
   };
-  const today = format(new Date(), "yyyy-MM-dd", { locale: mn }); // Or use your desired format
+  const today = format(new Date(), "yyyy-MM-dd", { locale: mn });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

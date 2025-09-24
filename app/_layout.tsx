@@ -5,7 +5,6 @@ import {
 } from "@react-navigation/native";
 import { Stack, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "@/utils/global.css";
@@ -139,7 +138,6 @@ export default function RootLayout() {
 
           <Stack.Screen name="+not-found" />
         </Stack>
-        <StatusBar style="auto" />
         <Toast />
       </NavigationThemeProvider>
       {/* </SyncProvider> */}

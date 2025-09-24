@@ -6,12 +6,10 @@ import { useColor } from "@/hooks/useThemeColor";
 
 interface ProfileIconProps {
   userName?: string;
-  connectedToInternet?: boolean;
 }
 
 export default function ProfileIcon({
   userName,
-  connectedToInternet,
 }: ProfileIconProps) {
   const blueColor = useColor("title");
   const contentBackground = useColor("contentBackground");
@@ -26,7 +24,6 @@ export default function ProfileIcon({
               width: 100,
               height: 100,
               borderRadius: 50,
-              borderColor: connectedToInternet ? "green" : "gray",
               borderWidth: 2,
             }}
           />

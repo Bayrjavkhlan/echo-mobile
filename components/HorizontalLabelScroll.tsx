@@ -3,7 +3,6 @@ import tw from "twrnc";
 import Label, { LabelType } from "./ui/Label";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import LabelAdd from "./LabelAdd";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
