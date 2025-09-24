@@ -30,9 +30,7 @@ export default function FlashcardExam({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timer, setTimer] = useState(0);
   const [results, setResults] = useState<ExamResult[]>([]);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [timerInterval, setTimerInterval] = useState<number | null>(null);
 
   const redColor = useColor("red");
   const blueColor = useColor("blue");
