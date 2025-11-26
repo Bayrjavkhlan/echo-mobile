@@ -8,8 +8,11 @@
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["./*"]
+      "~/*": ["src/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": [

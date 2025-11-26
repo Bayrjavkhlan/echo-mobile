@@ -31,12 +31,12 @@ import { useGroupStore } from "@/store/groupStore";
 import { useLabelStore } from "@/store/labelStore";
 import { useFlashcardStore } from "@/store/flashcardStore";
 import { useCalendarStore } from "@/store/calendarStore";
-import { useWrongAnswerStore } from "@/store/wrongAnswerStore";
-import {
-  createWrongAnswerTableData,
-  getAllWrongAnswerTableData,
-  getWrongAnswerTableDataByFlashcardId,
-} from "@/db/crud/wrongAnswers";
+// import { useWrongAnswerStore } from "@/store/wrongAnswerStore";
+// import {
+//   createWrongAnswerTableData,
+//   getAllWrongAnswerTableData,
+//   getWrongAnswerTableDataByFlashcardId,
+// } from "@/db/crud/wrongAnswers";
 import { dummyWeekCalendarData, insertTestFlashcardGroup } from "./dummdata";
 
 const userId = 1; // Set this to the correct user ID
@@ -118,7 +118,7 @@ export default function ProfileScreen() {
         useLabelStore.getState().fetchLabels(),
         useFlashcardStore.getState().fetchFlashcards(),
         useCalendarStore.getState().fetchCalendarData(),
-        useWrongAnswerStore.getState().fetchAllWrongAnswers(),
+        // useWrongAnswerStore.getState().fetchAllWrongAnswers(),
       ]);
 
       Toast.show({
@@ -178,7 +178,7 @@ export default function ProfileScreen() {
         useLabelStore.getState().fetchLabels(),
         useFlashcardStore.getState().fetchFlashcards(),
         useCalendarStore.getState().fetchCalendarData(),
-        useWrongAnswerStore.getState().fetchAllWrongAnswers(),
+        // useWrongAnswerStore.getState().fetchAllWrongAnswers(),
       ]);
       Toast.show({
         type: "success",
@@ -226,7 +226,7 @@ export default function ProfileScreen() {
       <ThemedView className="flex-1 p-4">
         <ThemedView className="flex justify-center items-center gap-4">
           <ProfileIcon
-            // userName={user?.username || "Зочин"}
+          // userName={user?.username || "Зочин"}
           />
           <ThemedView className="flex gap-2">
             {/* {!user ? (

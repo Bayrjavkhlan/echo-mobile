@@ -51,6 +51,7 @@
     "react-native-worklets": "0.5.1",
     "tailwindcss": "^3.4.17",
     "twrnc": "^4.6.1",
+    "yaml": "2.5.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
@@ -69,5 +70,9 @@
     "tsx": "^4.19.3",
     "typescript": "^5.9.2"
   },
-  "private": true
+  "resolutions": {
+    "yaml": "2.5.1"
+  },
+  "private": true,
+  "packageManager": "yarn@4.12.0"
 }
